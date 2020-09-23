@@ -1,0 +1,41 @@
+version: '3'
+services:
+    laravel:
+        build: ./docker/laravel
+        volumes:
+            - ./laravel:/var/www/html
+        tty: true
+        ports:
+            - 11080:8000
+        networks:
+            - backend
+    nginx:
+        build: ./docker/nginx
+        tty: true
+        volumes:
+            - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - ./laravel/public:/var/www/html/public
+            - ./nginx/logs:/var/log/nginx
+        ports:
+            - 10080:80
+        networks:
+            - backend
+    mysql:
+        build: ./docker/mysql
+        env_file: ./docker/mysql/.env
+        volumes:
+            - ./mysql/data:/var/lib/mysql
+        tty: true
+        ports:
+            - 13306:3306
+    node:
+        build: ./docker/node
+        volumes:
+            - ./front:/usr/src/app
+        tty: true
+        ports:
+            - 10180:80
+
+networks:
+    backend:
