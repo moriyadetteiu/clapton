@@ -4,7 +4,7 @@ FROM php:7.4-fpm
 
 RUN apt-get update \
     && apt-get install -y vim zlib1g-dev libpq-dev zip unzip libonig-dev \
-    && docker-php-ext-install mbstring pdo_mysql opcache mysqli \
+    && docker-php-ext-install mbstring pdo_mysql opcache mysqli bcmath \
     && docker-php-ext-enable mysqli
 
 # マルチステージビルドを利用してcomposerを入れる
