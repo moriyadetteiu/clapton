@@ -29,6 +29,8 @@ services:
         tty: true
         ports:
             - 13306:3306
+        networks:
+            - backend
     node:
         build: ./docker/node
         volumes:
