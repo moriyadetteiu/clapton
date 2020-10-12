@@ -38,6 +38,8 @@ export default {
     '@nuxtjs/axios',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
+    // https://github.com/nuxt-community/apollo-module
+    '@nuxtjs/apollo',
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
@@ -60,6 +62,12 @@ export default {
         },
       },
     },
+  },
+
+  apollo: {
+    clientConfigs: {
+      default: '~/plugins/apollo/client-config.ts'
+    }
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
