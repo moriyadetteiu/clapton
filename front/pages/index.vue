@@ -79,11 +79,22 @@
 <script>
 import Logo from '~/components/Logo.vue'
 import VuetifyLogo from '~/components/VuetifyLogo.vue'
+import gql from 'graphql-tag'
 
 export default {
   components: {
     Logo,
     VuetifyLogo
+  },
+
+  apollo: {
+    books: gql`
+      query {
+        books {
+          title
+        }
+      }
+    `
   }
 }
 </script>

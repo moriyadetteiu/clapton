@@ -1,5 +1,6 @@
 export default () => {
   return {
-    httpEndpoint: 'http://localhost:11080',
+    httpEndpoint: 'http://mock:4000',
+    browserHttpEndpoint: 'http://localhost:4000'
   }
 };
