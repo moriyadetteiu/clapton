@@ -46,7 +46,7 @@ services:
             - ./mock:/usr/src/app
         tty: true
         ports:
-            - 4000:80
+            - 4000:4000
         networks:
             - frontend
 
