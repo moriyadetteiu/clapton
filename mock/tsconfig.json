@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs",
+    "allowJs": true,
+    "sourceMap": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "baseUrl": "./",
+    "rootDir": ".",
+    "outDir": "./build/",
+    "paths": {
+      "src/*": ["src/*"]
+    }
+  }
+}

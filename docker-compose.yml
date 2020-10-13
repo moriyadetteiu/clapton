@@ -31,13 +31,25 @@ services:
             - 13306:3306
         networks:
             - backend
-    node:
-        build: ./docker/node
+    front:
+        build: ./docker/front
         volumes:
             - ./front:/usr/src/app
         tty: true
         ports:
             - 3000:3000
+        networks:
+            - frontend
+    mock:
+        build: ./docker/mock
+        volumes:
+            - ./mock:/usr/src/app
+        tty: true
+        ports:
+            - 4000:80
+        networks:
+            - frontend
 
 networks:
     backend:
+    frontend:
