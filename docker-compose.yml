@@ -40,6 +40,8 @@ services:
             - 3000:3000
         networks:
             - frontend
+        environment:
+            - CHOKIDAR_USEPOLLING=true
     mock:
         build: ./docker/mock
         volumes:
