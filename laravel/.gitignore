@@ -10,3 +10,8 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
+
+# lighthouseの自動生成
+schema-directives.graphql
+programmatic-types.graphql
+_lighthouse_ide_helper.php
