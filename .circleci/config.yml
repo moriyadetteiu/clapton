@@ -14,21 +14,16 @@ jobs:
       - run: cp ./docker/mysql/.env.example ./docker/mysql/.env
       - run: docker-compose build
       - run: docker-compose up -d
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
 
   npm-front:
     executor: test-executer
     steps:
-      - attach_workspace:
-          at: .
+      - checkout
       - run: docker-compose exec front npm install
       - persist_to_workspace:
           root: .
           paths:
-            - .
+            - front/node_modules
 
   code-style-check:
     executor: test-executer
