@@ -16,6 +16,19 @@ export default {
   // Global CSS (https://go.nuxtjs.dev/config-css)
   css: [],
 
+  // 環境変数の設定 .envファイルが参照される(https://nuxtjs.org/guide/runtime-config)
+  // .envが自動でboolean値として解釈してくれないので、基本的に文字列として扱う・・・
+  publicRuntimeConfig: {
+    IS_USE_MOCK_SERVER: process.env.IS_USE_MOCK_SERVER == 'true',
+    HTTP_ENDPOINT: process.env.HTTP_ENDPOINT ?? 'http://laravel:10800',
+    BROWSER_HTTP_ENDPOINT: process.env.BROWSER_HTTP_ENDPOINT ?? 'http://localhost:10800',
+    MOCK_BROWSER_HTTP_ENDPOINT: process.env.MOCK_BROWSER_HTTP_ENDPOINT ?? 'http://localhost:4000',
+    MOCK_HTTP_ENDPOINT: process.env.MOCK_HTTP_ENDPOINT ?? 'MOCK_HTTP_ENDPOINT',
+  },
+
+  privateRuntimeConfig: {
+  },
+
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
   plugins: [],
 
