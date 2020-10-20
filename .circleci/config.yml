@@ -1,0 +1,23 @@
+version: 2.1
+
+executors:
+  test-executer:
+    machine:
+      image: circleci/classic:edge
+
+jobs:
+  build:
+    executor: test-executer
+    steps:
+      - checkout
+  code-style-check:
+    executor: test-executer
+    steps:
+      - run: echo "hello world"
+
+workflows:
+  version: 2
+  setup:
+    jobs:
+      - build
+      - code-style-check
