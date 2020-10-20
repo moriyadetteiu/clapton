@@ -1,5 +1,12 @@
 version: 2.1
 
+commands:
+  pre-docker-compose:
+    steps:
+      - checkout
+      # ci特有の設定が必要になりそうなら、.env.ci的なのを切る
+      - run: cp ./docker/mysql/.env.example ./docker/mysql/.env
+
 executors:
   test-executer:
     machine:
@@ -9,21 +16,24 @@ jobs:
   build:
     executor: test-executer
     steps:
-      - checkout
-      # ci特有の設定が必要になりそうなら、.env.ci的なのを切る
-      - run: cp ./docker/mysql/.env.example ./docker/mysql/.env
+      - pre-docker-compose
       - run: docker-compose build
-      - run: docker-compose up -d
+      - run: mkdir -p /tmp/docker
+      - run: docker save clapton:latest -o /tmp/docker/image
+      - persist_to_workspace:
+            root: /tmp/docker
+            paths:
+                - image
 
   npm-front:
     executor: test-executer
     steps:
-      - checkout
+      - pre-docker-compose
+      - attach_workspace:
+          at: /tmp/docker
+      - run: docker load -i /tmp/docker/image
+      - run: docker-compose up -d
       - run: docker-compose exec front npm install
-      - persist_to_workspace:
-          root: .
-          paths:
-            - front/node_modules
 
   code-style-check:
     executor: test-executer
