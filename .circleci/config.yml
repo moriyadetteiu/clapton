@@ -10,18 +10,31 @@ jobs:
     executor: test-executer
     steps:
       - checkout
+      # ci特有の設定が必要になりそうなら、.env.ci的なのを切る
       - run: cp ./docker/mysql/.env.example ./docker/mysql/.env
       - run: docker-compose build
       - run: docker-compose up -d
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
 
   npm-front:
     executor: test-executer
     steps:
+      - attach_workspace:
+          at: .
       - run: docker-compose exec front npm install
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
 
   code-style-check:
     executor: test-executer
     steps:
+      - attach_workspace:
+          at: .
       - run:
           name: "eslint"
           command: \
