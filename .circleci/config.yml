@@ -10,14 +10,31 @@ jobs:
     executor: test-executer
     steps:
       - checkout
+      - run: cp ./docker/mysql/.env.example ./docker/mysql/.env
+      - run: docker-compose build
+      - run: docker-compose up -d
+
+  npm-front:
+    executor: test-executer
+    steps:
+      - run: docker-compose exec front npm install
+
   code-style-check:
     executor: test-executer
     steps:
-      - run: echo "hello world!!"
+      - run:
+          name: "eslint"
+          command: \
+              docker-compose exec front npm run lint
 
 workflows:
   version: 2
-  setup:
+  test:
     jobs:
       - build
-      - code-style-check
+      - npm-front:
+          requires:
+            - build
+      - code-style-check:
+          requires:
+            - npm-front
