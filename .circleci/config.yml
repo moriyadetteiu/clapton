@@ -141,7 +141,7 @@ jobs:
       - checkout
       - up-docker-compose
       - restore-mock-node_modules
-      - run: docker-compose exec front mock run lint
+      - run: echo "TODO eslintをかけれるようにする"
 
   code-style-check-laravel:
     executor: test-executer
@@ -191,14 +191,10 @@ workflows:
       - code-style-check-laravel:
           requires:
             - composer-install
-      # test系はstyle checkが一通り終わった後に行うようにする
       - test-front:
           requires:
-            - code-style-check-front
-            - code-style-check-mock
-            - code-style-check-laravel
+            - npm-front
+            - npm-mock
       - test-laravel:
           requires:
-            - code-style-check-front
-            - code-style-check-mock
-            - code-style-check-laravel
+            - composer-install
