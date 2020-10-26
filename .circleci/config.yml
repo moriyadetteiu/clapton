@@ -1,9 +1,8 @@
 version: 2.1
 
 commands:
-  load-docker-images:
+  restore-docker-images:
     steps:
-      - checkout
       # ci特有の設定が必要になりそうなら、.env.ci的なのを切る
       - run: cp ./docker/mysql/.env.example ./docker/mysql/.env
       - run:
@@ -11,6 +10,10 @@ commands:
           command: find ./docker -name "Dockerfile" -o -name ".env" -type f | xargs cat > ./combine_docker_files
       - restore_cache:
           key: docker-{{ checksum "./docker-compose.yml" }}-{{ checksum "./combine_docker_files" }}
+
+  load-docker-images:
+    steps:
+      - restore-docker-images
       - run: |
           if [ -e /tmp/docker/image ]; then
             echo "docker image loading..."
@@ -24,21 +27,18 @@ commands:
       - restore_cache:
           keys:
             - front-node_modules-{{ checksum "./front/package-lock.json" }}
-            - front-node_modules-
 
   restore-mock-node_modules:
     steps:
       - restore_cache:
           keys:
             - mock-node_modules-{{ checksum "./mock/package-lock.json" }}
-            - mock-node_modules-
 
   restore-laravel-composer:
     steps:
       - restore_cache:
           keys:
-            - laravel-composer-{{ checksum "./laravel/composer.lock.json" }}
-            - laravel-composer-
+            - laravel-composer-{{ checksum "./laravel/composer.lock" }}
 
   up-docker-compose:
     steps:
@@ -54,7 +54,8 @@ jobs:
   build:
     executor: test-executer
     steps:
-      - load-docker-images
+      - checkout
+      - restore-docker-images
       - run: |
           if [ -e /tmp/docker/image ]; then
             echo "imageが生成済みのため、buildをスキップします"
@@ -71,8 +72,16 @@ jobs:
   npm-front:
     executor: test-executer
     steps:
-      - up-docker-compose
+      - checkout
       - restore-front-node_modules
+      - run: |
+          if [ -e ./front/node_modules ]; then
+            circleci step halt
+          fi
+      - up-docker-compose
+      - restore_cache:
+          keys:
+            - front-node_modules-
       - run: docker-compose exec front npm install
       - save_cache:
             key: front-node_modules-{{ checksum "./front/package-lock.json" }}
@@ -82,8 +91,16 @@ jobs:
   npm-mock:
     executor: test-executer
     steps:
-      - up-docker-compose
+      - checkout
       - restore-mock-node_modules
+      - run: |
+          if [ -e ./mock/node_modules ]; then
+            circleci step halt
+          fi
+      - up-docker-compose
+      - restore_cache:
+          keys:
+            - mock-node_modules-
       - run: docker-compose exec mock npm install
       - save_cache:
             key: mock-node_modules-{{ checksum "./mock/package-lock.json" }}
@@ -93,8 +110,16 @@ jobs:
   composer-install:
     executor: test-executer
     steps:
-      - up-docker-compose
+      - checkout
       - restore-laravel-composer
+      - run: |
+          if [ -e ./laravel/vendor ]; then
+            circleci step halt
+          fi
+      - up-docker-compose
+      - restore_cache:
+          keys:
+            - laravel-composer-
       - run: docker-compose exec laravel composer install
       - save_cache:
             key: laravel-composer-{{ checksum "./laravel/composer.lock" }}
@@ -104,6 +129,7 @@ jobs:
   code-style-check-front:
     executor: test-executer
     steps:
+      - checkout
       - up-docker-compose
       - restore-front-node_modules
       - run: chmod -R 777 ./front
@@ -112,6 +138,7 @@ jobs:
   code-style-check-mock:
     executor: test-executer
     steps:
+      - checkout
       - up-docker-compose
       - restore-mock-node_modules
       - run: docker-compose exec front mock run lint
@@ -119,6 +146,7 @@ jobs:
   code-style-check-laravel:
     executor: test-executer
     steps:
+      - checkout
       - up-docker-compose
       - restore-laravel-composer
       - run: echo "TODO phpcs or phpmdを入れてチェックをかけれるようにする"
@@ -126,6 +154,7 @@ jobs:
   test-front:
     executor: test-executer
     steps:
+      - checkout
       - up-docker-compose
       - restore-front-node_modules
       - run: docker-compose exec front build
@@ -134,6 +163,7 @@ jobs:
   test-laravel:
     executor: test-executer
     steps:
+      - checkout
       - up-docker-compose
       - restore-laravel-composer
       - run: docker-compose exec laravel ./vendor/bin/phpunit
