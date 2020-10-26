@@ -11,22 +11,29 @@ commands:
           command: find ./docker -name "Dockerfile" -o -name ".env" -type f | xargs cat > ./combine_docker_files
       - restore_cache:
           key: docker-{{ checksum "./docker-compose.yml" }}-{{ checksum "./combine_docker_files" }}
+      # imageのキャッシュのloadを試みる。キャッシュがない場合はこけるので、止まらないようにしている
       - run: set +o pipefail docker load -i /tmp/docker/image | true
 
   restore-front-node_modules:
     steps:
       - restore_cache:
-          key: front-node_modules-{{ checksum "./front/package-lock.json" }}
+          keys:
+            - front-node_modules-{{ checksum "./front/package-lock.json" }}
+            - front-node_modules-
 
   restore-mock-node_modules:
     steps:
       - restore_cache:
-          key: mock-node_modules-{{ checksum "./mock/package-lock.json" }}
+          keys:
+            - mock-node_modules-{{ checksum "./mock/package-lock.json" }}
+            - mock-node_modules-
 
   restore-laravel-composer:
     steps:
       - restore_cache:
-          key: laravel-composer-{{ checksum "./laravel/composer.lock.json" }}
+          keys:
+            - laravel-composer-{{ checksum "./laravel/composer.lock.json" }}
+            - laravel-composer-
 
   up-docker-compose:
     steps:
@@ -55,6 +62,7 @@ jobs:
     executor: test-executer
     steps:
       - up-docker-compose
+      - restore-front-node_modules
       - run: docker-compose exec front npm install
       - save_cache:
             key: front-node_modules-{{ checksum "./front/package-lock.json" }}
@@ -65,6 +73,7 @@ jobs:
     executor: test-executer
     steps:
       - up-docker-compose
+      - restore-mock-node_modules
       - run: docker-compose exec mock npm install
       - save_cache:
             key: mock-node_modules-{{ checksum "./mock/package-lock.json" }}
@@ -75,18 +84,49 @@ jobs:
     executor: test-executer
     steps:
       - up-docker-compose
+      - restore-laravel-composer
       - run: docker-compose exec laravel composer install
       - save_cache:
-            key: laravel-composer-{{ checksum "./laravel/composer.lock.json" }}
+            key: laravel-composer-{{ checksum "./laravel/composer.lock" }}
             paths:
                 - ./laravel/vendor
 
-  code-style-check:
+  code-style-check-front:
     executor: test-executer
     steps:
       - up-docker-compose
       - restore-front-node_modules
+      - run: chmod -R 777 ./front
       - run: docker-compose exec front npm run lint
+
+  code-style-check-mock:
+    executor: test-executer
+    steps:
+      - up-docker-compose
+      - restore-mock-node_modules
+      - run: docker-compose exec front mock run lint
+
+  code-style-check-laravel:
+    executor: test-executer
+    steps:
+      - up-docker-compose
+      - restore-laravel-composer
+      - run: echo "TODO phpcs or phpmdを入れてチェックをかけれるようにする"
+
+  test-front:
+    executor: test-executer
+    steps:
+      - up-docker-compose
+      - restore-front-node_modules
+      - run: docker-compose exec front build
+      - run: docker-compose exec front test
+
+  test-laravel:
+    executor: test-executer
+    steps:
+      - up-docker-compose
+      - restore-laravel-composer
+      - run: docker-compose exec laravel ./vendor/bin/phpunit
 
 workflows:
   version: 2
@@ -102,6 +142,23 @@ workflows:
       - composer-install:
           requires:
             - build
-      - code-style-check:
+      - code-style-check-front:
           requires:
             - npm-front
+      - code-style-check-mock:
+          requires:
+            - npm-mock
+      - code-style-check-laravel:
+          requires:
+            - composer-install
+      # test系はstyle checkが一通り終わった後に行うようにする
+      - test-front:
+          requires:
+            - code-style-check-front
+            - code-style-check-mock
+            - code-style-check-laravel
+      - test-laravel:
+          requires:
+            - code-style-check-front
+            - code-style-check-mock
+            - code-style-check-laravel
