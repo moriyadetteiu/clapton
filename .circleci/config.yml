@@ -55,13 +55,18 @@ jobs:
     executor: test-executer
     steps:
       - load-docker-images
+      - run: |
+          if [ -e /tmp/docker/image ]; then
+            echo "imageが生成済みのため、buildをスキップします"
+            circleci step halt
+          fi
       - run: docker-compose build
       - run: mkdir -p /tmp/docker
       - run: docker save $(docker images -q) -o /tmp/docker/image
       - save_cache:
-            key: docker-{{ checksum "./docker-compose.yml" }}-{{ checksum "./combine_docker_files" }}
-            paths:
-                - /tmp/docker/image
+          key: docker-{{ checksum "./docker-compose.yml" }}-{{ checksum "./combine_docker_files" }}
+          paths:
+            - /tmp/docker/image
 
   npm-front:
     executor: test-executer
