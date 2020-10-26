@@ -166,6 +166,8 @@ jobs:
       - checkout
       - up-docker-compose
       - restore-laravel-composer
+      - run: cp ./laravel/.env.example ./laravle/.env
+      - run: docker-compose exec laravel key:generate
       - run: docker-compose exec laravel ./vendor/bin/phpunit
 
 workflows:
