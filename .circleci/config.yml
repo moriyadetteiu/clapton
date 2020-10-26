@@ -7,6 +7,28 @@ commands:
       # ci特有の設定が必要になりそうなら、.env.ci的なのを切る
       - run: cp ./docker/mysql/.env.example ./docker/mysql/.env
 
+  restore-docker-images:
+    steps:
+      - restore_cache:
+          key: docker-{{ .Revision }}
+
+  restore-front-node_modules:
+    steps:
+      - restore_cache:
+          key: front-node_modules-{{ checksum "./front/package-lock.json" }}
+
+  restore-mock-node_modules:
+    steps:
+      - restore_cache:
+          key: mock-node_modules-{{ checksum "./mock/package-lock.json" }}
+
+  up-docker-compose:
+    steps:
+      - pre-docker-compose
+      - restore-docker-images
+      - run: docker load -i /tmp/docker/image
+      - run: docker-compose up -d
+
 executors:
   test-executer:
     machine:
@@ -28,18 +50,38 @@ jobs:
   npm-front:
     executor: test-executer
     steps:
-      - pre-docker-compose
-      - restore_cache:
-          key: docker-{{ .Revision }}
-      - run: docker load -i /tmp/docker/image
-      - run: docker-compose up -d
+      - up-docker-compose
       - run: docker-compose exec front npm install
+      - save_cache:
+            key: front-node_modules-{{ checksum "./front/package-lock.json" }}
+            paths:
+                - ./front/node_modules
+
+  npm-mock:
+    executor: test-executer
+    steps:
+      - up-docker-compose
+      - run: docker-compose exec mock npm install
+      - save_cache:
+            key: mock-node_modules-{{ checksum "./mock/package-lock.json" }}
+            paths:
+                - ./mock/node_modules
+
+  composer-install:
+    executor: test-executer
+    steps:
+      - up-docker-compose
+      - run: docker-compose exec mock npm install
+      - save_cache:
+            key: mock-node_modules-{{ checksum "./mock/package-lock.json" }}
+            paths:
+                - ./mock/node_modules
 
   code-style-check:
     executor: test-executer
     steps:
-      - attach_workspace:
-          at: .
+      - up-docker-compose
+      - restore-front-node_modules
       - run:
           name: "eslint"
           command: \
@@ -51,6 +93,12 @@ workflows:
     jobs:
       - build
       - npm-front:
+          requires:
+            - build
+      - npm-mock:
+          requires:
+            - build
+      - composer-install:
           requires:
             - build
       - code-style-check:
