@@ -19,18 +19,18 @@ jobs:
       - pre-docker-compose
       - run: docker-compose build
       - run: mkdir -p /tmp/docker
-      - run: docker save clapton:latest -o /tmp/docker/image
-      - persist_to_workspace:
-            root: /tmp/docker
+      - run: docker save $(docker images -q) -o /tmp/docker/image
+      - save_cache:
+            key: docker-{{ .Revision }}
             paths:
-                - image
+                - /tmp/docker/image
 
   npm-front:
     executor: test-executer
     steps:
       - pre-docker-compose
-      - attach_workspace:
-          at: /tmp/docker
+      - restore_cache:
+          key: docker-{{ .Revision }}
       - run: docker load -i /tmp/docker/image
       - run: docker-compose up -d
       - run: docker-compose exec front npm install
