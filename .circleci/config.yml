@@ -1,16 +1,17 @@
 version: 2.1
 
 commands:
-  pre-docker-compose:
+  load-docker-images:
     steps:
       - checkout
       # ci特有の設定が必要になりそうなら、.env.ci的なのを切る
       - run: cp ./docker/mysql/.env.example ./docker/mysql/.env
-
-  restore-docker-images:
-    steps:
+      - run:
+          name: Docker関連の設定ファイルを結合します。キャッシュ用
+          command: find ./docker -name "Dockerfile" -o -name ".env" -type f | xargs cat > ./combine_docker_files
       - restore_cache:
-          key: docker-{{ .Revision }}
+          key: docker-{{ checksum "./docker-compose.yml" }}-{{ checksum "./combine_docker_files" }}
+      - run: docker load -i /tmp/docker/image
 
   restore-front-node_modules:
     steps:
@@ -22,11 +23,14 @@ commands:
       - restore_cache:
           key: mock-node_modules-{{ checksum "./mock/package-lock.json" }}
 
+  restore-laravel-composer:
+    steps:
+      - restore_cache:
+          key: laravel-composer-{{ checksum "./laravel/composer.lock.json" }}
+
   up-docker-compose:
     steps:
-      - pre-docker-compose
-      - restore-docker-images
-      - run: docker load -i /tmp/docker/image
+      - load-docker-images
       - run: docker-compose up -d
 
 executors:
@@ -38,12 +42,12 @@ jobs:
   build:
     executor: test-executer
     steps:
-      - pre-docker-compose
+      - load-docker-images
       - run: docker-compose build
       - run: mkdir -p /tmp/docker
       - run: docker save $(docker images -q) -o /tmp/docker/image
       - save_cache:
-            key: docker-{{ .Revision }}
+            key: docker-{{ checksum "./docker-compose.yml" }}-{{ checksum "./combine_docker_files" }}
             paths:
                 - /tmp/docker/image
 
@@ -71,21 +75,18 @@ jobs:
     executor: test-executer
     steps:
       - up-docker-compose
-      - run: docker-compose exec mock npm install
+      - run: docker-compose exec laravel composer install
       - save_cache:
-            key: mock-node_modules-{{ checksum "./mock/package-lock.json" }}
+            key: laravel-composer-{{ checksum "./laravel/composer.lock.json" }}
             paths:
-                - ./mock/node_modules
+                - ./laravel/vendor
 
   code-style-check:
     executor: test-executer
     steps:
       - up-docker-compose
       - restore-front-node_modules
-      - run:
-          name: "eslint"
-          command: \
-              docker-compose exec front npm run lint
+      - run: docker-compose exec front npm run lint
 
 workflows:
   version: 2
