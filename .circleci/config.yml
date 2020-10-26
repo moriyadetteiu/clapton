@@ -27,18 +27,21 @@ commands:
       - restore_cache:
           keys:
             - front-node_modules-{{ checksum "./front/package-lock.json" }}
+            - front-node_modules-
 
   restore-mock-node_modules:
     steps:
       - restore_cache:
           keys:
             - mock-node_modules-{{ checksum "./mock/package-lock.json" }}
+            - mock-node_modules-
 
   restore-laravel-composer:
     steps:
       - restore_cache:
           keys:
             - laravel-composer-{{ checksum "./laravel/composer.lock" }}
+            - laravel-composer-
 
   up-docker-compose:
     steps:
@@ -74,14 +77,7 @@ jobs:
     steps:
       - checkout
       - restore-front-node_modules
-      - run: |
-          if [ -e ./front/node_modules ]; then
-            circleci step halt
-          fi
       - up-docker-compose
-      - restore_cache:
-          keys:
-            - front-node_modules-
       - run: docker-compose exec front npm install
       - save_cache:
             key: front-node_modules-{{ checksum "./front/package-lock.json" }}
@@ -93,14 +89,7 @@ jobs:
     steps:
       - checkout
       - restore-mock-node_modules
-      - run: |
-          if [ -e ./mock/node_modules ]; then
-            circleci step halt
-          fi
       - up-docker-compose
-      - restore_cache:
-          keys:
-            - mock-node_modules-
       - run: docker-compose exec mock npm install
       - save_cache:
             key: mock-node_modules-{{ checksum "./mock/package-lock.json" }}
@@ -112,14 +101,7 @@ jobs:
     steps:
       - checkout
       - restore-laravel-composer
-      - run: |
-          if [ -e ./laravel/vendor ]; then
-            circleci step halt
-          fi
       - up-docker-compose
-      - restore_cache:
-          keys:
-            - laravel-composer-
       - run: docker-compose exec laravel composer install
       - save_cache:
             key: laravel-composer-{{ checksum "./laravel/composer.lock" }}
