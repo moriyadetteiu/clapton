@@ -11,8 +11,10 @@ commands:
           command: find ./docker -name "Dockerfile" -o -name ".env" -type f | xargs cat > ./combine_docker_files
       - restore_cache:
           key: docker-{{ checksum "./docker-compose.yml" }}-{{ checksum "./combine_docker_files" }}
-      # imageのキャッシュのloadを試みる。キャッシュがない場合はこけるので、止まらないようにしている
-      - run: set +o pipefail docker load -i /tmp/docker/image | true
+      - run: |
+          if [-e /tmp/docker/image]; then
+            set +o pipefail docker load -i /tmp/docker/image
+          fi
 
   restore-front-node_modules:
     steps:
