@@ -13,7 +13,10 @@ commands:
           key: docker-{{ checksum "./docker-compose.yml" }}-{{ checksum "./combine_docker_files" }}
       - run: |
           if [ -e /tmp/docker/image ]; then
-            set +o pipefail docker load -i /tmp/docker/image
+            echo "docker image loading..."
+            docker load -i /tmp/docker/image
+          else
+            echo "saved docker image is not exists"
           fi
 
   restore-front-node_modules:
