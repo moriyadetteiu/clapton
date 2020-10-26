@@ -19,7 +19,7 @@ export default {
   // 環境変数の設定 .envファイルが参照される(https://nuxtjs.org/guide/runtime-config)
   // .envが自動でboolean値として解釈してくれないので、基本的に文字列として扱う・・・
   publicRuntimeConfig: {
-    IS_USE_MOCK_SERVER: process.env.IS_USE_MOCK_SERVER == 'true',
+    IS_USE_MOCK_SERVER: process.env.IS_USE_MOCK_SERVER === 'true',
     HTTP_ENDPOINT: process.env.HTTP_ENDPOINT ?? 'http://laravel:10800',
     BROWSER_HTTP_ENDPOINT:
       process.env.BROWSER_HTTP_ENDPOINT ?? 'http://localhost:10800',
