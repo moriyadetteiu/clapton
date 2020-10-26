@@ -11,7 +11,7 @@ commands:
           command: find ./docker -name "Dockerfile" -o -name ".env" -type f | xargs cat > ./combine_docker_files
       - restore_cache:
           key: docker-{{ checksum "./docker-compose.yml" }}-{{ checksum "./combine_docker_files" }}
-      - run: docker load -i /tmp/docker/image
+      - run: set +o pipefail docker load -i /tmp/docker/image | true
 
   restore-front-node_modules:
     steps:
