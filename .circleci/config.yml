@@ -12,7 +12,7 @@ commands:
       - restore_cache:
           key: docker-{{ checksum "./docker-compose.yml" }}-{{ checksum "./combine_docker_files" }}
       - run: |
-          if [-e /tmp/docker/image]; then
+          if [ -e /tmp/docker/image ]; then
             set +o pipefail docker load -i /tmp/docker/image
           fi
 
