@@ -97,7 +97,7 @@ jobs:
           when: always
       - run:
           name: code style check(laravel)
-          command: echo "TODO:phpcs or phpmdをかけれるようにする"
+          command: docker exec laravel ./vendor/bin/phpcs --standard=phpcs.xml --extensions=php .
           when: always
       - run:
           name: build front
