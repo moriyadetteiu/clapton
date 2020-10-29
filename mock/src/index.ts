@@ -1,32 +1,13 @@
 import { ApolloServer, gql } from "apollo-server";
+import { buildClientSchema  } from "graphql";
 
-const typeDefs = gql`
-  type Book {
-    title: String
-  }
-  type Query {
-    books: [Book]
-  }
-`;
+const introspectionResult = require("./generated/schema.json");
 
-const books = [
-  {
-    title: "Harry Potter and the Chamber of Secrets",
-  },
-  {
-    title: "Jurassic Park",
-  }
-];
-
-const resolvers = {
-  Query: {
-    books: () => books
-  },
-};
+const schema = buildClientSchema(introspectionResult);
 
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+  schema,
+  mocks: true,
 });
 
 server.listen().then(({ url }) => {
