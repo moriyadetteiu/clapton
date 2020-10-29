@@ -59,6 +59,9 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "phpcs": [
+            "phpcs --standard=phpcs.xml --extensions=php ."
         ]
     }
 }
