@@ -90,12 +90,15 @@ jobs:
       - run:
           name: code style check(front)
           command: docker-compose exec front npm run lint
+          when: always
       - run:
           name: code style check(mock)
           command: echo "TODO:lintをかけれるようにする"
+          when: always
       - run:
           name: code style check(laravel)
           command: echo "TODO:phpcs or phpmdをかけれるようにする"
+          when: always
       - run:
           name: build front
           command: docker-compose exec front npm run build
@@ -105,11 +108,13 @@ jobs:
       - run:
           name: prepare laravel test
           command: |
-            cp ./laravel/.env.example ./laravle/.env
-            docker-compose exec laravel key:generate
+            cp ./laravel/.env.example ./laravel/.env
+            docker-compose exec laravel php artisan key:generate
       - run:
           name: test laravel
           command: docker-compose exec laravel ./vendor/bin/phpunit
+      - store_artifacts:
+          path: ./laravel/storage/logs
 
 workflows:
   version: 2
