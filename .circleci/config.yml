@@ -98,10 +98,10 @@ jobs:
           command: echo "TODO:phpcs or phpmdをかけれるようにする"
       - run:
           name: build front
-          command: docker-compose exec front build
+          command: docker-compose exec front npm run build
       - run:
           name: test front
-          command: docker-compose exec front test
+          command: docker-compose exec front npm run test
       - run:
           name: prepare laravel test
           command: |
