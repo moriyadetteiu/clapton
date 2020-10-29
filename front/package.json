@@ -24,8 +24,11 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "1.19.0",
+    "@graphql-codegen/fragment-matcher": "2.0.0",
+    "@graphql-codegen/introspection": "1.18.0",
     "@graphql-codegen/typescript": "1.17.11",
     "@graphql-codegen/typescript-operations": "^1.17.8",
+    "@graphql-codegen/typescript-vue-apollo": "^2.1.1",
     "@nuxt/types": "^2.14.6",
     "@nuxt/typescript-build": "^2.0.3",
     "@nuxt/webpack": "^2.14.6",
@@ -48,8 +51,6 @@
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-standard": "^20.0.0",
     "ts-jest": "^26.4.1",
-    "vue-jest": "^3.0.4",
-    "@graphql-codegen/fragment-matcher": "2.0.0",
-    "@graphql-codegen/introspection": "1.18.0"
+    "vue-jest": "^3.0.4"
   }
 }
