@@ -81,9 +81,9 @@
 </template>
 
 <script>
-import gql from 'graphql-tag'
 import Logo from '~/components/Logo.vue'
 import VuetifyLogo from '~/components/VuetifyLogo.vue'
+import users from '~/apollo/queries/users.gql'
 
 export default {
   components: {
@@ -92,13 +92,9 @@ export default {
   },
 
   apollo: {
-    books: gql`
-      query {
-        books {
-          title
-        }
-      }
-    `,
+    users: {
+      query: users,
+    },
   },
 }
 </script>
