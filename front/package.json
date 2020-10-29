@@ -10,6 +10,7 @@
     "lint:js": "eslint --ext .js,.vue --ignore-path .gitignore .",
     "lint:style": "stylelint **/*.{vue,css} --ignore-path .gitignore",
     "lint": "npm run lint:js && npm run lint:style",
+    "lint:fix": "npm run lint:js -- --fix",
     "test": "jest",
     "codegen": "graphql-codegen --config codegen.yml"
   },
