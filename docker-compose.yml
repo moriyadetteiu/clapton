@@ -21,6 +21,7 @@ services:
             - 10080:80
         networks:
             - backend
+            - api
     mysql:
         build: ./docker/mysql
         env_file: ./docker/mysql/.env
@@ -40,6 +41,7 @@ services:
             - 3000:3000
         networks:
             - frontend
+            - api
         environment:
             - CHOKIDAR_USEPOLLING=true
     mock:
@@ -51,7 +53,9 @@ services:
             - 4000:4000
         networks:
             - frontend
+            - api
 
 networks:
     backend:
     frontend:
+    api:

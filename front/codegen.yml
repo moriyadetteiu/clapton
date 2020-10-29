@@ -1,0 +1,7 @@
+overwrite: true
+schema: "http://nginx/graphql"
+generates:
+  ./schema/graphql.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
