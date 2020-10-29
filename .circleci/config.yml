@@ -58,11 +58,6 @@ commands:
                 - "./laravel/vendor"
             key: laravel-composer-{{ checksum "./laravel/composer.lock" }}
 
-  up-docker-compose:
-    steps:
-      - load-docker-images
-      - run: docker-compose up -d
-
 executors:
   test-executer:
     machine:
@@ -73,7 +68,7 @@ jobs:
     executor: test-executer
     steps:
       - checkout
-      - restore-docker-images
+      - load-docker-images
       - run: docker-compose up -d --build
       - run:
           name: save docker image cache
