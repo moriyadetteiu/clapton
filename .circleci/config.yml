@@ -1,0 +1,123 @@
+version: 2.1
+
+commands:
+  restore-docker-images:
+    steps:
+      # ci特有の設定が必要になりそうなら、.env.ci的なのを切る
+      - run: cp ./docker/mysql/.env.example ./docker/mysql/.env
+      - run:
+          name: Docker関連の設定ファイルを結合します。キャッシュ用
+          command: find ./docker -name "Dockerfile" -o -name ".env" -type f | xargs cat > ./combine_docker_files
+      - restore_cache:
+          key: docker-{{ checksum "./docker-compose.yml" }}-{{ checksum "./combine_docker_files" }}
+
+  load-docker-images:
+    steps:
+      - restore-docker-images
+      - run: |
+          if [ -e /tmp/docker/image ]; then
+            echo "docker image loading..."
+            docker load -i /tmp/docker/image
+          else
+            echo "saved docker image is not exists"
+          fi
+
+  pull-front-node_modules:
+    steps:
+      - restore_cache:
+          keys:
+            - front-node_modules-{{ checksum "./front/package-lock.json" }}
+            - front-node_modules-
+      - run: docker-compose exec front npm install
+      - save_cache:
+            paths:
+                - "./front/node_modules"
+            key: front-node_modules-{{ checksum "./front/package-lock.json" }}
+
+  pull-mock-node_modules:
+    steps:
+      - restore_cache:
+          keys:
+            - mock-node_modules-{{ checksum "./mock/package-lock.json" }}
+            - mock-node_modules-
+      - run: docker-compose exec mock npm install
+      - save_cache:
+            paths:
+                - "./mock/node_modules"
+            key: mock-node_modules-{{ checksum "./mock/package-lock.json" }}
+
+  pull-laravel-composer:
+    steps:
+      - restore_cache:
+          keys:
+            - laravel-composer-{{ checksum "./laravel/composer.lock" }}
+            - laravel-composer-
+      - run: docker-compose exec laravel composer install
+      - save_cache:
+            paths:
+                - "./laravel/vendor"
+            key: laravel-composer-{{ checksum "./laravel/composer.lock" }}
+
+executors:
+  test-executer:
+    machine:
+      image: circleci/classic:edge
+
+jobs:
+  test:
+    executor: test-executer
+    steps:
+      - checkout
+      - load-docker-images
+      - run: docker-compose up -d --build
+      - run:
+          name: save docker image cache
+          command: |
+            if [ -e /tmp/docker/image ]; then
+              echo "docker cache is exists"
+            else
+              echo "docker cache is not exists. make cache"
+              mkdir -p /tmp/docker
+              docker save $(docker images -q) -o /tmp/docker/image
+            fi
+      - save_cache:
+          key: docker-{{ checksum "./docker-compose.yml" }}-{{ checksum "./combine_docker_files" }}
+          paths:
+            - /tmp/docker/image
+      - pull-front-node_modules
+      - pull-mock-node_modules
+      - pull-laravel-composer
+      - run:
+          name: code style check(front)
+          command: docker-compose exec front npm run lint
+          when: always
+      - run:
+          name: code style check(mock)
+          command: echo "TODO:lintをかけれるようにする"
+          when: always
+      - run:
+          name: code style check(laravel)
+          command: echo "TODO:phpcs or phpmdをかけれるようにする"
+          when: always
+      - run:
+          name: build front
+          command: docker-compose exec front npm run build
+      - run:
+          name: test front
+          command: docker-compose exec front npm run test
+      - run:
+          name: prepare laravel test
+          command: |
+            cp ./laravel/.env.example ./laravel/.env
+            docker-compose exec laravel php artisan key:generate
+      - run:
+          name: test laravel
+          command: docker-compose exec laravel ./vendor/bin/phpunit
+      - store_artifacts:
+          path: ./laravel/storage/logs
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test
