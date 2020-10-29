@@ -62,6 +62,9 @@
         ],
         "phpcs": [
             "phpcs --standard=phpcs.xml --extensions=php ."
+        ],
+        "phpcbf": [
+            "phpcbf --standard=phpcs.xml --extensions=php ."
         ]
     }
 }
