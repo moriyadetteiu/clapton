@@ -3,14 +3,10 @@
     <v-container>
       <v-row>
         <v-col cols="12">
-          <v-text-field
-            v-model="syncedUser.name"
-            label="名前"
-            outlined
-          />
+          <v-text-field v-model="syncedUser.name" label="名前" outlined />
         </v-col>
         <v-col cols="12">
-          <v-text-field outlined label="ニックネーム"/>
+          <v-text-field outlined label="ニックネーム" />
         </v-col>
         <v-col cols="12">
           <v-text-field
@@ -30,7 +26,7 @@
           />
         </v-col>
         <v-col cols="12">
-          <v-text-field outlined label="パスワード確認" type="password"/>
+          <v-text-field outlined label="パスワード確認" type="password" />
         </v-col>
         <v-col cols="12">
           <slot />
@@ -41,14 +37,16 @@
 </template>
 
 <script lang="ts">
-  import { Vue, PropSync, Component } from "nuxt-property-decorator";
-  import { PropType, PropOptions } from "vue";
-  // TODO: ~/apollo...を使えるようにする（VSCodeで読み込めるようにする）
-  import { UserInput } from "../../apollo/graphql";
+import { Vue, PropSync, Component } from 'nuxt-property-decorator'
+import { PropType, PropOptions } from 'vue'
+// TODO: ~/apollo...を使えるようにする（VSCodeで読み込めるようにする）
+import { UserInput } from '../../apollo/graphql'
 
-  @Component
-  export default class UserForm extends Vue {
-    @PropSync('user', { type: Object as PropType<UserInput> } as PropOptions<UserInput>)
-    syncedUser!: UserInput;
-  };
+@Component
+export default class UserForm extends Vue {
+  @PropSync('user', { type: Object as PropType<UserInput> } as PropOptions<
+    UserInput
+  >)
+  syncedUser!: UserInput
+}
 </script>
