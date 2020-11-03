@@ -3,14 +3,16 @@
 namespace Tests\Graphql;
 
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+// TODO: テスト用のDBを用意したら有効化する
+// use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 
 class UserTest extends TestCase
 {
     use WithFaker;
-    //    use RefreshDatabase;
+    // TODO: テスト用のDBを用意したら有効化する
+    // use RefreshDatabase;
 
     public function testCreateUser()
     {

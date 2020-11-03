@@ -19,7 +19,8 @@ type User {
 }
 
 type Mutation {
-    createUser(input: UserInput! @spread): User! @create
+    createUser(input: UserInput! @spread): User!
+        @field(resolver: "App\\GraphQL\\Mutations\\CreateUser")
 }
 
 input UserInput {
