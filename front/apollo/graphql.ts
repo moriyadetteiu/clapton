@@ -1,9 +1,6 @@
 import gql from 'graphql-tag';
-import * as VueApolloComposable from '@vue/apollo-composable';
-import * as VueCompositionApi from '@vue/composition-api';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type ReactiveFunction<TParam> = () => TParam;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -74,6 +71,22 @@ export type User = {
 };
 
 
+export type Mutation = {
+  __typename?: 'Mutation';
+  createUser: User;
+};
+
+
+export type MutationCreateUserArgs = {
+  input: UserInput;
+};
+
+export type UserInput = {
+  name: Scalars['String'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
 
 /** Pagination information about the corresponding list of items. */
 export type PageInfo = {
@@ -122,6 +135,19 @@ export enum Trashed {
   Without = 'WITHOUT'
 }
 
+export type CreateUserMutationMutationVariables = Exact<{
+  input: UserInput;
+}>;
+
+
+export type CreateUserMutationMutation = (
+  { __typename?: 'Mutation' }
+  & { createUser: (
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'name' | 'email' | 'created_at' | 'updated_at'>
+  ) }
+);
+
 export type UsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -137,7 +163,18 @@ export type UsersQuery = (
 );
 
 
-export const UsersDocument = gql`
+export const CreateUserMutation = gql`
+    mutation CreateUserMutation($input: UserInput!) {
+  createUser(input: $input) {
+    id
+    name
+    email
+    created_at
+    updated_at
+  }
+}
+    `;
+export const Users = gql`
     query users {
   users {
     data {
@@ -146,23 +183,3 @@ export const UsersDocument = gql`
   }
 }
     `;
-
-/**
- * __useUsersQuery__
- *
- * To run a query within a Vue component, call `useUsersQuery` and pass it any options that fit your needs.
- * When your component renders, `useUsersQuery` returns an object from Apollo Client that contains result, loading and error properties
- * you can use to render your UI.
- *
- * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
- *
- * @example
- * const { result, loading, error } = useUsersQuery(
- *   {
- *   }
- * );
- */
-export function useUsersQuery(options: VueApolloComposable.UseQueryOptions<UsersQuery, UsersQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<UsersQuery, UsersQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<UsersQuery, UsersQueryVariables>> = {}) {
-            return VueApolloComposable.useQuery<UsersQuery, undefined>(UsersDocument, undefined, options);
-          }
-export type UsersQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<UsersQuery, UsersQueryVariables>;

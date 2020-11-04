@@ -65,6 +65,9 @@
         ],
         "phpcbf": [
             "phpcbf --standard=phpcs.xml --extensions=php ."
+        ],
+        "test": [
+            "phpunit"
         ]
     }
 }

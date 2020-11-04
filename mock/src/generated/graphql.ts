@@ -70,6 +70,22 @@ export type User = {
 };
 
 
+export type Mutation = {
+  __typename?: 'Mutation';
+  createUser: User;
+};
+
+
+export type MutationCreateUserArgs = {
+  input: UserInput;
+};
+
+export type UserInput = {
+  name: Scalars['String'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
 
 /** Pagination information about the corresponding list of items. */
 export type PageInfo = {
