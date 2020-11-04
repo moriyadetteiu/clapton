@@ -1,7 +1,7 @@
 <template>
   <v-form>
     <v-container>
-      <v-row>
+      <v-row dense>
         <v-col cols="12">
           <v-text-field v-model="syncedUser.name" label="名前" outlined />
         </v-col>
