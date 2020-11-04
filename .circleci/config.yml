@@ -109,7 +109,7 @@ jobs:
           name: prepare laravel test
           command: |
             cp ./laravel/.env.example ./laravel/.env
-            docker-compose exec laravel php artisan key:generate \
+            docker-compose exec laravel php artisan key:generate
             docker-compose exec laravel php artisan migrate
       - run:
           name: test laravel
