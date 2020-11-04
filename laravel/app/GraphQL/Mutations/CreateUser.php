@@ -19,6 +19,6 @@ class CreateUser
         $userData = Arr::except($args, ['directive']);
         $userData['password'] = Hash::make($userData['password']);
         $user = User::create($userData);
-        return $user->toArray();
+        return $user;
     }
 }
