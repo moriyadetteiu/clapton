@@ -64,6 +64,9 @@ export type User = {
   __typename?: 'User';
   id: Scalars['ID'];
   name: Scalars['String'];
+  name_kana: Scalars['String'];
+  handle_name: Scalars['String'];
+  handle_name_kana: Scalars['String'];
   email: Scalars['String'];
   created_at: Scalars['DateTime'];
   updated_at: Scalars['DateTime'];
@@ -82,6 +85,9 @@ export type MutationCreateUserArgs = {
 
 export type UserInput = {
   name: Scalars['String'];
+  name_kana: Scalars['String'];
+  handle_name: Scalars['String'];
+  handle_name_kana: Scalars['String'];
   email: Scalars['String'];
   password: Scalars['String'];
 };
