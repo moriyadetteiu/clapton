@@ -1,0 +1,9 @@
+mutation CreateTeamMutation($input: TeamInput!) {
+  createTeam(input: $input) {
+    id
+    name
+    code
+    created_at
+    updated_at
+  }
+}

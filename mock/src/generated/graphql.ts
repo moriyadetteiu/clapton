@@ -73,6 +73,7 @@ export type User = {
 export type Mutation = {
   __typename?: 'Mutation';
   createUser: User;
+  createTeam: Team;
 };
 
 
@@ -80,10 +81,28 @@ export type MutationCreateUserArgs = {
   input: UserInput;
 };
 
+
+export type MutationCreateTeamArgs = {
+  input: TeamInput;
+};
+
 export type UserInput = {
   name: Scalars['String'];
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type TeamInput = {
+  name: Scalars['String'];
+};
+
+export type Team = {
+  __typename?: 'Team';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  code: Scalars['String'];
+  created_at: Scalars['DateTime'];
+  updated_at: Scalars['DateTime'];
 };
 
 
