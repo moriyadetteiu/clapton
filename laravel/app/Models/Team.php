@@ -12,8 +12,8 @@ class Team extends Model
     protected $fillable = ['name', 'code'];
 
     // code生成
-    static public function generateCode() {
+    public static function generateCode()
+    {
         return uniqid();
     }
-
 }
