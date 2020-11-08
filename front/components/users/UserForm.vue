@@ -9,10 +9,18 @@
           <v-text-field v-model="syncedUser.name_kana" outlined label="かな" />
         </v-col>
         <v-col cols="12">
-          <v-text-field v-model="syncedUser.handle_name" outlined label="ハンドルネーム" />
+          <v-text-field
+            v-model="syncedUser.handle_name"
+            outlined
+            label="ハンドルネーム"
+          />
         </v-col>
         <v-col cols="12">
-          <v-text-field v-model="syncedUser.handle_name_kana" outlined label="ハンドルネームのかな" />
+          <v-text-field
+            v-model="syncedUser.handle_name_kana"
+            outlined
+            label="ハンドルネームのかな"
+          />
         </v-col>
         <v-col cols="12">
           <v-text-field
