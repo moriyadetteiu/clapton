@@ -47,6 +47,10 @@ jobs:
     executor: test-executer
     steps:
       - checkout
+      - run:
+          # ci特有の設定が必要になりそうなら、.env.ci的なのを切る
+          name: pre docker-compose
+          command: cp ./docker/mysql/.env.example ./docker/mysql/.env
       - run: docker-compose up -d --build
       - pull-front-node_modules
       - pull-mock-node_modules
