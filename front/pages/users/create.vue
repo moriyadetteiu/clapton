@@ -19,6 +19,9 @@ import UserForm from '~/components/users/UserForm.vue'
 export default class CreateUser extends Vue {
   user: UserInput = {
     name: '',
+    name_kana: '',
+    handle_name: '',
+    handle_name_kana: '',
     email: '',
     password: '',
   }

@@ -18,6 +18,9 @@ class UserTest extends TestCase
     {
         $userInput = [
             'name' => $this->faker->name,
+            'name_kana' => $this->faker->name,
+            'handle_name' => $this->faker->name,
+            'handle_name_kana' => $this->faker->name,
             'email' => $this->faker->safeEmail,
             'password' => $this->faker->password,
         ];
@@ -27,6 +30,9 @@ class UserTest extends TestCase
                 createUser(input: $input) {
                     id
                     name
+                    name_kana
+                    handle_name
+                    handle_name_kana
                     email
                 }
             }
