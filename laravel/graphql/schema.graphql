@@ -18,13 +18,27 @@ type User {
     updated_at: DateTime!
 }
 
+type Team {
+    id: ID!
+    name: String!
+    code: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
 type Mutation {
     createUser(input: UserInput! @spread): User!
         @field(resolver: "App\\GraphQL\\Mutations\\CreateUser")
+    createTeam(input: TeamInput! @spread): Team!
+        @field(resolver: "App\\GraphQL\\Mutations\\CreateTeam")
 }
 
 input UserInput {
     name: String!
     email: String!
     password: String!
+}
+
+input TeamInput {
+    name: String!
 }

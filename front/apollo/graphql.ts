@@ -74,6 +74,7 @@ export type User = {
 export type Mutation = {
   __typename?: 'Mutation';
   createUser: User;
+  createTeam: Team;
 };
 
 
@@ -81,10 +82,28 @@ export type MutationCreateUserArgs = {
   input: UserInput;
 };
 
+
+export type MutationCreateTeamArgs = {
+  input: TeamInput;
+};
+
 export type UserInput = {
   name: Scalars['String'];
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type TeamInput = {
+  name: Scalars['String'];
+};
+
+export type Team = {
+  __typename?: 'Team';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  code: Scalars['String'];
+  created_at: Scalars['DateTime'];
+  updated_at: Scalars['DateTime'];
 };
 
 
@@ -135,6 +154,19 @@ export enum Trashed {
   Without = 'WITHOUT'
 }
 
+export type CreateTeamMutationMutationVariables = Exact<{
+  input: TeamInput;
+}>;
+
+
+export type CreateTeamMutationMutation = (
+  { __typename?: 'Mutation' }
+  & { createTeam: (
+    { __typename?: 'Team' }
+    & Pick<Team, 'id' | 'name' | 'code' | 'created_at' | 'updated_at'>
+  ) }
+);
+
 export type CreateUserMutationMutationVariables = Exact<{
   input: UserInput;
 }>;
@@ -163,6 +195,17 @@ export type UsersQuery = (
 );
 
 
+export const CreateTeamMutation = gql`
+    mutation CreateTeamMutation($input: TeamInput!) {
+  createTeam(input: $input) {
+    id
+    name
+    code
+    created_at
+    updated_at
+  }
+}
+    `;
 export const CreateUserMutation = gql`
     mutation CreateUserMutation($input: UserInput!) {
   createUser(input: $input) {
