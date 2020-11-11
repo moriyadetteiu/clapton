@@ -101,7 +101,9 @@ jobs:
           when: always
       - run:
           name: build front
-          command: docker-compose exec front npm run build
+          command: |
+            docker-compose exec front npm run codegen
+            docker-compose exec front npm run build
       - run:
           name: test front
           command: docker-compose exec front npm run test
