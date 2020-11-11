@@ -50,7 +50,7 @@ class UserTest extends TestCase
                 ]
             ]);
         $responseData = $response->json()['data']['createUser'];
-        $this->assertTrue(is_numeric($responseData['id']));
+        $this->assertIsUuid($responseData['id']);
         $this->assertDatabaseHas('users', $responseData);
 
         // 認証情報の確認
