@@ -7,9 +7,8 @@
 <script lang="ts">
 import 'vue-apollo'
 import { Vue, Component } from 'nuxt-property-decorator'
-import { TeamInput, CreateTeamMutation } from '../../apollo/graphql'
+import { TeamInput, CreateTeamMutation } from '~/apollo/graphql'
 import TeamForm from '~/components/teams/TeamForm.vue'
-// TODO: ~/apollo...を使えるようにする（VSCodeで読み込めるようにする）
 
 @Component({
   components: {

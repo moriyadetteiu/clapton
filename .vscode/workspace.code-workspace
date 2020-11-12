@@ -1,0 +1,21 @@
+{
+    "folders": [
+		{
+			"name": "front",
+			"path": "..\\front"
+		},
+		{
+			"name": "laravel",
+			"path": "..\\laravel"
+		},
+		{
+			"name": "mock",
+			"path": "..\\mock"
+		},
+		{
+			"name": "clapton",
+			"path": ".."
+		}
+	],
+    "settings": {}
+}
