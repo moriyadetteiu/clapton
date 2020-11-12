@@ -10,10 +10,11 @@ const canAccessGuest = (routeName: string): boolean => {
   return CAN_ACCESS_GUEST_ROUTE_NAMES.includes(routeName);
 }
 
-export default ({ app, redirect, route }: Context) => {
+export default ({ app, redirect, route, $config }: Context) => {
+  const isUseMock = $config.IS_USE_MOCK_SERVER;
   const routeName = route.name ?? '';
   const token = app.$apolloHelpers.getToken();
-  if (!canAccessGuest(routeName) && !token) {
+  if (!isUseMock && !canAccessGuest(routeName) && !token) {
     return redirect('/login');
   }
 };
