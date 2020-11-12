@@ -90,3 +90,6 @@ sw.*
 *.swp
 
 core
+
+# generated graphQL code gen file
+apollo/graphql.ts
