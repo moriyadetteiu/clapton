@@ -33,7 +33,7 @@ type Team {
 type Mutation {
     createUser(input: UserInput! @spread): User!
         @field(resolver: "App\\GraphQL\\Mutations\\CreateUser")
-    login(email: String!, password: String!): LoginData
+    login(input: LoginInput! @spread): LoginData
         @middleware(checks: ["guest:api"])
 }
 
@@ -58,4 +58,9 @@ input TeamInput {
 type LoginData {
     token: String
     error: String
+}
+
+input LoginInput {
+    email: String!
+    password: String!
 }

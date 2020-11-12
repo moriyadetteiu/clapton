@@ -27,13 +27,13 @@
 
 <script lang="ts">
 import { Vue, Component } from 'nuxt-property-decorator'
-import { LoginMutation, Users } from '~/apollo/graphql'
+import { LoginMutation, LoginInput } from '~/apollo/graphql'
 import UserForm from '~/components/users/UserForm.vue'
 // TODO: ~/apollo...を使えるようにする（VSCodeで読み込めるようにする）
 
 @Component({})
 export default class Login extends Vue {
-  private credential = {
+  private credential: LoginInput = {
     email: '',
     password: ''
   };
@@ -41,13 +41,14 @@ export default class Login extends Vue {
   private async login() {
     const res = await this.$apollo.mutate({
       mutation: LoginMutation,
-      variables: this.credential,
+      variables: {
+        input: this.credential,
+      }
     })
 
     const token = res.data.login.token;
 
     if (token) {
-      console.log(token);
       await this.$apolloHelpers.onLogin(token);
       this.$router.push('/');
     }
