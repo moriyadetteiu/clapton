@@ -29,8 +29,6 @@
 <script lang="ts">
 import { Vue, Component } from 'nuxt-property-decorator'
 import { LoginMutation, LoginInput, LoginData } from '~/apollo/graphql'
-import UserForm from '~/components/users/UserForm.vue'
-// TODO: ~/apollo...を使えるようにする（VSCodeで読み込めるようにする）
 
 @Component({})
 export default class Login extends Vue {
