@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils'
+import flushPromises from 'flush-promises'
 import Login from '~/pages/login.vue';
 
 describe('login page', () => {
@@ -38,7 +39,8 @@ describe('login page', () => {
       credential,
     });
 
-    await (wrapper.vm as any).login();
+    wrapper.find('.login-btn').trigger('click');
+    await flushPromises();
 
     expect(mutate).toBeCalled()
     const loginInputs = mutate.mock.calls[0][0].variables.input;

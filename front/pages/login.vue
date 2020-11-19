@@ -18,7 +18,7 @@
           />
         </v-col>
         <v-col cols="12">
-          <v-btn color="success" @click="login">ログイン</v-btn>
+          <v-btn color="success" @click="login" class="login-btn">ログイン</v-btn>
           <v-btn color="primary" nuxt to="/users/create">ユーザ登録</v-btn>
         </v-col>
       </v-row>
