@@ -3,7 +3,11 @@
     <v-container>
       <v-row dense>
         <v-col cols="12">
-          <v-text-field v-model="syncedEvent.name" label="イベント名" outlined />
+          <v-text-field
+            v-model="syncedEvent.name"
+            label="イベント名"
+            outlined
+          />
         </v-col>
         <v-col cols="12">
           <slot />
