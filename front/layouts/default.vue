@@ -66,19 +66,18 @@
 </template>
 
 <script lang="ts">
-
 import { Vue, Component } from 'nuxt-property-decorator'
 import { User, MeQuery } from '~/apollo/graphql'
 
 @Component({})
 export default class DefaultLayout extends Vue {
-  clipped: boolean =  false;
-  drawer: boolean = false;
-  fixed: boolean = false;
-  miniVariant: boolean = false;
-  right: boolean =  true;
-  rightDrawer: boolean = false;
-  title: string = 'Vuetify.js';
+  clipped: boolean = false
+  drawer: boolean = false
+  fixed: boolean = false
+  miniVariant: boolean = false
+  right: boolean = true
+  rightDrawer: boolean = false
+  title: string = 'Vuetify.js'
   items: Array<Object> = [
     {
       icon: 'mdi-apps',
@@ -90,15 +89,16 @@ export default class DefaultLayout extends Vue {
       title: 'Inspire',
       to: '/inspire',
     },
-  ];
-  user: User | null = null;
+  ]
+
+  user: User | null = null
 
   async created() {
-    if (!!this.$apolloHelpers.getToken()) {
-      const me = await this.$apollo.query<{me: User}>({
-        query: MeQuery
+    if (this.$apolloHelpers.getToken()) {
+      const me = await this.$apollo.query<{ me: User }>({
+        query: MeQuery,
       })
-      this.user = me.data.me;
+      this.user = me.data.me
     }
   }
 }
