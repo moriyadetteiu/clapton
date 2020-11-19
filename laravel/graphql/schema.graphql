@@ -29,11 +29,20 @@ type Team {
     updated_at: DateTime!
 }
 
+type Event {
+    id: ID!
+    name: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
 type Mutation {
     createUser(input: UserInput! @spread): User!
         @field(resolver: "App\\GraphQL\\Mutations\\CreateUser")
     createTeam(input: TeamInput! @spread): Team!
         @field(resolver: "App\\GraphQL\\Mutations\\CreateTeam")
+    createEvent(input: EventInput! @spread) : Event!
+        @field(resolver: "App\\GraphQL\\Mutations\\CreateEvent")
 }
 
 input UserInput {
@@ -46,5 +55,9 @@ input UserInput {
 }
 
 input TeamInput {
+    name: String!
+}
+
+input EventInput {
     name: String!
 }
