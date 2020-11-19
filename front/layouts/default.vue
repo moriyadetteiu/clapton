@@ -37,6 +37,9 @@
       </v-btn>
       <v-toolbar-title v-text="title" />
       <v-spacer />
+      <v-btn v-if="user !== null">
+        {{ user.name }}
+      </v-btn>
       <v-btn icon @click.stop="rightDrawer = !rightDrawer">
         <v-icon>mdi-menu</v-icon>
       </v-btn>
@@ -62,30 +65,41 @@
   </v-app>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      clipped: false,
-      drawer: false,
-      fixed: false,
-      items: [
-        {
-          icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/',
-        },
-        {
-          icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire',
-        },
-      ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Vuetify.js',
+<script lang="ts">
+
+import { Vue, Component } from 'nuxt-property-decorator'
+import { User, MeQuery } from '~/apollo/graphql'
+
+@Component({})
+export default class DefaultLayout extends Vue {
+  clipped: boolean =  false;
+  drawer: boolean = false;
+  fixed: boolean = false;
+  miniVariant: boolean = false;
+  right: boolean =  true;
+  rightDrawer: boolean = false;
+  title: string = 'Vuetify.js';
+  items: Array<Object> = [
+    {
+      icon: 'mdi-apps',
+      title: 'Welcome',
+      to: '/',
+    },
+    {
+      icon: 'mdi-chart-bubble',
+      title: 'Inspire',
+      to: '/inspire',
+    },
+  ];
+  user: User | null = null;
+
+  async created() {
+    if (!!this.$apolloHelpers.getToken()) {
+      const me = await this.$apollo.query<{me: User}>({
+        query: MeQuery
+      })
+      this.user = me.data.me;
     }
-  },
+  }
 }
 </script>
