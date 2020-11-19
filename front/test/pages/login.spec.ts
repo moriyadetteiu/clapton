@@ -1,10 +1,11 @@
 import { mount } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
 import Login from '~/pages/login.vue';
+import { LoginInput } from '~/apollo/graphql'
 
 describe('login page', () => {
   test('success login test', async () => {
-    const token = 'testtoken';
+    const token: string = 'testtoken';
 
     const mutate = jest.fn((option) => ({
       data: {
@@ -31,7 +32,7 @@ describe('login page', () => {
       stubs: ['nuxt-link'],
     });
 
-    const credential = {
+    const credential: LoginInput = {
       email: 'test@test.test',
       password: 'test',
     };
@@ -43,7 +44,7 @@ describe('login page', () => {
     await flushPromises();
 
     expect(mutate).toBeCalled()
-    const loginInputs = mutate.mock.calls[0][0].variables.input;
+    const loginInputs: LoginInput = mutate.mock.calls[0][0].variables.input;
     expect(loginInputs.email).toBe(credential.email);
     expect(loginInputs.password).toBe(credential.password);
     expect(onLogin).toBeCalled()
