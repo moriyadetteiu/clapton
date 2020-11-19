@@ -5,9 +5,11 @@ scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 scalar DateTime
     @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 
-type Query {
+type Query @guard {
     users: [User!]! @paginate(defaultCount: 10)
     user(id: ID @eq): User @find
+    team(id: ID @eq): Team @find
+    me: User! @auth
 }
 
 type User {
@@ -32,6 +34,11 @@ type Team {
 type Mutation {
     createUser(input: UserInput! @spread): User!
         @field(resolver: "App\\GraphQL\\Mutations\\CreateUser")
+    login(input: LoginInput! @spread): LoginData
+        @middleware(checks: ["guest:api"])
+}
+
+extend type Mutation @guard {
     createTeam(input: TeamInput! @spread): Team!
         @field(resolver: "App\\GraphQL\\Mutations\\CreateTeam")
 }
@@ -47,4 +54,15 @@ input UserInput {
 
 input TeamInput {
     name: String!
+}
+
+type LoginData {
+    token: String
+    error: String
+    expires_in: Int
+}
+
+input LoginInput {
+    email: String!
+    password: String!
 }

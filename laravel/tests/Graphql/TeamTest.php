@@ -20,17 +20,19 @@ class TeamTest extends TestCase
             'name' => $this->faker->name,
         ];
 
-        $response = $this->graphQL('
-            mutation createTeam($input: TeamInput!) {
-                createTeam(input: $input) {
-                    id
-                    name
-                    code
+        $response = $this
+            ->actingAsUser()
+            ->graphQL('
+                mutation createTeam($input: TeamInput!) {
+                    createTeam(input: $input) {
+                        id
+                        name
+                        code
+                    }
                 }
-            }
-        ', [
-            'input' => $teamInput
-        ]);
+            ', [
+                'input' => $teamInput
+            ]);
 
         // 登録の確認
         $response

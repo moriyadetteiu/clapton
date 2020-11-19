@@ -10,8 +10,9 @@
   },
   "types": [
     "@types/node",
-    "@nuxt/types"
-  ],
+    "@nuxt/types",
+    "@nuxtjs/apollo/types"
+],
   "exclude": [
   "node_modules",
   ".nuxt",
