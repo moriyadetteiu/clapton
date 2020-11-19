@@ -34,23 +34,23 @@ import { LoginMutation, LoginInput, LoginData } from '~/apollo/graphql'
 export default class Login extends Vue {
   private credential: LoginInput = {
     email: '',
-    password: ''
-  };
+    password: '',
+  }
 
   private async login() {
     const responce = await this.$apollo.mutate({
       mutation: LoginMutation,
       variables: {
         input: this.credential,
-      }
+      },
     })
 
-    const loginData: LoginData = responce.data.login;
-    const token = loginData.token;
+    const loginData: LoginData = responce.data.login
+    const token = loginData.token
 
     if (token) {
-      await this.$apolloHelpers.onLogin(token);
-      this.$router.push('/');
+      await this.$apolloHelpers.onLogin(token)
+      this.$router.push('/')
     }
   }
 }
