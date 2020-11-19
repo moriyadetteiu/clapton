@@ -7,9 +7,8 @@
 <script lang="ts">
 import 'vue-apollo'
 import { Vue, Component } from 'nuxt-property-decorator'
-import { UserInput, CreateUserMutation } from '../../apollo/graphql'
+import { UserInput, CreateUserMutation } from '~/apollo/graphql'
 import UserForm from '~/components/users/UserForm.vue'
-// TODO: ~/apollo...を使えるようにする（VSCodeで読み込めるようにする）
 
 @Component({
   components: {

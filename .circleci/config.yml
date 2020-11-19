@@ -100,17 +100,19 @@ jobs:
           command: docker-compose exec laravel ./vendor/bin/phpcs --standard=phpcs.xml --extensions=php .
           when: always
       - run:
-          name: build front
-          command: docker-compose exec front npm run build
-      - run:
-          name: test front
-          command: docker-compose exec front npm run test
-      - run:
           name: prepare laravel test
           command: |
             cp ./laravel/.env.example ./laravel/.env
             docker-compose exec laravel php artisan key:generate
             docker-compose exec laravel php artisan migrate
+      - run:
+          name: build front
+          command: |
+            docker-compose exec front npm run codegen
+            docker-compose exec front npm run build
+      - run:
+          name: test front
+          command: docker-compose exec front npm run test
       - run:
           name: test laravel
           command: docker-compose exec laravel ./vendor/bin/phpunit
