@@ -20,7 +20,6 @@
 <script lang="ts">
 import { Vue, PropSync, Component } from 'nuxt-property-decorator'
 import { PropType, PropOptions } from 'vue'
-// TODO: ~/apollo...を使えるようにする（VSCodeで読み込めるようにする）
 import { EventInput } from '../../apollo/graphql'
 
 @Component
