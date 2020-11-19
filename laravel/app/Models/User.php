@@ -62,7 +62,7 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    static public function encryptPassword(string $password): string
+    public static function encryptPassword(string $password): string
     {
         return Hash::make($password);
     }
