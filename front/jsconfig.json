@@ -11,7 +11,8 @@
   "types": [
     "@types/node",
     "@nuxt/types",
-    "@nuxtjs/apollo/types"
+    "@nuxtjs/apollo/types",
+    "@types/jest"
 ],
   "exclude": [
   "node_modules",
