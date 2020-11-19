@@ -9,6 +9,7 @@ type Query @guard {
     users: [User!]! @paginate(defaultCount: 10)
     user(id: ID @eq): User @find
     team(id: ID @eq): Team @find
+    me: User! @auth
 }
 
 type User {
@@ -58,6 +59,7 @@ input TeamInput {
 type LoginData {
     token: String
     error: String
+    expires_in: Int
 }
 
 input LoginInput {
