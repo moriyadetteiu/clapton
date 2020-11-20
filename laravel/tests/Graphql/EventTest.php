@@ -5,8 +5,6 @@ namespace Tests\Graphql;
 use Illuminate\Foundation\Testing\WithFaker;
 // TODO: テスト用のDBを用意したら有効化する
 // use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
 
 class EventTest extends TestCase
 {
