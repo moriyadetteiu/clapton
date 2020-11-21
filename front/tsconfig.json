@@ -25,7 +25,9 @@
     },
     "types": [
       "@types/node",
-      "@nuxt/types"
+      "@nuxt/types",
+      "@nuxtjs/apollo/types",
+      "@types/jest"
     ]
   },
   "exclude": [

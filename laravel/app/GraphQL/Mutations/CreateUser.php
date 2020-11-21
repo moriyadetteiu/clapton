@@ -4,7 +4,6 @@ namespace App\GraphQL\Mutations;
 
 use App\Models\User;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Hash;
 
 class CreateUser
 {
@@ -17,7 +16,7 @@ class CreateUser
         // TODO: バリデーションの実装
 
         $userData = Arr::except($args, ['directive']);
-        $userData['password'] = Hash::make($userData['password']);
+        $userData['password'] = User::encryptPassword($userData['password']);
         $user = User::create($userData);
         return $user;
     }

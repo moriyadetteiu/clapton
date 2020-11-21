@@ -1,0 +1,12 @@
+query MeQuery {
+  me {
+    id
+    name
+    name_kana
+    handle_name
+    handle_name_kana
+    email
+    created_at
+    updated_at
+  }
+}
