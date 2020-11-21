@@ -19,7 +19,9 @@ class EventTest extends TestCase
             'name' => $this->faker->name,
         ];
 
-        $response = $this->graphQL('
+        $response = $this
+        ->actingAsUser()
+        ->graphQL('
             mutation createEvent($input: EventInput!) {
                 createEvent(input: $input) {
                     id
