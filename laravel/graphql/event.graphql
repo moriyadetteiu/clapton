@@ -1,0 +1,15 @@
+type Event {
+    id: ID!
+    name: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+input EventInput {
+    name: String!
+}
+
+extend type Mutation @guard {
+    createEvent(input: EventInput! @spread): Event!
+        @field(resolver: "App\\GraphQL\\Mutations\\CreateEvent")
+}
