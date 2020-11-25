@@ -91,6 +91,38 @@ describe('UserForm test', () => {
       },
     })
     wrapper.setData({
+      confirmationPassword: 'dummy',
+    })
+    await flushPromises()
+
+    wrapper.find('.v-btn.success').trigger('click')
+    await flushPromises()
+
+    expect(wrapper.emitted().submit).toBeFalsy()
+    const errorMessages = wrapper
+      .findAll(ERROR_MESSAGE_SELECTOR)
+      .wrappers.map((value) => value.text())
+      .join('')
+
+    expect(errorMessages).toContain('パスワード')
+  })
+
+  test('succeed submit test', async () => {
+    const userInput: UserInput = {
+      name: 'test',
+      name_kana: 'test',
+      handle_name: 'test',
+      handle_name_kana: 'test',
+      email: 'test@test.test',
+      password: 'test',
+    }
+
+    const wrapper = mount(UserForm, {
+      propsData: {
+        user: userInput,
+      },
+    })
+    wrapper.setData({
       confirmationPassword: 'test',
     })
     await flushPromises()
