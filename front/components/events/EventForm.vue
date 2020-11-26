@@ -20,7 +20,7 @@
 <script lang="ts">
 import { Vue, PropSync, Component } from 'nuxt-property-decorator'
 import { PropType, PropOptions } from 'vue'
-import { EventInput } from '../../apollo/graphql'
+import { EventInput } from '~/apollo/graphql'
 
 @Component
 export default class EventForm extends Vue {

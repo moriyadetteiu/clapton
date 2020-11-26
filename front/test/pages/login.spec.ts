@@ -40,7 +40,7 @@ describe('login page', () => {
       credential,
     });
 
-    wrapper.find('.login-btn').trigger('click');
+    wrapper.find('.v-btn.success').trigger('click');
     await flushPromises();
 
     expect(mutate).toBeCalled()

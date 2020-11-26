@@ -49,7 +49,7 @@ class UserTest extends TestCase
                     'createUser' => $expectResponseData
                 ]
             ]);
-        $responseData = $response->json()['data']['createUser'];
+        $responseData = $response->json('data.createUser');
         $this->assertIsUuid($responseData['id']);
         $this->assertDatabaseHas('users', $responseData);
 

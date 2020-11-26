@@ -53,8 +53,7 @@
 <script lang="ts">
 import { Vue, PropSync, Component } from 'nuxt-property-decorator'
 import { PropType, PropOptions } from 'vue'
-// TODO: ~/apollo...を使えるようにする（VSCodeで読み込めるようにする）
-import { UserInput } from '../../apollo/graphql'
+import { UserInput } from '~/apollo/graphql'
 
 @Component
 export default class UserForm extends Vue {
