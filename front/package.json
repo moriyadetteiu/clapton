@@ -19,7 +19,9 @@
     "@nuxtjs/apollo": "^4.0.1-rc.3",
     "@nuxtjs/axios": "^5.12.2",
     "@nuxtjs/pwa": "^3.0.2",
+    "@types/faker": "^5.1.4",
     "core-js": "^3.6.5",
+    "faker": "^5.1.0",
     "graphql": "^15.4.0",
     "nuxt": "^2.14.6",
     "vee-validate": "^3.4.5"

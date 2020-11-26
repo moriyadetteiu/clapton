@@ -2,59 +2,43 @@ import { mount } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
 import UserForm from '~/components/users/UserForm.vue'
 import { UserInput } from '~/apollo/graphql'
-
-const ERROR_MESSAGE_SELECTOR: string = '.v-messages.error--text'
+import { findAllErrorMessages } from '~/test/utils/wrapper-helpers'
+import UserInputFactory from '~/test/factory/UserInputFactory'
 
 describe('UserForm test', () => {
   test('require validation error test', async () => {
-    const userInput: UserInput = {
-      name: '',
-      name_kana: '',
-      handle_name: '',
-      handle_name_kana: '',
-      email: '',
-      password: '',
+    const requireFields: Object = {
+      name: '名前',
+      name_kana: 'かな',
+      handle_name: 'ハンドルネーム',
+      handle_name_kana: 'ハンドルネームのかな',
+      email: 'メールアドレス',
+      password: 'パスワード',
     }
 
-    const wrapper = mount(UserForm, {
-      propsData: {
-        user: userInput,
-      },
-    })
+    await Object.entries(requireFields).forEach(async (field) => {
+      const [name, label] = field
+      const userInput: UserInput = new UserInputFactory().make({ [name]: '' })
+      const wrapper = mount(UserForm, {
+        propsData: {
+          user: userInput,
+        },
+      })
 
-    wrapper.find('.v-btn.success').trigger('click')
-    await flushPromises()
+      wrapper.find('.v-btn.success').trigger('click')
+      await flushPromises()
 
-    expect(wrapper.emitted().submit).toBeFalsy()
+      expect(wrapper.emitted().submit).toBeFalsy()
 
-    const errorMessages = wrapper
-      .findAll(ERROR_MESSAGE_SELECTOR)
-      .wrappers.map((value) => value.text())
-      .join('')
-
-    const expectErrorLabels = [
-      '名前',
-      'かな',
-      'ハンドルネーム',
-      'ハンドルネームのかな',
-      'メールアドレス',
-      'パスワード',
-    ]
-
-    expectErrorLabels.forEach((label) => {
+      const errorMessages = findAllErrorMessages(wrapper).join('')
       expect(errorMessages).toContain(label)
     })
   })
 
   test('email validation error test', async () => {
-    const userInput: UserInput = {
-      name: 'test',
-      name_kana: 'test',
-      handle_name: 'test',
-      handle_name_kana: 'test',
-      email: 'dummy',
-      password: 'test',
-    }
+    const userInput: UserInput = new UserInputFactory().make({
+      email: 'invalid-address',
+    })
 
     const wrapper = mount(UserForm, {
       propsData: {
@@ -67,23 +51,13 @@ describe('UserForm test', () => {
 
     expect(wrapper.emitted().submit).toBeFalsy()
 
-    const errorMessages = wrapper
-      .findAll(ERROR_MESSAGE_SELECTOR)
-      .wrappers.map((value) => value.text())
-      .join('')
+    const errorMessages = findAllErrorMessages(wrapper).join('')
 
     expect(errorMessages).toContain('メールアドレス')
   })
 
-  test('succeed submit test', async () => {
-    const userInput: UserInput = {
-      name: 'test',
-      name_kana: 'test',
-      handle_name: 'test',
-      handle_name_kana: 'test',
-      email: 'test@test.test',
-      password: 'test',
-    }
+  test('confirmation password invalid test', async () => {
+    const userInput: UserInput = new UserInputFactory().make()
 
     const wrapper = mount(UserForm, {
       propsData: {
@@ -99,23 +73,13 @@ describe('UserForm test', () => {
     await flushPromises()
 
     expect(wrapper.emitted().submit).toBeFalsy()
-    const errorMessages = wrapper
-      .findAll(ERROR_MESSAGE_SELECTOR)
-      .wrappers.map((value) => value.text())
-      .join('')
+    const errorMessages = findAllErrorMessages(wrapper).join('')
 
     expect(errorMessages).toContain('パスワード')
   })
 
   test('succeed submit test', async () => {
-    const userInput: UserInput = {
-      name: 'test',
-      name_kana: 'test',
-      handle_name: 'test',
-      handle_name_kana: 'test',
-      email: 'test@test.test',
-      password: 'test',
-    }
+    const userInput: UserInput = new UserInputFactory().make()
 
     const wrapper = mount(UserForm, {
       propsData: {
@@ -123,7 +87,7 @@ describe('UserForm test', () => {
       },
     })
     wrapper.setData({
-      confirmationPassword: 'test',
+      confirmationPassword: userInput.password,
     })
     await flushPromises()
 
@@ -131,7 +95,7 @@ describe('UserForm test', () => {
     await flushPromises()
 
     expect(wrapper.emitted().submit).toBeTruthy()
-    const errorMessages = wrapper.findAll(ERROR_MESSAGE_SELECTOR).wrappers
+    const errorMessages = findAllErrorMessages(wrapper)
 
     expect(errorMessages).toHaveLength(0)
   })
