@@ -1,22 +1,21 @@
 <template>
   <validation-provider
+    v-slot="{ errors }"
     :vid="vid"
     :name="label"
     :rules="rules"
-    v-slot="{ errors }"
   >
     <v-text-field
       :label="label"
       v-bind="$attrs"
-      v-on="listeners"
       :error-messages="errors"
+      v-on="listeners"
     />
   </validation-provider>
 </template>
 
 <script lang="ts">
 import { Vue, Prop, Component } from 'nuxt-property-decorator'
-import { PropType, PropOptions } from 'vue'
 
 @Component({
   inheritAttrs: false,
