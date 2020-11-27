@@ -1,5 +1,6 @@
 <template>
-  <event-form :event="event">
+  <event-form :event="event" :eventDates="eventDates">
+    <v-btn color="primary" @click="addDate">日程追加</v-btn>
     <v-btn color="success" @click="submit">登録</v-btn>
   </event-form>
 </template>
@@ -18,6 +19,12 @@ import EventForm from '~/components/events/EventForm.vue'
 export default class CreateEvent extends Vue {
   event: EventInput = {
     name: '',
+  }
+
+  eventDates:Object[] = []
+
+  addDate(): void {
+    this.eventDates.push({})
   }
 
   submit(): void {

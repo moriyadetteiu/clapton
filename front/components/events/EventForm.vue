@@ -9,6 +9,17 @@
             outlined
           />
         </v-col>
+        <template v-for="(date, index) in syncedEventDates">
+          <v-col cols="5" :key="index">
+            <v-text-field :label="index + 1 + '日目'" outlined></v-text-field>
+          </v-col>
+          <v-col cols="2" :key="index">
+            <v-checkbox label="イベント当日"></v-checkbox>
+          </v-col>
+          <v-col cols="5" :key="index">
+            <v-text-field label="日付" outlined></v-text-field>
+          </v-col>
+        </template>
         <v-col cols="12">
           <slot />
         </v-col>
@@ -28,5 +39,7 @@ export default class EventForm extends Vue {
     EventInput
   >)
   syncedEvent!: EventInput
+  @PropSync('eventDates', { type: Array })
+  syncedEventDates!: Object[]
 }
 </script>
