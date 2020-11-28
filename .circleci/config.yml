@@ -1,27 +1,6 @@
 version: 2.1
 
 commands:
-  restore-docker-images:
-    steps:
-      # ci特有の設定が必要になりそうなら、.env.ci的なのを切る
-      - run: cp ./docker/mysql/.env.example ./docker/mysql/.env
-      - run:
-          name: Docker関連の設定ファイルを結合します。キャッシュ用
-          command: find ./docker -name "Dockerfile" -o -name ".env" -type f | xargs cat > ./combine_docker_files
-      - restore_cache:
-          key: docker-{{ checksum "./docker-compose.yml" }}-{{ checksum "./combine_docker_files" }}
-
-  load-docker-images:
-    steps:
-      - restore-docker-images
-      - run: |
-          if [ -e /tmp/docker/image ]; then
-            echo "docker image loading..."
-            docker load -i /tmp/docker/image
-          else
-            echo "saved docker image is not exists"
-          fi
-
   pull-front-node_modules:
     steps:
       - restore_cache:
@@ -68,22 +47,11 @@ jobs:
     executor: test-executer
     steps:
       - checkout
-      - load-docker-images
-      - run: docker-compose up -d --build
       - run:
-          name: save docker image cache
-          command: |
-            if [ -e /tmp/docker/image ]; then
-              echo "docker cache is exists"
-            else
-              echo "docker cache is not exists. make cache"
-              mkdir -p /tmp/docker
-              docker save $(docker images -q) -o /tmp/docker/image
-            fi
-      - save_cache:
-          key: docker-{{ checksum "./docker-compose.yml" }}-{{ checksum "./combine_docker_files" }}
-          paths:
-            - /tmp/docker/image
+          # ci特有の設定が必要になりそうなら、.env.ci的なのを切る
+          name: pre docker-compose
+          command: cp ./docker/mysql/.env.example ./docker/mysql/.env
+      - run: docker-compose up -d --build
       - pull-front-node_modules
       - pull-mock-node_modules
       - pull-laravel-composer
