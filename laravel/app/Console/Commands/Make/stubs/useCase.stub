@@ -1,9 +1,8 @@
 <?php
 
-namespace App\UseCase\{{ model }};
+namespace {{ namespace }};
 
 use App\UseCase\UseCase;
-use App\UseCase\{{ model }}\{{ class }}Input;
 use App\Models\{{ model }};
 
 class {{ class }} extends UseCase

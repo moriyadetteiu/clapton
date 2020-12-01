@@ -13,14 +13,14 @@ class MakePackageCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'make:package';
+    protected $signature = 'make:package {inputName} {--model=} {--operation=create}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = '登録などで使うクラス一式を生成します';
+    protected $description = 'graphQLのスキーマで定義したinputを元に登録などで使うクラス一式を生成します';
 
     private InputDefinitionExtractorInterface $extractor;
 
@@ -43,6 +43,44 @@ class MakePackageCommand extends Command
      */
     public function handle()
     {
-        dd($this->extractor->extract('UserInput'));
+        $this->validate();
+
+        $model = $this->getModelName();
+        $inputName = $this->argument('inputName');
+        $operation = $this->option('operation');
+        $operationUpper = ucfirst($operation);
+
+        $this->call('make:useCase', [
+            'name' => "{$operationUpper}{$model}",
+            '--model' => $model,
+            '--operation' => $operation,
+        ]);
+
+        $this->call('make:useCaseInput', [
+            'name' => "{$operationUpper}{$model}Input",
+            '--inputName' => $inputName,
+            '--model' => $model,
+        ]);
+    }
+
+    private function getModelName(): string
+    {
+        $model = $this->option('model');
+        if ($model) {
+            return $model;
+        }
+
+        $inputName = $this->argument('inputName');
+        $operation = $this->option('operation');
+        $operationUpper = ucfirst($operation);
+        return str_replace(['Input', $operationUpper], '', $inputName);
+    }
+
+    private function validate(): void
+    {
+        $inputName = $this->argument('inputName');
+
+        // 事前に抽出できるか確認しておく
+        $this->extractor->extract($inputName);
     }
 }

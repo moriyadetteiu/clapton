@@ -1,0 +1,15 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\UseCase\UseCaseInput;
+
+class {{ class }} extends UseCaseInput
+{
+    protected function rules(): array
+    {
+        return [
+            {{ requiredRules }}
+        ];
+    }
+}

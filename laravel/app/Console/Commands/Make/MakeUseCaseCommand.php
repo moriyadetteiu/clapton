@@ -6,6 +6,8 @@ class MakeUseCaseCommand extends ReplaceableGeneratorCommand
 {
     protected $signature = 'make:useCase {name} {--model=} {--operation=create}';
 
+    protected $type = 'UseCase';
+
     /**
      * Get the stub file for the generator.
      *

@@ -5,6 +5,7 @@ namespace App\Support\Graphql;
 use Nuwave\Lighthouse\Schema\AST\ASTBuilder;
 use GraphQL\Language\AST\NonNullTypeNode;
 use Illuminate\Support\Collection;
+use InvalidArgumentException;
 
 class InputDefinitionExtractor implements InputDefinitionExtractorInterface
 {
@@ -26,7 +27,12 @@ class InputDefinitionExtractor implements InputDefinitionExtractorInterface
     private function extractFieldsCollection(string $inputName): Collection
     {
         $documentAST = $this->builder->documentAST();
-        $types = $documentAST->types;
+        $types = (array)$documentAST->types;
+
+        if (!array_key_exists($inputName, $types)) {
+            throw new InvalidArgumentException("input: {$inputName}はgraphQLのスキーマ定義内に存在しません。");
+        }
+
         $type = $types[$inputName];
         return collect($type->fields->getIterator());
     }
