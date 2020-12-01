@@ -7,7 +7,7 @@ import UserInputFactory from '~/test/factory/UserInputFactory'
 
 describe('UserForm test', () => {
   test('require validation error test', async () => {
-    const requireFields: Object = {
+    const requireFields: Partial<UserInput> = {
       name: '名前',
       name_kana: 'かな',
       handle_name: 'ハンドルネーム',

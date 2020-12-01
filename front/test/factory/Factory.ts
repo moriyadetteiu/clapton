@@ -5,7 +5,7 @@ export default abstract class Factory<T extends Object> {
 
   protected abstract provide(): T
 
-  public make(attribute: Object = {}): T {
+  public make(attribute: Partial<T> = {}): T {
     return {
       ...this.provide(),
       ...attribute,
