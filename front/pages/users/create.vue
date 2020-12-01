@@ -1,7 +1,5 @@
 <template>
-  <user-form :user="user">
-    <v-btn color="success" @click="submit">登録</v-btn>
-  </user-form>
+  <user-form :user="user" @submit="submit" />
 </template>
 
 <script lang="ts">

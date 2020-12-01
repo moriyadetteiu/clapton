@@ -2,8 +2,9 @@
 
 namespace App\GraphQL\Mutations;
 
-use App\Models\User;
 use Illuminate\Support\Arr;
+use App\UseCase\User\CreateUser as CreateUserUseCase;
+use App\UseCase\User\CreateUserInput;
 
 class CreateUser
 {
@@ -13,11 +14,8 @@ class CreateUser
      */
     public function __invoke($_, array $args)
     {
-        // TODO: バリデーションの実装
-
         $userData = Arr::except($args, ['directive']);
-        $userData['password'] = User::encryptPassword($userData['password']);
-        $user = User::create($userData);
-        return $user;
+        $input = new CreateUserInput($userData);
+        return (new CreateUserUseCase())->execute($input);
     }
 }

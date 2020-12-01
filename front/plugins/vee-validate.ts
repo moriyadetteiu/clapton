@@ -1,21 +1,18 @@
 import Vue from 'vue'
-import Vuetify from 'vuetify'
 import {
   extend,
-  localize,
   ValidationObserver,
   ValidationProvider,
+  localize,
 } from 'vee-validate'
 import ja from 'vee-validate/dist/locale/ja.json'
+import { required, email } from 'vee-validate/dist/rules'
 import VValidateTextField from '~/components/form/VValidateTextField.vue'
 import '~/vee-validate/password'
-
-Vue.use(Vuetify)
 
 localize({ ja })
 localize('ja')
 
-const { required, email } = require('vee-validate/dist/rules.umd')
 extend('required', required)
 extend('email', email)
 
