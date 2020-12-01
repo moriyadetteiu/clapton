@@ -53,7 +53,7 @@ class LoginTest extends TestCase
         // 登録の確認
         $response
             ->assertStatus(200);
-        $responseData = $response->json()['data']['login'];
+        $responseData = $response->json('data.login');
 
         $this->assertNull($responseData['error']);
         $this->assertIsString($responseData['token']);
@@ -71,7 +71,7 @@ class LoginTest extends TestCase
 
         $response
             ->assertStatus(200);
-        $responseData = $response->json()['data']['login'];
+        $responseData = $response->json('data.login');
 
         $this->assertIsString($responseData['error']);
         $this->assertNull($responseData['token']);
