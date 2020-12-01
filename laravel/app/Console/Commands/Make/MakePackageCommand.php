@@ -4,7 +4,7 @@ namespace App\Console\Commands\Make;
 
 use Illuminate\Console\Command;
 
-use App\Support\Graphql\InputDefinitionExtractor;
+use App\Support\Graphql\InputDefinitionExtractorInterface;
 
 class MakePackageCommand extends Command
 {
@@ -22,14 +22,14 @@ class MakePackageCommand extends Command
      */
     protected $description = '登録などで使うクラス一式を生成します';
 
-    private InputDefinitionExtractor $extractor;
+    private InputDefinitionExtractorInterface $extractor;
 
     /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct(InputDefinitionExtractor $extractor)
+    public function __construct(InputDefinitionExtractorInterface $extractor)
     {
         parent::__construct();
 

@@ -6,7 +6,7 @@ use Nuwave\Lighthouse\Schema\AST\ASTBuilder;
 use GraphQL\Language\AST\NonNullTypeNode;
 use Illuminate\Support\Collection;
 
-class InputDefinitionExtractor
+class InputDefinitionExtractor implements InputDefinitionExtractorInterface
 {
     private ASTBuilder $builder;
 
