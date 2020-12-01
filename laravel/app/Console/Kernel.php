@@ -14,7 +14,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         \App\Console\Commands\Make\MakeModelCommand::class,
-        \App\Console\Commands\Make\MakePackageCommand::class
+        \App\Console\Commands\Make\MakePackageCommand::class,
+        \App\Console\Commands\Make\MakeUseCaseCommand::class,
     ];
 
     /**

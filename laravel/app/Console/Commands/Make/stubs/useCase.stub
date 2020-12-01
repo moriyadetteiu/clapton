@@ -1,0 +1,17 @@
+<?php
+
+namespace App\UseCase\{{ model }};
+
+use App\UseCase\UseCase;
+use App\UseCase\{{ model }}\{{ class }}Input;
+use App\Models\{{ model }};
+
+class {{ class }} extends UseCase
+{
+    public function execute({{ class }}Input $input)
+    {
+        ${{ lowerModel }}Data = $input->toArray();
+        ${{ lowerModel }} = {{ model }}::{{ operation }}(${{ lowerModel }}Data);
+        return ${{ lowerModel }};
+    }
+}
