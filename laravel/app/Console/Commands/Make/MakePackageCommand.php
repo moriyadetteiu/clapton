@@ -61,6 +61,22 @@ class MakePackageCommand extends Command
             '--inputName' => $inputName,
             '--model' => $model,
         ]);
+
+        // TODO: fillableを入れる
+        $this->call('make:modelWithInput', [
+            'name' => $model,
+            '--inputName' => $inputName,
+        ]);
+
+        // TODO: definitionを入れる
+        $this->call('make:factory', [
+            'name' => "{$model}Factory",
+        ]);
+
+        $this->call('make:mutation', [
+            'name' => "{$operationUpper}{$model}",
+            '--model' => $model,
+        ]);
     }
 
     private function getModelName(): string

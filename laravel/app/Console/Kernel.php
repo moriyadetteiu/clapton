@@ -17,6 +17,8 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\Make\MakePackageCommand::class,
         \App\Console\Commands\Make\MakeUseCaseCommand::class,
         \App\Console\Commands\Make\MakeUseCaseInputCommand::class,
+        \App\Console\Commands\Make\MakeMutationCommand::class,
+        \App\Console\Commands\Make\MakeModelWithInputCommand::class,
     ];
 
     /**
