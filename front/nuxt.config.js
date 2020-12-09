@@ -86,6 +86,9 @@ export default {
     clientConfigs: {
       default: '~/plugins/apollo/client-config.ts',
     },
+    httpLinkOptions: {
+      credentials: 'omit',
+    },
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)

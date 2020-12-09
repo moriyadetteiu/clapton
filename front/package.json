@@ -20,6 +20,8 @@
     "@nuxtjs/axios": "^5.12.2",
     "@nuxtjs/pwa": "^3.0.2",
     "@types/faker": "^5.1.4",
+    "apollo-link": "^1.2.14",
+    "apollo-link-error": "^1.1.13",
     "core-js": "^3.6.5",
     "faker": "^5.1.0",
     "graphql": "^15.4.0",

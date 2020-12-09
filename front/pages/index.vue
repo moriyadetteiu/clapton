@@ -90,11 +90,5 @@ export default {
     Logo,
     VuetifyLogo,
   },
-
-  apollo: {
-    users: {
-      query: users,
-    },
-  },
 }
 </script>
