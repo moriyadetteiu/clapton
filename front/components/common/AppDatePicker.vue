@@ -8,14 +8,11 @@
     min-width="290px"
   >
     <template v-slot:activator="{ on }">
-      <v-text-field
-        v-model="syncedDate"
-        label="日付"
-        outlined
-        append-icon="mdi-calendar"
-        readonly
-        v-on="on"
-      ></v-text-field>
+      <v-text-field v-model="syncedDate" label="日付" outlined type="date">
+        <template v-slot:append>
+          <v-icon v-on="on">mdi-calendar</v-icon>
+        </template>
+      </v-text-field>
     </template>
     <v-date-picker
       locale="jp-ja"
@@ -23,9 +20,7 @@
       light
       no-title
       v-model="syncedDate"
-      @input="
-        menu = false
-      "
+      @input="menu = false"
     ></v-date-picker>
   </v-menu>
 </template>
@@ -42,3 +37,9 @@ export default class AppDatePicker extends Vue {
   menu: Boolean = false
 }
 </script>
+
+<style scoped>
+.v-text-field >>> input::-webkit-calendar-picker-indicator {
+  display: none;
+}
+</style>
