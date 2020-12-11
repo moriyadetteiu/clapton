@@ -2,6 +2,13 @@ mutation CreateEventMutation($input: EventInput!) {
   createEvent(input: $input) {
     id
     name
+    event_dates {
+      id
+      name
+      date
+      created_at
+      updated_at
+    }
     created_at
     updated_at
   }

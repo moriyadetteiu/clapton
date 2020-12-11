@@ -34,6 +34,15 @@ type Team {
 type Event {
     id: ID!
     name: String!
+    event_dates: [EventDate]
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+type EventDate {
+    id: ID!
+    name: String!
+    date: Date!
     created_at: DateTime!
     updated_at: DateTime!
 }
@@ -67,6 +76,13 @@ input TeamInput {
 
 input EventInput {
     name: String!
+    event_dates: [EventDateInput]
+}
+
+input EventDateInput {
+    name: String!
+    date: Date!
+    is_production_day: Boolean!
 }
 
 type LoginData {
@@ -79,3 +95,4 @@ input LoginInput {
     email: String!
     password: String!
 }
+

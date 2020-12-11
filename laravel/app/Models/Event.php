@@ -9,4 +9,9 @@ class Event extends Model
     use HasFactory;
 
     protected $fillable = ['name'];
+
+    public function eventDates()
+    {
+        return $this->hasMany('App\Models\EventDate');
+    }
 }

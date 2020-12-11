@@ -8,7 +8,11 @@
 <script lang="ts">
 import 'vue-apollo'
 import { Vue, Component } from 'nuxt-property-decorator'
-import { EventInput, CreateEventMutation } from '~/apollo/graphql'
+import {
+  EventInput,
+  EventDateInput,
+  CreateEventMutation,
+} from '~/apollo/graphql'
 import EventForm from '~/components/events/EventForm.vue'
 
 @Component({
@@ -17,14 +21,19 @@ import EventForm from '~/components/events/EventForm.vue'
   },
 })
 export default class CreateEvent extends Vue {
+  eventDates: EventDateInput[] = []
+
   event: EventInput = {
     name: '',
+    event_dates: this.eventDates,
   }
 
-  eventDates:Object[] = []
-
   addDate(): void {
-    this.eventDates.push({})
+    this.eventDates.push({
+      name: '',
+      date: null,
+      is_production_day: true,
+    })
   }
 
   submit(): void {
