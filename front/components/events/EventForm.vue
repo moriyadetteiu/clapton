@@ -38,7 +38,7 @@
 <script lang="ts">
 import { Vue, PropSync, Component } from 'nuxt-property-decorator'
 import { PropType, PropOptions } from 'vue'
-import { EventInput, EventDateInput } from '../../apollo/graphql'
+import { EventInput, EventDateInput } from '~/apollo/graphql'
 import AppDatePicker from '~/components/common/AppDatePicker.vue'
 @Component({
   components: {

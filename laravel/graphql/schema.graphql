@@ -41,8 +41,10 @@ type Event {
 
 type EventDate {
     id: ID!
+    event_id: ID!
     name: String!
     date: Date!
+    is_production_day: Boolean!
     created_at: DateTime!
     updated_at: DateTime!
 }

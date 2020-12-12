@@ -4,8 +4,10 @@ mutation CreateEventMutation($input: EventInput!) {
     name
     event_dates {
       id
+      event_id
       name
       date
+      is_production_day
       created_at
       updated_at
     }
