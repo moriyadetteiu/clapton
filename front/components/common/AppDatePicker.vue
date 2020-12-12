@@ -16,7 +16,7 @@
       >
         <v-text-field
           v-model="syncedDate"
-          label="日付"
+          :label="label"
           outlined
           type="date"
           :error-messages="errors"

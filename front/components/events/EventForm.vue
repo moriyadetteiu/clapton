@@ -26,7 +26,10 @@
             ></v-checkbox>
           </v-col>
           <v-col cols="5" :key="'date' + index">
-            <app-date-picker :date.sync="eventDate.date"></app-date-picker>
+            <app-date-picker
+              :date.sync="eventDate.date"
+              label="日付"
+            ></app-date-picker>
           </v-col>
         </template>
         <v-col cols="12">
