@@ -11,21 +11,21 @@
           />
         </v-col>
         <template v-for="(eventDate, index) in syncedEventDates">
-          <v-col cols="5" :key="'name' + index">
+          <v-col :key="'name' + index" cols="5">
             <v-validate-text-field
+              v-model="eventDate.name"
               :label="index + 1 + '日目'"
               outlined
-              v-model="eventDate.name"
               rules="required"
             />
           </v-col>
-          <v-col cols="2" :key="'is_production_day' + index">
+          <v-col :key="'is_production_day' + index" cols="2">
             <v-checkbox
-              label="イベント当日"
               v-model="eventDate.is_production_day"
+              label="イベント当日"
             ></v-checkbox>
           </v-col>
-          <v-col cols="5" :key="'date' + index">
+          <v-col :key="'date' + index" cols="5">
             <app-date-picker
               :date.sync="eventDate.date"
               label="日付"
@@ -57,6 +57,7 @@ export default class EventForm extends Vue {
     EventInput
   >)
   private syncedEvent!: EventInput
+
   @PropSync('eventDates', {
     type: Array as PropType<EventDateInput[]>,
   } as PropOptions<EventDateInput[]>)

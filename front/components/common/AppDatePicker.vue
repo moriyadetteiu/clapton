@@ -9,8 +9,8 @@
   >
     <template v-slot:activator="{ on }">
       <validation-provider
-        rules="required"
         v-slot="{ errors }"
+        rules="required"
         :name="label"
         slim
       >
@@ -28,11 +28,11 @@
       </validation-provider>
     </template>
     <v-date-picker
+      v-model="syncedDate"
       locale="jp-ja"
       :day-format="(date) => new Date(date).getDate()"
       light
       no-title
-      v-model="syncedDate"
       @input="menu = false"
     ></v-date-picker>
   </v-menu>

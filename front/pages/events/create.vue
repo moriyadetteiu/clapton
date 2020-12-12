@@ -1,5 +1,5 @@
 <template>
-  <event-form :event="event" :eventDates="eventDates" @submit="submit">
+  <event-form :event="event" :event-dates="eventDates" @submit="submit">
     <v-btn color="primary" @click="addDate">日程追加</v-btn>
   </event-form>
 </template>
