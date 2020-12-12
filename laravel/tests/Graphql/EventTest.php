@@ -26,8 +26,8 @@ class EventTest extends TestCase
         ];
 
         $response = $this
-        ->actingAsUser()
-        ->graphQL('
+            ->actingAsUser()
+            ->graphQL('
             mutation createEvent($input: EventInput!) {
                 createEvent(input: $input) {
                     id
@@ -42,8 +42,9 @@ class EventTest extends TestCase
                 }
             }
         ', [
-            'input' => $eventInput
-        ]);
+                'input' => $eventInput
+            ]);
+
         // 登録の確認
         $response
         ->assertStatus(200)
@@ -52,7 +53,7 @@ class EventTest extends TestCase
                 'createEvent' => $eventInput
                 ]
                 ]);
-                $responseData = $response->json()['data']['createEvent'];
+                $responseData = $response->json('data.createEvent');
                 $this->assertIsUuid($responseData['id']);
                 $this->assertDatabaseHas('events', Arr::except($responseData, ['event_dates']));
                 

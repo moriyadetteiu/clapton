@@ -31,7 +31,7 @@ export default {
   privateRuntimeConfig: {},
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-  plugins: [],
+  plugins: ['~/plugins/vee-validate'],
 
   router: {
     middleware: 'auth',
@@ -89,7 +89,9 @@ export default {
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
-  build: {},
+  build: {
+    transpile: ['vee-validate/dist/rules'],
+  },
 
   server: {
     host: '0.0.0.0',

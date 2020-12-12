@@ -13,7 +13,12 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        \App\Console\Commands\Make\MakeModelCommand::class
+        \App\Console\Commands\Make\MakeModelCommand::class,
+        \App\Console\Commands\Make\MakePackageCommand::class,
+        \App\Console\Commands\Make\MakeUseCaseCommand::class,
+        \App\Console\Commands\Make\MakeUseCaseInputCommand::class,
+        \App\Console\Commands\Make\MakeMutationCommand::class,
+        \App\Console\Commands\Make\MakeModelWithInputCommand::class,
     ];
 
     /**

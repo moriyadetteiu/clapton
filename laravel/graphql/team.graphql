@@ -1,0 +1,20 @@
+type Team {
+    id: ID!
+    name: String!
+    code: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+input TeamInput {
+    name: String!
+}
+
+extend type Query @guard {
+    team(id: ID @eq): Team @find
+}
+
+extend type Mutation @guard {
+    createTeam(input: TeamInput! @spread): Team!
+        @field(resolver: "App\\GraphQL\\Mutations\\CreateTeam")
+}

@@ -42,7 +42,7 @@ class TeamTest extends TestCase
                     'createTeam' => $teamInput
                 ]
             ]);
-        $responseData = $response->json()['data']['createTeam'];
+        $responseData = $response->json('data.createTeam');
         $this->assertIsUuid($responseData['id']);
         $this->assertTrue(preg_match('/^[0-9a-f]{13}$/', $responseData['code']) === 1);
         $this->assertDatabaseHas('teams', $responseData);
