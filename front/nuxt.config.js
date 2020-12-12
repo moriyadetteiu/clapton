@@ -58,6 +58,8 @@ export default {
     '@nuxtjs/pwa',
     // https://github.com/nuxt-community/apollo-module
     '@nuxtjs/apollo',
+    // https://github.com/nuxt-community/community-modules/tree/master/packages/toast
+    '@nuxtjs/toast',
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
@@ -89,6 +91,21 @@ export default {
     httpLinkOptions: {
       credentials: 'omit',
     },
+  },
+
+  // toast module configuration(https://github.com/nuxt-community/community-modules/tree/master/packages/toast)
+  toast: {
+    position: 'bottom-center',
+    duration: 5000,
+    register: [ // Register custom toasts
+      {
+        name: 'validationError',
+        message: '入力項目に誤りがあります',
+        options: {
+          type: 'error'
+        }
+      }
+    ]
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
