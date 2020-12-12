@@ -33,9 +33,14 @@ export default class CreateUser extends Vue {
 
     res
       .then(() => {
-        // TODO: リダイレクト処理をかける
+        this.$toast.success('ユーザを登録しました')
+
+        // TODO: 自動的にログインさせる
+
+        this.$router.push('/')
       })
       .catch(() => {
+        this.$toasted.global.validationError()
         // TODO: バリデーション失敗時にはエラーが出るようにする
       })
   }

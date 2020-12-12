@@ -19,6 +19,7 @@
     "@nuxtjs/apollo": "^4.0.1-rc.3",
     "@nuxtjs/axios": "^5.12.2",
     "@nuxtjs/pwa": "^3.0.2",
+    "@nuxtjs/toast": "^3.3.1",
     "@types/faker": "^5.1.4",
     "apollo-link": "^1.2.14",
     "apollo-link-error": "^1.1.13",
