@@ -97,15 +97,16 @@ export default {
   toast: {
     position: 'bottom-center',
     duration: 5000,
-    register: [ // Register custom toasts
+    register: [
+      // Register custom toasts
       {
         name: 'validationError',
         message: '入力項目に誤りがあります',
         options: {
-          type: 'error'
-        }
-      }
-    ]
+          type: 'error',
+        },
+      },
+    ],
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
