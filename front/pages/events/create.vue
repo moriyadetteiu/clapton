@@ -1,7 +1,6 @@
 <template>
-  <event-form :event="event" :eventDates="eventDates">
+  <event-form :event="event" :eventDates="eventDates" @submit="submit">
     <v-btn color="primary" @click="addDate">日程追加</v-btn>
-    <v-btn color="success" @click="submit">登録</v-btn>
   </event-form>
 </template>
 
