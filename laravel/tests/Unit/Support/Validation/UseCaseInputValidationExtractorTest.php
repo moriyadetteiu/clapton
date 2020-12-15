@@ -14,9 +14,12 @@ class UseCaseInputValidationExtractorTest extends TestCase
         // とりあえず代表値でCreateUserUseCaseを使ってテストする
         $extractor = $this->app->make(UseCaseInputValidationExtractor::class);
         $validations = $extractor->extract();
-        $this->assertTrue($validations->has('name'));
+        $this->assertTrue($validations->has('CreateUserInput'));
 
-        $nameValidation = collect($validations['name']);
+        $userInputValidation = collect($validations['CreateUserInput']);
+
+        $this->assertTrue($userInputValidation->has('name'));
+        $nameValidation = collect($userInputValidation['name']);
 
         $this->assertTrue($nameValidation->has('rule'));
         $this->assertTrue($nameValidation->has('attribute'));

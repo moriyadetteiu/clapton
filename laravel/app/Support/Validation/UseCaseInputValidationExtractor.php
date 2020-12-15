@@ -26,7 +26,7 @@ class UseCaseInputValidationExtractor implements ValidationExtractorInterface
                     ->mapWithKeys(fn ($rule, $name) => [$name => ['rule' => $rule]]);
                 $attributes = $this->extractAttributes($class)
                     ->mapWithKeys(fn ($attribute, $name) => [$name => ['attribute' => $attribute]]);
-                return $rules->mergeRecursive($attributes);
+                return [$name => $rules->mergeRecursive($attributes)];
             });
     }
 

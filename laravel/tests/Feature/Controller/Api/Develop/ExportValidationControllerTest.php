@@ -24,7 +24,7 @@ class ExportValidationController extends TestCase
 class MockValidationExtractor implements ValidationExtractorInterface
 {
     public const RESULT = [
-        [
+        'testInput' => [
             'test' => [],
             'rules' => ['required'],
             'attribute' => ['テスト'],
