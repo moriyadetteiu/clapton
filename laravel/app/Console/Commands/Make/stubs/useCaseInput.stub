@@ -12,4 +12,11 @@ class {{ class }} extends UseCaseInput
             {{ requiredRules }}
         ];
     }
+
+    protected function attributes(): array
+    {
+        return [
+            {{ attributes }}
+        ];
+    }
 }

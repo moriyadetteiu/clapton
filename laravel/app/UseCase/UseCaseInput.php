@@ -29,7 +29,12 @@ abstract class UseCaseInput
 
     protected function makeValidator(array $input): Validator
     {
-        return ValidatorFacade::make($input, $this->rules());
+        return ValidatorFacade::make($input, $this->rules(), [], $this->attributes());
+    }
+
+    protected function attributes(): array
+    {
+        return [];
     }
 
     abstract protected function rules(): array;

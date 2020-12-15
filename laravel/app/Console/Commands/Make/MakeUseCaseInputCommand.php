@@ -43,6 +43,13 @@ class MakeUseCaseInputCommand extends ReplaceableGeneratorCommand
     {
         $indent = str_replace("\t", '    ', "\t\t\t");
 
+        $attributes = $this
+            ->getRequiredFields()
+            ->map(function (string $fieldName) {
+                return "'{$fieldName}' => ''";
+            })
+            ->implode("\n{$indent}");
+
         $requiredRules = $this
             ->getRequiredFields()
             ->map(function (string $fieldName) {
@@ -51,6 +58,7 @@ class MakeUseCaseInputCommand extends ReplaceableGeneratorCommand
             ->implode("\n{$indent}");
 
         return [
+            'attributes' => $attributes,
             'requiredRules' => $requiredRules,
         ];
     }
