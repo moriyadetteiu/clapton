@@ -17,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// TODO: 本番環境ではアクセス不可にする
+Route::prefix('develop')->namespace('Develop')->group(function () {
+    Route::get('export-validation', 'ExportValidationController@export');
+});
