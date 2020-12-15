@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Middleware\DevelopOnly;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -19,6 +21,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 // TODO: 本番環境ではアクセス不可にする
-Route::prefix('develop')->namespace('Develop')->group(function () {
+Route::middleware(DevelopOnly::class)->prefix('develop')->namespace('Develop')->group(function () {
     Route::get('export-validation', 'ExportValidationController@export');
 });
