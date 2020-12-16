@@ -20,22 +20,22 @@ import EventForm from '~/components/events/EventForm.vue'
   },
 })
 export default class CreateEvent extends Vue {
-  eventDates: EventDateInput[] = []
+  private eventDates: EventDateInput[] = []
 
-  event: EventInput = {
+  private event: EventInput = {
     name: '',
     event_dates: this.eventDates,
   }
 
-  addDate(): void {
+  private addDate(): void {
     this.eventDates.push({
       name: '',
-      date: null,
+      date: '',
       is_production_day: true,
     })
   }
 
-  submit(): void {
+  private submit(): void {
     const res = this.$apollo.mutate({
       mutation: CreateEventMutation,
       variables: {
@@ -49,6 +49,10 @@ export default class CreateEvent extends Vue {
       .catch(() => {
         // TODO: バリデーション失敗時にはエラーが出るようにする
       })
+  }
+
+  private created() {
+    this.addDate();
   }
 }
 </script>
