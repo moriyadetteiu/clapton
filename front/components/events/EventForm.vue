@@ -26,11 +26,12 @@
             ></v-checkbox>
           </v-col>
           <v-col :key="'date' + index" cols="5">
-            <app-date-picker
+            <validate-date-picker
               v-model="eventDate.date"
               label="日付"
               outlined
-            ></app-date-picker>
+              rules="required"
+            ></validate-date-picker>
           </v-col>
         </template>
         <v-col cols="12">
@@ -47,10 +48,10 @@ import { Vue, PropSync, Component } from 'nuxt-property-decorator'
 import { PropType, PropOptions } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { EventInput, EventDateInput } from '~/apollo/graphql'
-import AppDatePicker from '~/components/common/AppDatePicker.vue'
+import ValidateDatePicker from '~/components/common/ValidateDatePicker.vue'
 @Component({
   components: {
-    AppDatePicker,
+    ValidateDatePicker,
   },
 })
 export default class EventForm extends Vue {
