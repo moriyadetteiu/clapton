@@ -1,6 +1,6 @@
 <template>
   <v-menu
-    v-model="menu"
+    v-model="isOpenMenu"
     :close-on-content-click="false"
     transition="scale-transition"
     :nudge-right="40"
@@ -43,7 +43,7 @@ export default class AppDatePicker extends Vue {
   @Prop({ type: String })
   private label?: String
 
-  private menu: Boolean = false
+  private isOpenMenu: Boolean = false
 }
 </script>
 
