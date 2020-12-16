@@ -8,24 +8,17 @@
     min-width="290px"
   >
     <template v-slot:activator="{ on }">
-      <validation-provider
-        v-slot="{ errors }"
-        rules="required"
-        :name="label"
-        slim
+      <v-text-field
+        v-model="syncedDate"
+        :label="label"
+        outlined
+        type="date"
+        :error-messages="errors"
       >
-        <v-text-field
-          v-model="syncedDate"
-          :label="label"
-          outlined
-          type="date"
-          :error-messages="errors"
-        >
-          <template v-slot:append>
-            <v-icon v-on="on">mdi-calendar</v-icon>
-          </template>
-        </v-text-field>
-      </validation-provider>
+        <template v-slot:append>
+          <v-icon v-on="on">mdi-calendar</v-icon>
+        </template>
+      </v-text-field>
     </template>
     <v-date-picker
       v-model="syncedDate"
@@ -49,9 +42,6 @@ export default class AppDatePicker extends Vue {
 
   @Prop({ type: String })
   private label?: String
-
-  @Prop({ type: String })
-  private rules!: String
 
   private menu: Boolean = false
 }
