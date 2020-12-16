@@ -8,35 +8,42 @@
     min-width="290px"
   >
     <template v-slot:activator="{ on }">
-      <v-text-field v-model="syncedDate" v-bind="$attrs" type="date">
+      <v-text-field :value="date" v-bind="$attrs" type="date" @input="input">
         <template v-slot:append>
           <v-icon v-on="on">mdi-calendar</v-icon>
         </template>
       </v-text-field>
     </template>
     <v-date-picker
-      v-model="syncedDate"
+      :value="date"
       locale="jp-ja"
       :day-format="(date) => new Date(date).getDate()"
       light
       no-title
-      @input="menu = false"
+      @input="
+        isOpenMenu = false
+        input($event)
+      "
     ></v-date-picker>
   </v-menu>
 </template>
 
 <script lang="ts">
-import { Vue, PropSync, Component } from 'nuxt-property-decorator'
-import { PropType, PropOptions } from 'vue'
+import { Vue, Model, Emit, Component } from 'nuxt-property-decorator'
 
 @Component({
   inheritAttrs: false,
 })
 export default class AppDatePicker extends Vue {
-  @PropSync('date', { type: String as PropType<string> } as PropOptions<string>)
-  syncedDate!: string
+  @Model('input', { type: String, required: true })
+  private date!: String
 
   private isOpenMenu: Boolean = false
+
+  @Emit()
+  private input(inputValue: string) {
+    return inputValue
+  }
 }
 </script>
 

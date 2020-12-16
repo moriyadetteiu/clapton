@@ -27,8 +27,9 @@
           </v-col>
           <v-col :key="'date' + index" cols="5">
             <app-date-picker
-              :date.sync="eventDate.date"
+              v-model="eventDate.date"
               label="日付"
+              outlined
             ></app-date-picker>
           </v-col>
         </template>
