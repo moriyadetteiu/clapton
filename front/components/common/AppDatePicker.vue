@@ -8,13 +8,7 @@
     min-width="290px"
   >
     <template v-slot:activator="{ on }">
-      <v-text-field
-        v-model="syncedDate"
-        :label="label"
-        outlined
-        type="date"
-        :error-messages="errors"
-      >
+      <v-text-field v-model="syncedDate" v-bind="$attrs" type="date">
         <template v-slot:append>
           <v-icon v-on="on">mdi-calendar</v-icon>
         </template>
@@ -32,16 +26,15 @@
 </template>
 
 <script lang="ts">
-import { Vue, PropSync, Prop, Component } from 'nuxt-property-decorator'
+import { Vue, PropSync, Component } from 'nuxt-property-decorator'
 import { PropType, PropOptions } from 'vue'
 
-@Component
+@Component({
+  inheritAttrs: false,
+})
 export default class AppDatePicker extends Vue {
   @PropSync('date', { type: String as PropType<string> } as PropOptions<string>)
   syncedDate!: string
-
-  @Prop({ type: String })
-  private label?: String
 
   private isOpenMenu: Boolean = false
 }
