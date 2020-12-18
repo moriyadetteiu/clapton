@@ -4,17 +4,24 @@ import UserForm from '~/components/users/UserForm.vue'
 import { UserInput } from '~/apollo/graphql'
 import { findAllErrorMessages } from '~/test/utils/wrapper-helpers'
 import UserInputFactory from '~/test/factory/UserInputFactory'
+import { CreateUserInputValidation } from '~/validation/validations'
 
 describe('UserForm test', () => {
   test('require validation error test', async () => {
-    const requireFields: Partial<UserInput> = {
-      name: '名前',
-      name_kana: 'かな',
-      handle_name: 'ハンドルネーム',
-      handle_name_kana: 'ハンドルネームのかな',
-      email: 'メールアドレス',
-      password: 'パスワード',
-    }
+    const validation = new CreateUserInputValidation()
+    let requireFields: Partial<UserInput> = {}
+    Object.entries(validation.getItems())
+      .filter((item) => item[1].rules!.indexOf('required'))
+      .forEach((item) => {
+        const [name, definition] = item
+        const PartialInput: Partial<UserInput> = {
+          [name]: definition.attribute,
+        }
+        requireFields = {
+          ...requireFields,
+          ...PartialInput,
+        }
+      })
 
     await Object.entries(requireFields).forEach(async (field) => {
       const [name, label] = field
