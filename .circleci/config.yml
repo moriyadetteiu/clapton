@@ -104,6 +104,7 @@ jobs:
           command: |
             cp ./laravel/.env.example ./laravel/.env
             docker-compose exec laravel php artisan key:generate
+            docker-compose exec laravel php artisan jwt:secret
             docker-compose exec laravel php artisan migrate
       - run:
           name: build front
