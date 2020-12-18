@@ -5,8 +5,7 @@
         <v-col cols="12">
           <v-validate-text-field
             v-model="syncedUser.name"
-            label="名前"
-            rules="required"
+            :validation="validation.getItem('name')"
             outlined
           />
         </v-col>
@@ -14,32 +13,28 @@
           <v-validate-text-field
             v-model="syncedUser.name_kana"
             outlined
-            rules="required"
-            label="かな"
+            :validation="validation.getItem('name_kana')"
           />
         </v-col>
         <v-col cols="12">
           <v-validate-text-field
             v-model="syncedUser.handle_name"
             outlined
-            rules="required"
-            label="ハンドルネーム"
+            :validation="validation.getItem('handle_name')"
           />
         </v-col>
         <v-col cols="12">
           <v-validate-text-field
             v-model="syncedUser.handle_name_kana"
             outlined
-            rules="required"
-            label="ハンドルネームのかな"
+            :validation="validation.getItem('handle_name_kana')"
           />
         </v-col>
         <v-col cols="12">
           <v-validate-text-field
             v-model="syncedUser.email"
             outlined
-            label="メールアドレス"
-            rules="required|email"
+            :validation="validation.getItem('email')"
             hint="ログイン時や、パスワードを忘れた際に使用します。"
             persistent-hint
           />
@@ -48,8 +43,7 @@
           <v-validate-text-field
             v-model="syncedUser.password"
             outlined
-            label="パスワード"
-            rules="required"
+            :validation="validation.getItem('password')"
             type="password"
             vid="password"
           />
@@ -76,6 +70,7 @@ import { Vue, PropSync, Component } from 'nuxt-property-decorator'
 import { PropType, PropOptions } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { UserInput } from '~/apollo/graphql'
+import { CreateUserInputValidation } from '~/validation/validations'
 
 @Component
 export default class UserForm extends Vue {
@@ -85,6 +80,7 @@ export default class UserForm extends Vue {
   private syncedUser!: UserInput
 
   private confirmationPassword: string = ''
+  private validation: CreateUserInputValidation = new CreateUserInputValidation()
 
   $refs!: {
     validationObserver: InstanceType<typeof ValidationObserver>
