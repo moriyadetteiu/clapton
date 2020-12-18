@@ -17,4 +17,8 @@ export default class Validation {
   public getItem(name: string): ValidationItem {
     return this.items[name]
   }
+
+  public getItems(): ValidationItems {
+    return this.items
+  }
 }
