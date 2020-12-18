@@ -11,24 +11,30 @@ const template: string = fs
 
 const indentLevel: number = 6
 
-axios.get(downloadValidationUrl).then((result) => {
-  const data: Object = result.data
-  const validations: string = Object.entries(data)
-    .map((validation) => {
-      const [name, items] = validation
+axios
+  .get(downloadValidationUrl)
+  .then((result) => {
+    const data: Object = result.data
+    const validations: string = Object.entries(data)
+      .map((validation) => {
+        const [name, items] = validation
 
-      return template
-        .replace('{{ name }}', name)
-        .replace('{{ items }}', JSON.stringify(items, null, indentLevel))
-    })
-    .join('\n\n')
+        return template
+          .replace('{{ name }}', name)
+          .replace('{{ items }}', JSON.stringify(items, null, indentLevel))
+      })
+      .join('\n\n')
 
-  const header = `import Validation from './validation'
+    const header = `import Validation from './validation'
 
 `
 
-  fs.writeFileSync('validation/validations.ts', `${header}${validations}`, {
-    flag: 'w',
+    fs.writeFileSync('validation/validations.ts', `${header}${validations}`, {
+      flag: 'w',
+    })
+    console.log('written to validation/validations.ts')
   })
-  console.log('written to validation/validations.ts')
-})
+  .catch((e) => {
+    console.error(e)
+    throw e
+  })
