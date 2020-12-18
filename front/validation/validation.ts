@@ -1,8 +1,10 @@
+export interface ValidationItem {
+  rules?: string
+  attribute?: string
+}
+
 interface ValidationItems {
-  [name: string]: {
-    rule?: string
-    attribute?: string
-  }
+  [name: string]: ValidationItem
 }
 
 export default class Validation {
@@ -10,5 +12,9 @@ export default class Validation {
 
   constructor(items: ValidationItems) {
     this.items = items
+  }
+
+  public getItem(name: string): ValidationItem {
+    return this.items[name]
   }
 }

@@ -21,10 +21,10 @@ class UseCaseInputValidationExtractorTest extends TestCase
         $this->assertTrue($userInputValidation->has('name'));
         $nameValidation = collect($userInputValidation['name']);
 
-        $this->assertTrue($nameValidation->has('rule'));
+        $this->assertTrue($nameValidation->has('rules'));
         $this->assertTrue($nameValidation->has('attribute'));
 
-        $this->assertEquals('required', $nameValidation['rule']);
+        $this->assertEquals('required', $nameValidation['rules']);
         $this->assertEquals('名前', $nameValidation['attribute']);
     }
 }
