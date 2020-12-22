@@ -1,5 +1,5 @@
 <template>
-  <user-form :user="user" @submit="submit" />
+  <user-form :user="user" :on-submit="onSubmit" />
 </template>
 
 <script lang="ts">
@@ -23,7 +23,7 @@ export default class CreateUser extends Vue {
     password: '',
   }
 
-  submit(): void {
+  onSubmit(): Promise<void> {
     const res = this.$apollo.mutate({
       mutation: CreateUserMutation,
       variables: {
@@ -31,18 +31,13 @@ export default class CreateUser extends Vue {
       },
     })
 
-    res
-      .then(() => {
-        this.$toast.success('ユーザを登録しました')
+    return res.then(() => {
+      this.$toast.success('ユーザを登録しました')
 
-        // TODO: 自動的にログインさせる
+      // TODO: 自動的にログインさせる
 
-        this.$router.push('/')
-      })
-      .catch(() => {
-        this.$toasted.global.validationError()
-        // TODO: バリデーション失敗時にはエラーが出るようにする
-      })
+      this.$router.push('/')
+    })
   }
 }
 </script>

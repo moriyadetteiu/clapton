@@ -8,7 +8,7 @@
     <v-text-field
       :label="validationLabel"
       v-bind="$attrs"
-      :error-messages="errors"
+      :error-messages="[...errors, ...safeBackendErrors]"
       v-on="listeners"
     />
   </validation-provider>
@@ -37,6 +37,9 @@ export default class VValidateTextField extends Vue {
   >)
   private validation?: ValidationItem
 
+  @Prop({ type: Array as PropType<String[]> })
+  private backendErrors?: String[]
+
   get validationRules(): String {
     return this.rules ?? this.validation?.rules ?? ''
   }
@@ -50,6 +53,10 @@ export default class VValidateTextField extends Vue {
       ...this.$listeners,
       input: (event: any) => this.$emit('input', event),
     }
+  }
+
+  get safeBackendErrors() {
+    return this.backendErrors ?? []
   }
 }
 </script>
