@@ -17,7 +17,9 @@ abstract class UseCaseInput
     {
         $validator = $this->makeValidator($input);
 
-        $validator->validate();
+        if ($validator->fails()) {
+            throw new ValidationException('validation error', $validator->errors());
+        }
 
         $this->input = $input;
     }
