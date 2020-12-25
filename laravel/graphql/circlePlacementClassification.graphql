@@ -1,0 +1,28 @@
+type CirclePlacementClassification {
+    id: ID!
+    name: String!
+    cost: Int
+    team: Team @belongsTo
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+input CirclePlacementClassificationInput {
+    team_id: ID!
+    name: String!
+    cost: Int!
+}
+
+extend type Query @guard {
+    circlePlacementClassification(id: ID @eq): CirclePlacementClassification
+        @find
+}
+
+extend type Mutation @guard {
+    createCirclePlacementClassification(
+        input: CirclePlacementClassificationInput! @spread
+    ): CirclePlacementClassification!
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\CreateCirclePlacementClassification"
+        )
+}
