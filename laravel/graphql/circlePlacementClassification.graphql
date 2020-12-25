@@ -16,6 +16,9 @@ input CirclePlacementClassificationInput {
 extend type Query @guard {
     circlePlacementClassification(id: ID @eq): CirclePlacementClassification
         @find
+    circlePlacementClassifications(
+        team_id: ID @eq
+    ): [CirclePlacementClassification]! @all
 }
 
 extend type Mutation @guard {
