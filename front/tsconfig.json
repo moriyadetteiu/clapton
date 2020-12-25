@@ -29,7 +29,8 @@
       "@nuxt/types",
       "@nuxtjs/apollo/types",
       "@types/jest",
-      "@nuxtjs/toast"
+      "@nuxtjs/toast",
+      "vuetify"
     ]
   },
   "exclude": [
