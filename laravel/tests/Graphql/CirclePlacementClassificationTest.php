@@ -94,5 +94,6 @@ class CirclePlacementClassificationTest extends TestCase
         $responseIds = array_column($responseData, 'id');
         $expectedIds = $circlePlacementClassifications->pluck('id')->all();
         $this->assertEquals($responseIds, $expectedIds);
+        $this->assertCount(3, $responseIds);
     }
 }
