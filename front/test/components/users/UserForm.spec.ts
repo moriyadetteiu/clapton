@@ -6,6 +6,18 @@ import { findAllErrorMessages } from '~/test/utils/wrapper-helpers'
 import UserInputFactory from '~/test/factory/UserInputFactory'
 import { CreateUserInputValidation } from '~/validation/validations'
 
+const makeWrapper = (userInput: UserInput) => {
+  const onSubmit = jest.fn(() => new Promise(() => {}))
+  const wrapper = mount(UserForm, {
+    propsData: {
+      user: userInput,
+      onSubmit,
+    },
+  })
+
+  return { wrapper, onSubmit }
+}
+
 describe('UserForm test', () => {
   test('require validation error test', async () => {
     const validation = new CreateUserInputValidation()
@@ -26,16 +38,12 @@ describe('UserForm test', () => {
     await Object.entries(requireFields).forEach(async (field) => {
       const [name, label] = field
       const userInput: UserInput = new UserInputFactory().make({ [name]: '' })
-      const wrapper = mount(UserForm, {
-        propsData: {
-          user: userInput,
-        },
-      })
+      const { wrapper, onSubmit } = makeWrapper(userInput)
 
       wrapper.find('.v-btn.success').trigger('click')
       await flushPromises()
 
-      expect(wrapper.emitted().submit).toBeFalsy()
+      expect(onSubmit.mock.calls.length).toBe(0)
 
       const errorMessages = findAllErrorMessages(wrapper).join('')
       expect(errorMessages).toContain(label)
@@ -47,16 +55,12 @@ describe('UserForm test', () => {
       email: 'invalid-address',
     })
 
-    const wrapper = mount(UserForm, {
-      propsData: {
-        user: userInput,
-      },
-    })
+    const { wrapper, onSubmit } = makeWrapper(userInput)
 
     wrapper.find('.v-btn.success').trigger('click')
     await flushPromises()
 
-    expect(wrapper.emitted().submit).toBeFalsy()
+    expect(onSubmit.mock.calls.length).toBe(0)
 
     const errorMessages = findAllErrorMessages(wrapper).join('')
 
@@ -66,11 +70,7 @@ describe('UserForm test', () => {
   test('confirmation password invalid test', async () => {
     const userInput: UserInput = new UserInputFactory().make()
 
-    const wrapper = mount(UserForm, {
-      propsData: {
-        user: userInput,
-      },
-    })
+    const { wrapper, onSubmit } = makeWrapper(userInput)
     wrapper.setData({
       confirmationPassword: 'dummy',
     })
@@ -79,7 +79,7 @@ describe('UserForm test', () => {
     wrapper.find('.v-btn.success').trigger('click')
     await flushPromises()
 
-    expect(wrapper.emitted().submit).toBeFalsy()
+    expect(onSubmit.mock.calls.length).toBe(0)
     const errorMessages = findAllErrorMessages(wrapper).join('')
 
     expect(errorMessages).toContain('パスワード')
@@ -88,11 +88,7 @@ describe('UserForm test', () => {
   test('succeed submit test', async () => {
     const userInput: UserInput = new UserInputFactory().make()
 
-    const wrapper = mount(UserForm, {
-      propsData: {
-        user: userInput,
-      },
-    })
+    const { wrapper, onSubmit } = makeWrapper(userInput)
     wrapper.setData({
       confirmationPassword: userInput.password,
     })
@@ -101,7 +97,7 @@ describe('UserForm test', () => {
     wrapper.find('.v-btn.success').trigger('click')
     await flushPromises()
 
-    expect(wrapper.emitted().submit).toBeTruthy()
+    expect(onSubmit).toBeCalled()
     const errorMessages = findAllErrorMessages(wrapper)
 
     expect(errorMessages).toHaveLength(0)
