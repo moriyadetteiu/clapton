@@ -42,11 +42,13 @@
 </template>
 
 <script lang="ts">
+import { MutationOptions } from 'apollo-client'
 import { isApolloError } from 'apollo-client/errors/ApolloError'
 import { Vue, Component, Prop, PropSync, Watch } from 'nuxt-property-decorator'
 import { PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import {
+  UpdateCirclePlacementClassificationMutation,
   CreateCirclePlacementClassificationMutation,
   CirclePlacementClassification,
   CirclePlacementClassificationInput,
@@ -89,12 +91,7 @@ export default class CirclePlacementClassificationForm extends Vue {
   }
 
   private onSubmit(): Promise<void> {
-    const res = this.$apollo.mutate({
-      mutation: CreateCirclePlacementClassificationMutation,
-      variables: {
-        input: this.input,
-      },
-    })
+    const res = this.$apollo.mutate(this.mutateOption)
 
     return res.then(() => {
       this.$toast.success('保存しました')
@@ -113,6 +110,28 @@ export default class CirclePlacementClassificationForm extends Vue {
           this.validation.setBackendErrorsFromAppolo(error)
         }
       })
+    }
+  }
+
+  private get isCreate(): boolean {
+    return !this.circlePlacementClassification.id
+  }
+
+  private get mutateOption(): MutationOptions {
+    if (this.isCreate) {
+      return {
+        mutation: CreateCirclePlacementClassificationMutation,
+        variables: {
+          input: this.input,
+        },
+      }
+    }
+    return {
+      mutation: UpdateCirclePlacementClassificationMutation,
+      variables: {
+        id: this.circlePlacementClassification.id,
+        input: this.input,
+      },
     }
   }
 }
