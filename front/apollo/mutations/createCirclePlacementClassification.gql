@@ -1,0 +1,9 @@
+mutation createCirclePlacementClassificationMutation(
+  $input: CirclePlacementClassificationInput!
+) {
+  createCirclePlacementClassification(input: $input) {
+    id
+    name
+    cost
+  }
+}
