@@ -60,7 +60,7 @@ import {
   },
 })
 export default class CirclePlacementClassificationPage extends Vue {
-  private circlePlacementClassifications!: CirclePlacementClassification[]
+  private circlePlacementClassifications: CirclePlacementClassification[] = []
   private headers: DataTableHeader[] = [
     { text: '配置分類名', value: 'name' },
     { text: 'コスト', value: 'cost' },
