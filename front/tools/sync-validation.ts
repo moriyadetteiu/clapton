@@ -23,7 +23,7 @@ axios
         const [name, items] = validation
 
         Object.keys(items).forEach((key) => {
-          if (items[key]) {
+          if (items[key] && 'rules' in items[key]) {
             items[key].rules = items[key].rules
               .split('|')
               .filter((rule: string) => ~ALLOWED_RULES.indexOf(rule))
