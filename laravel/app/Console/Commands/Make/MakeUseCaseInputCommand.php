@@ -48,14 +48,14 @@ class MakeUseCaseInputCommand extends ReplaceableGeneratorCommand
             ->map(function (string $fieldName) {
                 return "'{$fieldName}' => ''";
             })
-            ->implode("\n{$indent}");
+            ->implode(",\n{$indent}");
 
         $requiredRules = $this
             ->getRequiredFields()
             ->map(function (string $fieldName) {
                 return "'{$fieldName}' => 'required'";
             })
-            ->implode("\n{$indent}");
+            ->implode(",\n{$indent}");
 
         return [
             'attributes' => $attributes,
