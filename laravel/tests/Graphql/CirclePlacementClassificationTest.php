@@ -61,6 +61,67 @@ class CirclePlacementClassificationTest extends TestCase
         $this->assertEquals($team->id, $responseData['team']['id']);
     }
 
+    public function testUpdateCirclePlacementClassification()
+    {
+        $circlePlacementClassification = CirclePlacementClassification::factory()->create();
+
+        $circlePlacementClassificationInput = [
+            'name' => $this->faker->name,
+            'cost' => $this->faker->numberBetween(0, 10)
+        ];
+
+
+        $response = $this
+            ->actingAsUser()
+            ->graphQL('
+            mutation updateCirclePlacementClassification($id: ID!, $input: CirclePlacementClassificationInput!) {
+                updateCirclePlacementClassification(id: $id, input: $input) {
+                    id
+                    name
+                    cost
+                }
+            }
+        ', [
+                'id' => $circlePlacementClassification->id,
+                'input' => $circlePlacementClassificationInput
+            ]);
+
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    'updateCirclePlacementClassification' => $circlePlacementClassificationInput
+                ]
+            ]);
+
+        $circlePlacementClassification->refresh();
+        $this->assertEquals($circlePlacementClassificationInput['name'], $circlePlacementClassification->name);
+        $this->assertEquals($circlePlacementClassificationInput['cost'], $circlePlacementClassification->cost);
+    }
+
+    public function testDeleteCirclePlacementClassification()
+    {
+        $circlePlacementClassification = CirclePlacementClassification::factory()->create();
+
+        $response = $this
+            ->actingAsUser()
+            ->graphQL('
+            mutation deleteCirclePlacementClassification($id: ID!) {
+                deleteCirclePlacementClassification(id: $id) {
+                    id
+                }
+            }
+        ', [
+                'id' => $circlePlacementClassification->id
+            ]);
+
+        $response
+            ->assertStatus(200);
+
+        $model = CirclePlacementClassification::find($circlePlacementClassification->id);
+        $this->assertNull($model);
+    }
+
     public function testCirclePlacementClassifications()
     {
         $team = Team::factory()->create();

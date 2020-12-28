@@ -8,7 +8,7 @@ type CirclePlacementClassification {
 }
 
 input CirclePlacementClassificationInput {
-    team_id: ID!
+    team_id: ID
     name: String!
     cost: Int!
 }
@@ -28,4 +28,14 @@ extend type Mutation @guard {
         @field(
             resolver: "App\\GraphQL\\Mutations\\CreateCirclePlacementClassification"
         )
+    updateCirclePlacementClassification(
+        id: ID!,
+        input: CirclePlacementClassificationInput! @spread
+    ): CirclePlacementClassification!
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\UpdateCirclePlacementClassification"
+        )
+    deleteCirclePlacementClassification(
+        id: ID!
+    ): CirclePlacementClassification @delete
 }
