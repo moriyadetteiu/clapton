@@ -1,5 +1,10 @@
 <template>
-  <v-dialog v-model="isOpen" v-bind="$attrs" v-on="listeners">
+  <v-dialog
+    v-model="isOpen"
+    v-bind="$attrs"
+    v-on="listeners"
+    :max-width="maxWidth"
+  >
     <v-card>
       <v-card-title class="headline">削除します。よろしいですか？</v-card-title>
       <v-card-actions>
@@ -21,6 +26,9 @@ import { Vue, Prop, Component } from 'nuxt-property-decorator'
 export default class ConfirmDialog extends Vue {
   @Prop({ type: Boolean, required: true })
   private value!: Boolean
+
+  @Prop({ type: String, default: '500px' })
+  private maxWidth!: String
 
   private get isOpen(): Boolean {
     return this.value
