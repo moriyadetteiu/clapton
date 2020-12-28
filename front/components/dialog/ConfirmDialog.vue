@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-on="listeners" v-bind="$attrs" v-model="isOpen">
+  <v-dialog v-model="isOpen" v-bind="$attrs" v-on="listeners">
     <v-card>
       <v-card-title class="headline">削除します。よろしいですか？</v-card-title>
       <v-card-actions>
@@ -14,8 +14,6 @@
 
 <script lang="ts">
 import { Vue, Prop, Component } from 'nuxt-property-decorator'
-import { PropType, PropOptions } from 'vue'
-import { EventInput } from '~/apollo/graphql'
 
 @Component({
   inheritAttrs: false,
