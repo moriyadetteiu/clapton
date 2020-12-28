@@ -2,11 +2,12 @@
   <v-row>
     <v-col>
       <circle-placement-classification-form
-        :is-open.sync="isOpenDialog"
+        :is-open.sync="isOpenFormDialog"
         :circle-placement-classification="selectedCirclePlacementClassification"
         :team-id="teamId"
         @saved="refresh"
       />
+      <confirm-dialog v-model="isOpenConfirmDialog" @confirmed="remove" />
       <v-data-table
         :headers="headers"
         :items="circlePlacementClassifications"
@@ -26,7 +27,9 @@
           <v-btn color="edit" @click="edit(item)"
             ><v-icon left>mdi-pencil</v-icon>編集</v-btn
           >
-          <v-btn color="delete"><v-icon left>mdi-delete</v-icon>削除</v-btn>
+          <v-btn color="delete" @click="confirmRemove(item)"
+            ><v-icon left>mdi-delete</v-icon>削除</v-btn
+          >
         </template>
       </v-data-table>
     </v-col>
@@ -37,13 +40,15 @@
 import { Vue, Component } from 'nuxt-property-decorator'
 import { DataTableHeader } from 'vuetify/types/index'
 import CirclePlacementClassificationForm from '~/components/circle-placement-classification/CirclePlacementClassificationForm.vue'
+import ConfirmDialog from '~/components/dialog/ConfirmDialog.vue'
 import {
+  DeleteCirclePlacementClassificationMutation,
   CirclePlacementClassificationsQuery,
   CirclePlacementClassification,
 } from '~/apollo/graphql'
 
 @Component({
-  components: { CirclePlacementClassificationForm },
+  components: { CirclePlacementClassificationForm, ConfirmDialog },
   apollo: {
     circlePlacementClassifications: {
       query: CirclePlacementClassificationsQuery,
@@ -62,7 +67,8 @@ export default class CirclePlacementClassificationPage extends Vue {
     { text: '操作', value: 'actions', sortable: false },
   ]
 
-  private isOpenDialog = false
+  private isOpenFormDialog: boolean = false
+  private isOpenConfirmDialog: boolean = false
   private selectedCirclePlacementClassification?: CirclePlacementClassification
 
   private defaultSelectedCirclePlacementClassification(): void {
@@ -75,14 +81,40 @@ export default class CirclePlacementClassificationPage extends Vue {
 
   private create(): void {
     this.defaultSelectedCirclePlacementClassification()
-    this.isOpenDialog = true
+    this.isOpenFormDialog = true
   }
 
   private edit(
     circlePlacementClassification: CirclePlacementClassification
   ): void {
     this.selectedCirclePlacementClassification = circlePlacementClassification
-    this.isOpenDialog = true
+    this.isOpenFormDialog = true
+  }
+
+  private confirmRemove(
+    circlePlacementClassification: CirclePlacementClassification
+  ): void {
+    this.selectedCirclePlacementClassification = circlePlacementClassification
+    this.isOpenConfirmDialog = true
+  }
+
+  private remove(): void {
+    const res = this.$apollo.mutate({
+      mutation: DeleteCirclePlacementClassificationMutation,
+      variables: {
+        id: this.selectedCirclePlacementClassification?.id,
+      },
+    })
+
+    res
+      .then(() => {
+        this.$toast.success('削除しました')
+        this.isOpenConfirmDialog = false
+        this.refresh()
+      })
+      .catch(() => {
+        this.$toast.error('削除に失敗しました')
+      })
   }
 
   private refresh(): void {
