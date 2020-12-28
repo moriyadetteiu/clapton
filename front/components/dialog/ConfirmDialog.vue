@@ -2,8 +2,8 @@
   <v-dialog
     v-model="isOpen"
     v-bind="$attrs"
-    v-on="listeners"
     :max-width="maxWidth"
+    v-on="listeners"
   >
     <v-card>
       <v-card-title class="headline">削除します。よろしいですか？</v-card-title>
