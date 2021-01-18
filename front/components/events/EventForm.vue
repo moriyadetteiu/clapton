@@ -10,30 +10,32 @@
             outlined
           />
         </v-col>
-        <template v-for="(eventDate, index) in syncedEventDates">
-          <v-col :key="'name' + index" cols="5">
-            <v-validate-text-field
-              v-model="eventDate.name"
-              :label="index + 1 + '日目'"
-              outlined
-              rules="required"
-            />
-          </v-col>
-          <v-col :key="'is_production_day' + index" cols="2">
-            <v-checkbox
-              v-model="eventDate.is_production_day"
-              label="イベント当日"
-            ></v-checkbox>
-          </v-col>
-          <v-col :key="'date' + index" cols="5">
-            <validate-date-picker
-              v-model="eventDate.date"
-              label="日付"
-              outlined
-              rules="required"
-            ></validate-date-picker>
-          </v-col>
-        </template>
+      </v-row>
+      <v-row v-for="(eventDate, index) in syncedEventDates" :key="index" dense>
+        <v-col cols="5">
+          <v-validate-text-field
+            v-model="eventDate.name"
+            :label="index + 1 + '日目'"
+            outlined
+            rules="required"
+          />
+        </v-col>
+        <v-col cols="2">
+          <v-checkbox
+            v-model="eventDate.is_production_day"
+            label="イベント当日"
+          ></v-checkbox>
+        </v-col>
+        <v-col cols="5">
+          <validate-date-picker
+            v-model="eventDate.date"
+            label="日付"
+            outlined
+            rules="required"
+          ></validate-date-picker>
+        </v-col>
+      </v-row>
+      <v-row dense>
         <v-col cols="12">
           <slot />
           <v-btn color="success" @click="submit">登録</v-btn>
