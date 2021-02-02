@@ -76,7 +76,7 @@ export default abstract class AbstractMasterForm<
 
   @Watch('model', { immediate: true })
   private onModel(): void {
-    let input: any = { team_id: this.teamId }
+    const input: any = { team_id: this.teamId }
     this.inputFields.forEach((value) => {
       input[value.name] = (this.model as any)[value.name]
     })

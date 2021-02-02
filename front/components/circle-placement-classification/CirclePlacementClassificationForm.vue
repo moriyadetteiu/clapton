@@ -20,6 +20,7 @@ export default class CirclePlacementClassificationForm extends AbstractMasterFor
     { name: 'name' },
     { name: 'cost' },
   ]
+
   protected readonly validation: CreateCirclePlacementClassificationInputValidation = new CreateCirclePlacementClassificationInputValidation()
   protected readonly title: string = '配置分類'
   protected readonly createMutation = CreateCirclePlacementClassificationMutation
