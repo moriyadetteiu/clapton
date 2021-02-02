@@ -3,7 +3,7 @@
     <v-col>
       <circle-placement-classification-form
         :is-open.sync="isOpenFormDialog"
-        :circle-placement-classification="selectedCirclePlacementClassification"
+        :model="selectedCirclePlacementClassification"
         :team-id="teamId"
         @saved="refresh"
       />
