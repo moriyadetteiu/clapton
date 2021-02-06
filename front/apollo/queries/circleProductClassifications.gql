@@ -1,0 +1,8 @@
+query CircleProductClassificationsQuery($teamId: ID) {
+  circleProductClassifications(team_id: $teamId) {
+    id
+    name
+    created_at
+    updated_at
+  }
+}

@@ -1,0 +1,6 @@
+mutation updateWantPriorityMutation($id: ID!, $input: WantPriorityInput!) {
+  updateWantPriority(id: $id, input: $input) {
+    id
+    name
+  }
+}
