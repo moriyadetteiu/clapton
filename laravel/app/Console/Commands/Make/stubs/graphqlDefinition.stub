@@ -1,0 +1,35 @@
+type {{ upperClass }} {
+    id: ID!
+    name: String!
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+input {{ upperClass }}Input {
+    name: String!
+}
+
+extend type Query @guard {
+    {{ lowerClass }}(id: ID @eq): {{ upperClass }}
+        @find
+    {{ pluralLowerClass }}(): [{{ upperClass }}]! @all
+}
+
+extend type Mutation @guard {
+    create{{ upperClass }}(
+        input: {{ upperClass }}Input! @spread
+    ): {{ upperClass }}!
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\Create{{ upperClass }}"
+        )
+    update{{ upperClass }}(
+        id: ID!,
+        input: {{ upperClass }}Input! @spread
+    ): {{ upperClass }}!
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\Update{{ upperClass }}"
+        )
+    delete{{ upperClass }}(
+        id: ID!
+    ): {{ upperClass }} @delete
+}
