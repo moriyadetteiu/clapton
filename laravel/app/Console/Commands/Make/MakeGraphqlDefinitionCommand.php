@@ -10,6 +10,19 @@ class MakeGraphqlDefinitionCommand extends ReplaceableGeneratorCommand
 
     protected $type = 'graphql definition';
 
+    public function handle()
+    {
+        $result = parent::handle();
+
+        if ($result !== false) {
+            $name = $this->getNameInput();
+            $this->info('paste the following into a graphql/schema.graphql');
+            $this->info("#import {$name}.graphql");
+        }
+
+        return $result;
+    }
+
     /**
      * Get the stub file for the generator.
      *
