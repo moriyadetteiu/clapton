@@ -1,52 +1,5 @@
-<template>
-  <v-dialog v-model="isOpenSync">
-    <v-card>
-      <v-card-title>配置分類</v-card-title>
-      <v-card-text>
-        <validation-observer
-          ref="validationObserver"
-          tag="v-form"
-          @submit.prevent="submit"
-        >
-          <v-container>
-            <v-row>
-              <v-col cols="12">
-                <v-validate-text-field
-                  v-model="input.name"
-                  outlined
-                  :validation="validation.getItem('name')"
-                  :backend-errors="validation.getErrorMessages('name')"
-                />
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12">
-                <v-validate-text-field
-                  v-model="input.cost"
-                  outlined
-                  :validation="validation.getItem('cost')"
-                  :backend-errors="validation.getErrorMessages('cost')"
-                />
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12">
-                <v-btn color="success" type="submit">保存</v-btn>
-              </v-col>
-            </v-row>
-          </v-container>
-        </validation-observer>
-      </v-card-text>
-    </v-card>
-  </v-dialog>
-</template>
-
 <script lang="ts">
-import { MutationOptions } from 'apollo-client'
-import { isApolloError } from 'apollo-client/errors/ApolloError'
-import { Vue, Component, Prop, PropSync, Watch } from 'nuxt-property-decorator'
-import { PropType } from 'vue'
-import { ValidationObserver } from 'vee-validate'
+import { Component } from 'nuxt-property-decorator'
 import {
   UpdateCirclePlacementClassificationMutation,
   CreateCirclePlacementClassificationMutation,
@@ -54,85 +7,29 @@ import {
   CirclePlacementClassificationInput,
 } from '~/apollo/graphql'
 import { CreateCirclePlacementClassificationInputValidation } from '~/validation/validations'
+import AbstractMasterForm, {
+  inputField,
+} from '~/components/masters/AbstractMasterForm.vue'
 
 @Component({})
-export default class CirclePlacementClassificationForm extends Vue {
-  @PropSync('isOpen', { type: Boolean, required: true })
-  private isOpenSync!: Boolean
+export default class CirclePlacementClassificationForm extends AbstractMasterForm<
+  CirclePlacementClassification,
+  CirclePlacementClassificationInput
+> {
+  protected readonly inputFields: inputField[] = [
+    { name: 'name' },
+    { name: 'cost' },
+  ]
 
-  @Prop({
-    type: Object as PropType<CirclePlacementClassification>,
-    required: true,
-  })
-  private circlePlacementClassification!: CirclePlacementClassification
+  protected readonly validation: CreateCirclePlacementClassificationInputValidation = new CreateCirclePlacementClassificationInputValidation()
+  protected readonly title: string = '配置分類'
+  protected readonly createMutation = CreateCirclePlacementClassificationMutation
+  protected readonly updateMutation = UpdateCirclePlacementClassificationMutation
 
-  @Prop({ type: String, required: true })
-  private teamId!: String
-
-  private input: CirclePlacementClassificationInput = {
+  protected input: CirclePlacementClassificationInput = {
     team_id: '',
     name: '',
     cost: 0,
-  }
-
-  private validation: CreateCirclePlacementClassificationInputValidation = new CreateCirclePlacementClassificationInputValidation()
-
-  @Watch('circlePlacementClassification', { immediate: true })
-  private onUpdateCirclePlacementClassification(): void {
-    this.input = {
-      name: this.circlePlacementClassification.name,
-      cost: this.circlePlacementClassification.cost,
-      team_id: this.teamId,
-    } as CirclePlacementClassificationInput
-  }
-
-  $refs!: {
-    validationObserver: InstanceType<typeof ValidationObserver>
-  }
-
-  private onSubmit(): Promise<void> {
-    const res = this.$apollo.mutate(this.mutateOption)
-
-    return res.then(() => {
-      this.$toast.success('保存しました')
-      this.isOpenSync = false
-      this.$emit('saved')
-    })
-  }
-
-  private async submit() {
-    const observer = this.$refs.validationObserver
-    const isValid = await observer.validate()
-    if (isValid) {
-      await this.onSubmit().catch((error) => {
-        if (isApolloError(error)) {
-          this.$toasted.global.validationError()
-          this.validation.setBackendErrorsFromAppolo(error)
-        }
-      })
-    }
-  }
-
-  private get isCreate(): boolean {
-    return !this.circlePlacementClassification.id
-  }
-
-  private get mutateOption(): MutationOptions {
-    if (this.isCreate) {
-      return {
-        mutation: CreateCirclePlacementClassificationMutation,
-        variables: {
-          input: this.input,
-        },
-      }
-    }
-    return {
-      mutation: UpdateCirclePlacementClassificationMutation,
-      variables: {
-        id: this.circlePlacementClassification.id,
-        input: this.input,
-      },
-    }
   }
 }
 </script>
