@@ -40,7 +40,8 @@ class InputDefinitionExtractor implements InputDefinitionExtractorInterface
     private function makeInputDefinition($field): InputDefinition
     {
         $name = $field->name->value;
-        $type = $field->type->type->name->value;
+
+        $type = optional(optional(optional($field->type)->type)->name)->value ?? '';
         $canNull = !($field->type instanceof NonNullTypeNode);
         return new InputDefinition($name, $type, $canNull);
     }
