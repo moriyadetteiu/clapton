@@ -9,3 +9,5 @@ scalar DateTime
 #import team.graphql
 #import event.graphql
 #import circlePlacementClassification.graphql
+#import circleProductClassification.graphql
+#import wantPriority.graphql

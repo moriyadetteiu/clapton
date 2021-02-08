@@ -1,0 +1,39 @@
+type CircleProductClassification {
+    id: ID!
+    name: String!
+    team: Team @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+input CircleProductClassificationInput {
+    team_id: ID
+    name: String!
+}
+
+extend type Query @guard {
+    circleProductClassification(id: ID @eq): CircleProductClassification
+        @find
+    circleProductClassifications(
+        team_id: ID @eq
+    ): [CircleProductClassification]! @all
+}
+
+extend type Mutation @guard {
+    createCircleProductClassification(
+        input: CircleProductClassificationInput! @spread
+    ): CircleProductClassification!
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\CreateCircleProductClassification"
+        )
+    updateCircleProductClassification(
+        id: ID!,
+        input: CircleProductClassificationInput! @spread
+    ): CircleProductClassification!
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\UpdateCircleProductClassification"
+        )
+    deleteCircleProductClassification(
+        id: ID!
+    ): CircleProductClassification @delete
+}

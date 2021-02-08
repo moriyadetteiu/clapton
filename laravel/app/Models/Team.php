@@ -21,4 +21,14 @@ class Team extends Model
     {
         return $this->hasMany(CirclePlacementClassification::class);
     }
+
+    public function circleProductClassifications(): HasMany
+    {
+        return $this->hasMany(CircleProductClassification::class);
+    }
+
+    public function wantPriorities(): HasMany
+    {
+        return $this->hasMany(WantPriority::class);
+    }
 }

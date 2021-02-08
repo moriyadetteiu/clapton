@@ -1,0 +1,6 @@
+mutation createWantPriorityMutation($input: WantPriorityInput!) {
+  createWantPriority(input: $input) {
+    id
+    name
+  }
+}
