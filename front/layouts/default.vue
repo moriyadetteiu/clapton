@@ -53,6 +53,7 @@ import { User, MeQuery } from '~/apollo/graphql'
 
 @Component({})
 export default class DefaultLayout extends Vue {
+  // eslint-disable-next-line camelcase
   listItems: { event_id: string; team_name: string }[] = [
     {
       event_id: 'aaa',
@@ -69,9 +70,9 @@ export default class DefaultLayout extends Vue {
   ]
 
   oldListItems: {
-    event_id: string
-    event_name: string
-    team_name: string
+    event_id: string // eslint-disable-line camelcase
+    event_name: string // eslint-disable-line camelcase
+    team_name: string // eslint-disable-line camelcase
   }[] = [{ event_id: 'aaa', event_name: 'event', team_name: 'team' }]
 
   user: User | null = null
