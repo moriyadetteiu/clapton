@@ -1,0 +1,5 @@
+mutation JoinTeamMutation($team_id: ID!) {
+  joinTeam(team_id: $team_id) {
+    id
+  }
+}
