@@ -4,7 +4,7 @@ namespace App\UseCase\UserAffiliationTeam;
 
 use App\UseCase\UseCaseInput;
 
-class UserJoinsTeamInput extends UseCaseInput
+class JoinTeamInput extends UseCaseInput
 {
     protected function rules(): array
     {

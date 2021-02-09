@@ -5,6 +5,6 @@ type UserAffiliationTeam {
 }
 
 extend type Mutation @guard {
-    userJoinsTeam(user_id: ID!, team_id: ID!): UserAffiliationTeam
-        @field(resolver: "App\\GraphQL\\Mutations\\UserJoinsTeam")
+    joinTeam(team_id: ID!): UserAffiliationTeam
+        @field(resolver: "App\\GraphQL\\Mutations\\JoinTeam")
 }

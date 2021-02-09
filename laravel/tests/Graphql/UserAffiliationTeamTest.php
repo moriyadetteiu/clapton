@@ -3,11 +3,9 @@
 namespace Tests\Graphql;
 
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Arr;
 
 use App\Models\Team;
 use App\Models\User;
-use App\Models\WantPriority;
 
 // TODO: テスト用のDBを用意したら有効化する
 // use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -25,14 +23,13 @@ class UserAffiliationTeamTest extends TestCase
 
         $userJoinsTeamInput = [
             'team_id' => $team->id,
-            'user_id' => $user->id,
         ];
 
         $response = $this
-            ->actingAsUser()
+            ->actingAsUser($user)
             ->graphQL('
-            mutation userJoinsTeam($user_id: ID!, $team_id: ID!) {
-                userJoinsTeam(user_id: $user_id, team_id: $team_id) {
+            mutation joinTeam($team_id: ID!) {
+                joinTeam(team_id: $team_id) {
                     id
                     user {
                         id
@@ -44,7 +41,7 @@ class UserAffiliationTeamTest extends TestCase
             }
         ', $userJoinsTeamInput);
 
-        $responseData = $response->json('data.userJoinsTeam');
+        $responseData = $response->json('data.joinTeam');
         $this->assertIsUuid($responseData['id']);
         $this->assertDatabaseHas('user_affiliation_teams', $userJoinsTeamInput);
 
