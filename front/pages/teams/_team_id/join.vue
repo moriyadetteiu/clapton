@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-card-title>チームへの参加</v-card-title>
-    <v-card-text>チーム名：{{ team ? team.name : '' }}</v-card-text>
+    <v-card-text>チーム名：{{ team.name }}</v-card-text>
     <v-card-actions>
       <v-btn color="register" @click="join">参加</v-btn>
     </v-card-actions>
@@ -25,7 +25,11 @@ import { Team, TeamQuery, JoinTeamMutation } from '~/apollo/graphql'
   },
 })
 export default class JoinPage extends Vue {
-  private team!: Team
+  private team: Team = {
+    id: '',
+    name: '',
+    code: '',
+  }
 
   private join(): void {
     const teamId = this.team.id
