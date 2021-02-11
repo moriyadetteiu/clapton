@@ -17,7 +17,7 @@
         </v-container>
       </v-card-text>
     </v-card>
-    <v-card>
+    <v-card class="mt-3">
       <v-card-title>マスタ管理</v-card-title>
       <v-card-actions>
         <v-btn nuxt :to="`/teams/${team.id}/circle-placement-classifications`">
