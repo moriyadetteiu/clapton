@@ -54,9 +54,5 @@ export default class TeamPage extends Vue {
     name: '',
     code: '',
   }
-
-  created() {
-    console.log(this.$config.BASE_URL)
-  }
 }
 </script>
