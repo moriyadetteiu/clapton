@@ -52,7 +52,7 @@ export default class CreateEvent extends Vue {
   }
 
   private created() {
-    this.addDate();
+    this.addDate()
   }
 }
 </script>
