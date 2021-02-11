@@ -11,3 +11,4 @@ scalar DateTime
 #import circlePlacementClassification.graphql
 #import circleProductClassification.graphql
 #import wantPriority.graphql
+#import userAffiliationTeam.graphql
