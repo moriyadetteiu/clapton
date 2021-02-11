@@ -68,7 +68,7 @@ class User extends Authenticatable implements JWTSubject
         return Hash::make($password);
     }
 
-    public function affiliateUsers(): HasMany
+    public function affiliateTeams(): HasMany
     {
         return $this->hasMany(UserAffiliationTeam::class);
     }
