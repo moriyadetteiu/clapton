@@ -18,6 +18,7 @@ import EventForm from '~/components/events/EventForm.vue'
 export default class CreateEvent extends Vue {
   event: EventInput = {
     name: '',
+    team_id: this.$route.params.team_id,
   }
 
   submit(): void {
