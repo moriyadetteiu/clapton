@@ -26,6 +26,7 @@ export default {
     MOCK_BROWSER_HTTP_ENDPOINT:
       process.env.MOCK_BROWSER_HTTP_ENDPOINT ?? 'http://localhost:4000',
     MOCK_HTTP_ENDPOINT: process.env.MOCK_HTTP_ENDPOINT ?? 'MOCK_HTTP_ENDPOINT',
+    BASE_URL: process.env.BASE_URL ?? 'http://localhost:3000'
   },
 
   privateRuntimeConfig: {},
