@@ -2,8 +2,11 @@
 
 namespace App\GraphQL\Mutations;
 
-use App\Models\Event;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
+
+use App\UseCase\Event\CreateEvent as CreateEventUseCase;
+use App\UseCase\Event\CreateEventInput;
 
 class CreateEvent
 {
@@ -14,8 +17,10 @@ class CreateEvent
     public function __invoke($_, array $args)
     {
         // TODO implement the resolver
-        $teamData = Arr::except($args, ['directive']);
-        $team = Event::create($teamData);
-        return $team;
+        $eventData = Arr::except($args, ['directive']);
+        $user = Auth::user();
+        $input = new CreateEventInput($eventData);
+        $event = (new CreateEventUseCase())->execute($input);
+        return $event;
     }
 }
