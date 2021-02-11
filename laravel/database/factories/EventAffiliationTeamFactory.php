@@ -4,18 +4,18 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-use App\Models\UserAffiliationTeam;
-use App\Models\User;
+use App\Models\EventAffiliationTeam;
 use App\Models\Team;
+use App\Models\Event;
 
-class UserAffiliationTeamFactory extends Factory
+class EventAffiliationTeamFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = UserAffiliationTeam::class;
+    protected $model = EventAffiliationTeam::class;
 
     /**
      * Define the model's default state.
@@ -25,11 +25,11 @@ class UserAffiliationTeamFactory extends Factory
     public function definition()
     {
         $team = Team::inRandomOrder()->first();
-        $user = User::inRandomOrder()->first();
+        $event = Event::inRandomOrder()->first();
 
         return [
             'team_id' => $team->id,
-            'user_id' => $user->id,
+            'event_id' => $event->id,
         ];
     }
 }
