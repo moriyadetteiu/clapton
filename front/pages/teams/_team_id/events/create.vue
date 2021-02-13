@@ -24,7 +24,7 @@ export default class CreateEvent extends Vue {
 
   private event: EventInput = {
     name: '',
-    team_id: this.$route.params.team_id,
+    team_id: this.$route?.params?.team_id || '', // TODO: テストでうまく注入できないため?.にしているので、解決して?.を.にする
     event_dates: this.eventDates,
   }
 
