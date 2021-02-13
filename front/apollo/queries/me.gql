@@ -6,6 +6,12 @@ query MeQuery {
     handle_name
     handle_name_kana
     email
+    affiliateTeams {
+      team {
+        id
+        name
+      }
+    }
     created_at
     updated_at
   }

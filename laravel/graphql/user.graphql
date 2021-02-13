@@ -1,12 +1,13 @@
 type User {
     id: ID!
     name: String!
-    name_kana: String!
-    handle_name: String!
-    handle_name_kana: String!
-    email: String!
-    created_at: DateTime!
-    updated_at: DateTime!
+    name_kana: String
+    handle_name: String
+    handle_name_kana: String
+    email: String
+    affiliateTeams: [UserAffiliationTeam] @hasMany
+    created_at: DateTime
+    updated_at: DateTime
 }
 
 input UserInput {
