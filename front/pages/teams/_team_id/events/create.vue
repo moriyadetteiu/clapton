@@ -45,7 +45,8 @@ export default class CreateEvent extends Vue {
     })
     res
       .then(() => {
-        // TODO: リダイレクト処理をかける
+        this.$toast.success('登録しました')
+        this.$router.push(`/teams/${this.$route.params.team_id}`)
       })
       .catch(() => {
         // TODO: バリデーション失敗時にはエラーが出るようにする

@@ -1,0 +1,15 @@
+type EventDate {
+    id: ID!
+    event: Event @belongsTo
+    name: String!
+    date: Date!
+    is_production_day: Boolean!
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+input EventDateInput {
+    name: String!
+    date: Date!
+    is_production_day: Boolean!
+}
