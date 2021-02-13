@@ -5,6 +5,8 @@ namespace Tests\Graphql;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
 
+use App\Models\Team;
+
 // TODO: テスト用のDBを用意したら有効化する
 // use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -16,11 +18,14 @@ class EventTest extends TestCase
 
     public function testCreateEvent()
     {
+        $team = Team::factory()->create();
+
         $eventInput = [
             'name' => $this->faker->name,
+            'team_id' => $team->id,
             'event_dates' => [[
                 'name' => $this->faker->name,
-                'date' => $this->faker->date($format='Y-m-d', $max='now'),
+                'date' => $this->faker->date('Y-m-d', 'now'),
                 'is_production_day' => $this->faker->boolean,
             ]]
         ];
@@ -32,9 +37,11 @@ class EventTest extends TestCase
                 createEvent(input: $input) {
                     id
                     name
-                    event_dates {
+                    eventDates {
                         id
-                        event_id
+                        event {
+                            id
+                        }
                         name
                         date
                         is_production_day
@@ -45,21 +52,36 @@ class EventTest extends TestCase
                 'input' => $eventInput
             ]);
 
+        $expectData = Arr::only($eventInput, ['name']);
+
         // 登録の確認
         $response
-        ->assertStatus(200)
-        ->assertJson([
-            'data' => [
-                'createEvent' => $eventInput
+            ->assertStatus(200)
+            ->assertJson([
+                'data' => [
+                    'createEvent' => $expectData
                 ]
-                ]);
-                $responseData = $response->json('data.createEvent');
-                $this->assertIsUuid($responseData['id']);
-                $this->assertDatabaseHas('events', Arr::except($responseData, ['event_dates']));
-                
-        foreach ($responseData['event_dates'] as $eventDate) {
+            ]);
+        $responseData = $response->json('data.createEvent');
+
+        $this->assertIsUuid($responseData['id']);
+
+        $expectedEventData = Arr::except($responseData, ['eventDates']);
+        $this->assertDatabaseHas('events', $expectedEventData);
+
+        $expectedAffiliation = [
+            'event_id' => $responseData['id'],
+            'team_id' => $eventInput['team_id']
+        ];
+
+        $this->assertDatabaseHas('event_affiliation_teams', $expectedAffiliation);
+
+        foreach ($responseData['eventDates'] as $eventDate) {
             $this->assertIsUuid($eventDate['id']);
-            $this->assertDatabaseHas('event_dates', $eventDate);
+            $eventId = $eventDate['event']['id'];
+            $expectedEventDate = Arr::except($eventDate, ['event']);
+            $expectedEventDate['event_id'] = $eventId;
+            $this->assertDatabaseHas('event_dates', $expectedEventDate);
         }
     }
 }

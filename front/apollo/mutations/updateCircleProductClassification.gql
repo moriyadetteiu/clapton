@@ -1,0 +1,9 @@
+mutation updateCircleProductClassificationMutation(
+  $id: ID!
+  $input: CircleProductClassificationInput!
+) {
+  updateCircleProductClassification(id: $id, input: $input) {
+    id
+    name
+  }
+}

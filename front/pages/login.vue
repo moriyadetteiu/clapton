@@ -49,6 +49,7 @@ export default class Login extends Vue {
     const token = loginData.token
 
     if (token) {
+      this.$toast.success('ログインしました')
       await this.$apolloHelpers.onLogin(token)
       this.$router.push('/')
     }

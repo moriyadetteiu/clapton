@@ -1,0 +1,9 @@
+query CirclePlacementClassificationsQuery($teamId: ID) {
+  circlePlacementClassifications(team_id: $teamId) {
+    id
+    name
+    cost
+    created_at
+    updated_at
+  }
+}

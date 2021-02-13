@@ -93,3 +93,6 @@ core
 
 # generated graphQL code gen file
 apollo/graphql.ts
+
+# generated validations sync-validation file
+validation/validations.ts

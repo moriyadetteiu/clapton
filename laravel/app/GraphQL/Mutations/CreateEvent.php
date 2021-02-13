@@ -2,9 +2,10 @@
 
 namespace App\GraphQL\Mutations;
 
-use App\Models\Event;
-use App\Models\EventDate;
 use Illuminate\Support\Arr;
+
+use App\UseCase\Event\CreateEvent as CreateEventUseCase;
+use App\UseCase\Event\CreateEventInput;
 
 class CreateEvent
 {
@@ -16,12 +17,9 @@ class CreateEvent
     {
         // TODO implement the resolver
         $eventData = Arr::except($args, ['directive']);
-        
-        $event = Event::create(Arr::except($args, ['event_dates']));
-        
-        $eventDates = $event->eventDates()->createMany($eventData['event_dates']);
-        
-        $event['event_dates'] = $eventDates;
+        $input = new CreateEventInput($eventData);
+        $event = (new CreateEventUseCase())->execute($input);
+
         return $event;
     }
 }

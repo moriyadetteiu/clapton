@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
@@ -65,5 +66,10 @@ class User extends Authenticatable implements JWTSubject
     public static function encryptPassword(string $password): string
     {
         return Hash::make($password);
+    }
+
+    public function affiliateTeams(): HasMany
+    {
+        return $this->hasMany(UserAffiliationTeam::class);
     }
 }

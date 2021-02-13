@@ -17,4 +17,16 @@ class CreateUserInput extends UseCaseInput
             'password' => 'required',
         ];
     }
+
+    protected function attributes(): array
+    {
+        return [
+            'name' => '名前',
+            'name_kana' => '名前（かな）',
+            'handle_name' => 'ハンドルネーム',
+            'handle_name_kana' => 'ハンドルネーム（かな）',
+            'email' => 'メールアドレス',
+            'password' => 'パスワード',
+        ];
+    }
 }

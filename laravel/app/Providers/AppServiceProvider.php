@@ -14,6 +14,7 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(\App\Support\Graphql\InputDefinitionExtractorInterface::class, \App\Support\Graphql\InputDefinitionExtractor::class);
+        $this->app->singleton(\App\Support\Validation\ValidationExtractorInterface::class, \App\Support\Validation\UseCaseInputValidationExtractor::class);
     }
 
     /**

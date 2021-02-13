@@ -1,0 +1,8 @@
+mutation createCircleProductClassificationMutation(
+  $input: CircleProductClassificationInput!
+) {
+  createCircleProductClassification(input: $input) {
+    id
+    name
+  }
+}

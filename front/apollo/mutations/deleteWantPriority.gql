@@ -1,0 +1,5 @@
+mutation deleteWantPriorityMutation($id: ID!) {
+  deleteWantPriority(id: $id) {
+    id
+  }
+}

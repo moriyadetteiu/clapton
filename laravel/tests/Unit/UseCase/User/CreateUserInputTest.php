@@ -3,7 +3,7 @@
 namespace Tests\Unit\UseCase\User;
 
 use Tests\TestCase;
-use Illuminate\Validation\ValidationException;
+use App\UseCase\ValidationException;
 use Illuminate\Support\Arr;
 
 use App\UseCase\User\CreateUserInput;

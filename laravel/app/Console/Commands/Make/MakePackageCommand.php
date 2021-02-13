@@ -89,7 +89,7 @@ class MakePackageCommand extends Command
         $inputName = $this->argument('inputName');
         $operation = $this->option('operation');
         $operationUpper = ucfirst($operation);
-        return str_replace(['Input', $operationUpper], '', $inputName);
+        return ucfirst(str_replace(['Input', $operationUpper], '', $inputName));
     }
 
     private function validate(): void

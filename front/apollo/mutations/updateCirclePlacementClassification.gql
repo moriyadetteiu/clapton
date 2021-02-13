@@ -1,0 +1,10 @@
+mutation updateCirclePlacementClassificationMutation(
+  $id: ID!
+  $input: CirclePlacementClassificationInput!
+) {
+  updateCirclePlacementClassification(id: $id, input: $input) {
+    id
+    name
+    cost
+  }
+}

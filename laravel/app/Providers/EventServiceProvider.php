@@ -7,6 +7,9 @@ use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 
+use App\Models\Team;
+use App\Observers\TeamObserver;
+
 class EventServiceProvider extends ServiceProvider
 {
     /**
@@ -27,6 +30,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Team::observe(TeamObserver::class);
     }
 }

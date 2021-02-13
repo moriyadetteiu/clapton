@@ -26,6 +26,7 @@ export default {
     MOCK_BROWSER_HTTP_ENDPOINT:
       process.env.MOCK_BROWSER_HTTP_ENDPOINT ?? 'http://localhost:4000',
     MOCK_HTTP_ENDPOINT: process.env.MOCK_HTTP_ENDPOINT ?? 'MOCK_HTTP_ENDPOINT',
+    BASE_URL: process.env.BASE_URL ?? 'http://localhost:3000',
   },
 
   privateRuntimeConfig: {},
@@ -58,6 +59,8 @@ export default {
     '@nuxtjs/pwa',
     // https://github.com/nuxt-community/apollo-module
     '@nuxtjs/apollo',
+    // https://github.com/nuxt-community/community-modules/tree/master/packages/toast
+    '@nuxtjs/toast',
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
@@ -77,6 +80,9 @@ export default {
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
           success: colors.green.accent3,
+          edit: colors.green.accent3,
+          delete: colors.deepOrange.accent4,
+          register: colors.blue.darken2,
         },
       },
     },
@@ -86,6 +92,25 @@ export default {
     clientConfigs: {
       default: '~/plugins/apollo/client-config.ts',
     },
+    httpLinkOptions: {
+      credentials: 'omit',
+    },
+  },
+
+  // toast module configuration(https://github.com/nuxt-community/community-modules/tree/master/packages/toast)
+  toast: {
+    position: 'bottom-center',
+    duration: 5000,
+    register: [
+      // Register custom toasts
+      {
+        name: 'validationError',
+        message: '入力項目に誤りがあります',
+        options: {
+          type: 'error',
+        },
+      },
+    ],
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)

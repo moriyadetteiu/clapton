@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Event extends Model
 {
@@ -10,8 +11,13 @@ class Event extends Model
 
     protected $fillable = ['name'];
 
-    public function eventDates()
+    public function eventDates(): HasMany
     {
-        return $this->hasMany('App\Models\EventDate');
+        return $this->hasMany(EventDate::class);
+    }
+
+    public function eventAffiliationTeams(): HasMany
+    {
+        return $this->hasMany(EventAffiliationTeam::class);
     }
 }

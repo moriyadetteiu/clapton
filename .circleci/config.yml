@@ -103,12 +103,16 @@ jobs:
           name: prepare laravel test
           command: |
             cp ./laravel/.env.example ./laravel/.env
+            docker-compose exec laravel chmod -R 777 storage
+            docker-compose exec laravel chmod -R 777 bootstrap/cache
             docker-compose exec laravel php artisan key:generate
+            docker-compose exec laravel php artisan jwt:secret
             docker-compose exec laravel php artisan migrate
       - run:
           name: build front
           command: |
             docker-compose exec front npm run codegen
+            docker-compose exec front npm run sync-validation
             docker-compose exec front npm run build
       - run:
           name: test front

@@ -17,7 +17,9 @@ abstract class UseCaseInput
     {
         $validator = $this->makeValidator($input);
 
-        $validator->validate();
+        if ($validator->fails()) {
+            throw new ValidationException('validation error', $validator->errors());
+        }
 
         $this->input = $input;
     }
@@ -29,7 +31,12 @@ abstract class UseCaseInput
 
     protected function makeValidator(array $input): Validator
     {
-        return ValidatorFacade::make($input, $this->rules());
+        return ValidatorFacade::make($input, $this->rules(), [], $this->attributes());
+    }
+
+    protected function attributes(): array
+    {
+        return [];
     }
 
     abstract protected function rules(): array;

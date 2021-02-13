@@ -1,0 +1,5 @@
+export class {{ name }}Validation extends Validation {
+  constructor() {
+    super({{ items }})
+  }
+}

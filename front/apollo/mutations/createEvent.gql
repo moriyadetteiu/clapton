@@ -2,9 +2,8 @@ mutation CreateEventMutation($input: EventInput!) {
   createEvent(input: $input) {
     id
     name
-    event_dates {
+    eventDates {
       id
-      event_id
       name
       date
       is_production_day

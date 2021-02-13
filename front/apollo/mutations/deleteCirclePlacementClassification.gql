@@ -1,0 +1,5 @@
+mutation deleteCirclePlacementClassificationMutation($id: ID!) {
+  deleteCirclePlacementClassification(id: $id) {
+    id
+  }
+}

@@ -1,0 +1,39 @@
+type WantPriority {
+    id: ID!
+    name: String!
+    team: Team @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+input WantPriorityInput {
+    team_id: ID
+    name: String!
+}
+
+extend type Query @guard {
+    wantPriority(id: ID @eq): WantPriority
+        @find
+    wantPriorities(
+        team_id: ID @eq
+    ): [WantPriority]! @all
+}
+
+extend type Mutation @guard {
+    createWantPriority(
+        input: WantPriorityInput! @spread
+    ): WantPriority!
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\CreateWantPriority"
+        )
+    updateWantPriority(
+        id: ID!,
+        input: WantPriorityInput! @spread
+    ): WantPriority!
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\UpdateWantPriority"
+        )
+    deleteWantPriority(
+        id: ID!
+    ): WantPriority @delete
+}
