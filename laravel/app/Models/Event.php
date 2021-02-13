@@ -11,6 +11,11 @@ class Event extends Model
 
     protected $fillable = ['name'];
 
+    public function eventDates(): HasMany
+    {
+        return $this->hasMany(EventDate::class);
+    }
+
     public function eventAffiliationTeams(): HasMany
     {
         return $this->hasMany(EventAffiliationTeam::class);

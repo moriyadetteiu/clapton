@@ -1,6 +1,7 @@
 type Event {
     id: ID!
     name: String!
+    eventDates: [EventDate] @hasMany
     created_at: DateTime!
     updated_at: DateTime!
 }
@@ -8,6 +9,7 @@ type Event {
 input EventInput {
     name: String!
     team_id: ID!
+    event_dates: [EventDateInput]
 }
 
 extend type Mutation @guard {

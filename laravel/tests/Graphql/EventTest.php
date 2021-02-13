@@ -23,6 +23,11 @@ class EventTest extends TestCase
         $eventInput = [
             'name' => $this->faker->name,
             'team_id' => $team->id,
+            'event_dates' => [[
+                'name' => $this->faker->name,
+                'date' => $this->faker->date('Y-m-d', 'now'),
+                'is_production_day' => $this->faker->boolean,
+            ]]
         ];
 
         $response = $this
@@ -32,6 +37,15 @@ class EventTest extends TestCase
                 createEvent(input: $input) {
                     id
                     name
+                    eventDates {
+                        id
+                        event {
+                            id
+                        }
+                        name
+                        date
+                        is_production_day
+                      }
                 }
             }
         ', [
@@ -49,13 +63,25 @@ class EventTest extends TestCase
                 ]
             ]);
         $responseData = $response->json('data.createEvent');
+
         $this->assertIsUuid($responseData['id']);
-        $this->assertDatabaseHas('events', $responseData);
+
+        $expectedEventData = Arr::except($responseData, ['eventDates']);
+        $this->assertDatabaseHas('events', $expectedEventData);
 
         $expectedAffiliation = [
             'event_id' => $responseData['id'],
             'team_id' => $eventInput['team_id']
         ];
+
         $this->assertDatabaseHas('event_affiliation_teams', $expectedAffiliation);
+
+        foreach ($responseData['eventDates'] as $eventDate) {
+            $this->assertIsUuid($eventDate['id']);
+            $eventId = $eventDate['event']['id'];
+            $expectedEventDate = Arr::except($eventDate, ['event']);
+            $expectedEventDate['event_id'] = $eventId;
+            $this->assertDatabaseHas('event_dates', $expectedEventDate);
+        }
     }
 }

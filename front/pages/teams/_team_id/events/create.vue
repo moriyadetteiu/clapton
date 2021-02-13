@@ -1,13 +1,17 @@
 <template>
-  <event-form :event="event">
-    <v-btn color="success" @click="submit">登録</v-btn>
+  <event-form :event="event" :event-dates="eventDates" @submit="submit">
+    <v-btn color="primary" @click="addDate">日程追加</v-btn>
   </event-form>
 </template>
 
 <script lang="ts">
 import 'vue-apollo'
 import { Vue, Component } from 'nuxt-property-decorator'
-import { EventInput, CreateEventMutation } from '~/apollo/graphql'
+import {
+  EventInput,
+  EventDateInput,
+  CreateEventMutation,
+} from '~/apollo/graphql'
 import EventForm from '~/components/events/EventForm.vue'
 
 @Component({
@@ -16,12 +20,24 @@ import EventForm from '~/components/events/EventForm.vue'
   },
 })
 export default class CreateEvent extends Vue {
-  event: EventInput = {
+  private eventDates: EventDateInput[] = []
+
+  // TODO: テストでうまく注入できないため?.にしているので、解決して?.を.にする
+  private event: EventInput = {
     name: '',
-    team_id: this.$route.params.team_id,
+    team_id: this.$route?.params?.team_id || '', // eslint-disable-line camelcase
+    event_dates: this.eventDates,
   }
 
-  submit(): void {
+  private addDate(): void {
+    this.eventDates.push({
+      name: '',
+      date: '',
+      is_production_day: true,
+    })
+  }
+
+  private submit(): void {
     const res = this.$apollo.mutate({
       mutation: CreateEventMutation,
       variables: {
@@ -30,11 +46,16 @@ export default class CreateEvent extends Vue {
     })
     res
       .then(() => {
-        // TODO: リダイレクト処理をかける
+        this.$toast.success('登録しました')
+        this.$router.push(`/teams/${this.$route.params.team_id}`)
       })
       .catch(() => {
         // TODO: バリデーション失敗時にはエラーが出るようにする
       })
+  }
+
+  private created() {
+    this.addDate()
   }
 }
 </script>
