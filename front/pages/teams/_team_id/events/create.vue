@@ -22,10 +22,9 @@ import EventForm from '~/components/events/EventForm.vue'
 export default class CreateEvent extends Vue {
   private eventDates: EventDateInput[] = []
 
-  // TODO: テストでうまく注入できないため?.にしているので、解決して?.を.にする
   private event: EventInput = {
     name: '',
-    team_id: this.$route?.params?.team_id || '', // eslint-disable-line camelcase
+    team_id: '', // eslint-disable-line camelcase
     event_dates: this.eventDates,
   }
 
@@ -56,6 +55,10 @@ export default class CreateEvent extends Vue {
 
   private created() {
     this.addDate()
+  }
+
+  private mounted() {
+    this.event.team_id = this.$route.params.team_id
   }
 }
 </script>
