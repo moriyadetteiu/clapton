@@ -15,6 +15,7 @@ class CreateUserAffiliationTeamsTable extends Migration
     {
         Schema::create('user_affiliation_teams', function (Blueprint $table) {
             $table->uuid('id');
+            $table->primary('id');
             $table
                 ->foreignUuid('user_id')
                 ->constrained()

@@ -1,0 +1,15 @@
+type JoinEventDate {
+    id: ID!
+    joinEvent: JoinEvent @belongsTo
+    eventDate: EventDate @belongsTo
+    is_join: Boolean
+    number_of_tickets: Int
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+input JoinEventDateInput {
+    event_date_id: ID!
+    is_join: Boolean!
+    number_of_tickets: Int
+}

@@ -4,17 +4,20 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-use App\Models\EventDate;
+use App\Models\JoinEvent;
+use App\Models\Team;
 use App\Models\Event;
+use App\Models\User;
 
-class EventDateFactory extends Factory
+
+class JoinEventFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = EventDate::class;
+    protected $model = JoinEvent::class;
 
     /**
      * Define the model's default state.
@@ -23,13 +26,14 @@ class EventDateFactory extends Factory
      */
     public function definition()
     {
+        $team = Team::inRandomOrder()->first();
         $event = Event::inRandomOrder()->first();
+        $user = User::inRandomOrder()->first();
 
         return [
-            'name' => $this->faker->name,
-            'date' => $this->faker->date('Y-m-d', 'now'),
-            'is_production_day' => $this->faker->boolean,
+            'team_id' => $team->id,
             'event_id' => $event->id,
+            'user_id' => $user->id,
         ];
     }
 }

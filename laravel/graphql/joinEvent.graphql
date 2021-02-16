@@ -1,0 +1,31 @@
+type JoinEvent {
+    id: ID!
+    user: User @belongsTo
+    team: Team @belongsTo
+    event: Event @belongsTo
+    joinEventDates: [JoinEventDate] @hasMany
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+input JoinEventInput {
+    team_id: ID
+    event_id: ID
+    join_event_dates: [JoinEventDateInput]
+}
+
+extend type Mutation @guard {
+    createJoinEvent(
+        input: JoinEventInput! @spread
+    ): JoinEvent!
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\CreateJoinEvent"
+        )
+    updateJoinEvent(
+        id: ID!,
+        input: JoinEventInput! @spread
+    ): JoinEvent!
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\UpdateJoinEvent"
+        )
+}
