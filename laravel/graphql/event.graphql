@@ -2,14 +2,18 @@ type Event {
     id: ID!
     name: String!
     eventDates: [EventDate] @hasMany
-    created_at: DateTime!
-    updated_at: DateTime!
+    created_at: DateTime
+    updated_at: DateTime
 }
 
 input EventInput {
     name: String!
     team_id: ID!
     event_dates: [EventDateInput]
+}
+
+extend type Query @guard {
+    event(id: ID @eq): Event @find
 }
 
 extend type Mutation @guard {

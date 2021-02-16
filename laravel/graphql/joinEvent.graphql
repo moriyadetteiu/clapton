@@ -14,6 +14,10 @@ input JoinEventInput {
     join_event_dates: [JoinEventDateInput]
 }
 
+extend type Query @guard {
+    findJoinEvent(event_id: ID! @eq, user_id: ID! @eq, team_id: ID! @eq): JoinEvent @find
+}
+
 extend type Mutation @guard {
     createJoinEvent(
         input: JoinEventInput! @spread
