@@ -48,6 +48,7 @@
 </template>
 
 <script lang="ts">
+// TODO: コンポーネント分割、少し大きくなりすぎてるので、行ごとにばらす
 import 'vue-apollo'
 import { PropType } from 'vue'
 import { Vue, Component, Prop, PropSync, Watch } from 'nuxt-property-decorator'
