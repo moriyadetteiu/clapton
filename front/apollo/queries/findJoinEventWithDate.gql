@@ -1,0 +1,11 @@
+query FindJoinEventWithDateQuery($event_id: ID!, $user_id: ID!, $team_id: ID!) {
+  findJoinEvent(event_id: $event_id, user_id: $user_id, team_id: $team_id) {
+    id
+    joinEventDates {
+      eventDate {
+        id
+      }
+      is_join
+    }
+  }
+}

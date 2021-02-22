@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class EventAffiliationTeamsMigration extends Migration
+class CreateJoinEventsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,14 @@ class EventAffiliationTeamsMigration extends Migration
      */
     public function up()
     {
-        Schema::create('event_affiliation_teams', function (Blueprint $table) {
+        Schema::create('join_events', function (Blueprint $table) {
             $table->uuid('id');
             $table->primary('id');
+            $table
+                ->foreignUuid('user_id')
+                ->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table
                 ->foreignUuid('event_id')
                 ->constrained()
@@ -37,6 +42,6 @@ class EventAffiliationTeamsMigration extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('event_affiliation_teams');
+        Schema::dropIfExists('join_events');
     }
 }

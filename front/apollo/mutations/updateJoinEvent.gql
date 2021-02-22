@@ -1,0 +1,5 @@
+mutation UpdateJoinEventMutation($id: ID!, $input: JoinEventInput!) {
+  updateJoinEvent(id: $id, input: $input) {
+    id
+  }
+}

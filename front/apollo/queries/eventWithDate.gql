@@ -1,0 +1,11 @@
+query EventWithDateQuery($id: ID!) {
+  event(id: $id) {
+    id
+    name
+    eventDates {
+      id
+      name
+      date
+    }
+  }
+}
