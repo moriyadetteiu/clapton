@@ -2,6 +2,7 @@ type Team {
     id: ID!
     name: String!
     code: String!
+    underwayEvents: [Event] @belongsToMany
     created_at: DateTime
     updated_at: DateTime
 }

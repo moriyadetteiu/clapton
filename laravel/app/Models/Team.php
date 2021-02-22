@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Team extends Model
 {
@@ -43,8 +43,8 @@ class Team extends Model
         return $this->hasMany(EventAffiliationTeam::class);
     }
 
-    public function underwayEvents(): HasManyThrough
+    public function underwayEvents(): BelongsToMany
     {
-        return $this->hasManyThrough(Event::class, EventAffiliationTeam::class);
+        return $this->belongsToMany(Event::class, 'event_affiliation_teams');
     }
 }

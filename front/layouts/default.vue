@@ -1,30 +1,41 @@
 <template>
   <v-app :dark="false">
     <v-app-bar fixed app>
-      <v-menu open-on-hover offset-y>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn text v-bind="attrs" v-on="on"> リスト </v-btn>
-        </template>
-        <v-list>
-          <v-list-item v-for="(listItem, idx) in listItems" :key="idx">
-            {{ listItem.team_name }}
-          </v-list-item>
-        </v-list>
-      </v-menu>
-      <v-menu open-on-hover offset-y>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn text v-bind="attrs" v-on="on"> 過去リスト </v-btn>
-        </template>
-        <v-list>
-          <v-list-item v-for="(listItem, idx) in oldListItems" :key="idx">
-            {{ listItem.event_name }} ( {{ listItem.team_name }} )
-          </v-list-item>
-        </v-list>
-      </v-menu>
+      <v-container v-if="user !== null">
+        <v-menu open-on-hover offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn text v-bind="attrs" v-on="on"> リスト </v-btn>
+          </template>
+          <v-list>
+            <v-list-item
+              v-for="(item, idx) in underwayCircleListItems"
+              :key="idx"
+              nuxt
+              :to="`/teams/${item.team.id}/events/${item.event.id}/circle-list`"
+            >
+              {{ item.team.name }}
+              （ {{ item.event.name }} ）
+            </v-list-item>
+          </v-list>
+        </v-menu>
+        <v-menu open-on-hover offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn text v-bind="attrs" v-on="on"> 過去リスト </v-btn>
+          </template>
+          <v-list>
+            <v-list-item v-for="(listItem, idx) in oldListItems" :key="idx">
+              {{ listItem.event_name }} ( {{ listItem.team_name }} )
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-container>
       <v-spacer />
       <template v-if="user !== null">
         <v-btn text nuxt to="/mypage">{{ user.name }}さん</v-btn>
-        <v-btn text>ログアウト</v-btn>
+        <v-btn text @click.prevent="logout">ログアウト</v-btn>
+      </template>
+      <template v-else>
+        <v-btn text nuxt to="/login">ログイン</v-btn>
       </template>
     </v-app-bar>
     <v-main>
@@ -36,12 +47,7 @@
       <span>clapton</span>
       <v-spacer />
       <div>
-        <v-switch
-          v-model="$vuetify.theme.dark"
-          label="ダークモード"
-          dense
-          flat
-        ></v-switch>
+        <v-switch v-model="isDark" label="ダークモード" dense flat></v-switch>
       </div>
     </v-footer>
   </v-app>
@@ -49,25 +55,60 @@
 
 <script lang="ts">
 import { Vue, Component } from 'nuxt-property-decorator'
-import { User, MeQuery } from '~/apollo/graphql'
+import {
+  User,
+  MeQuery,
+  Event,
+  Team,
+  UserAffiliationTeam,
+  LogoutMutation,
+  UnderwayEventsForJoinedTeamsQuery,
+} from '~/apollo/graphql'
 
-@Component({})
+type UnderwayCircleListItem = {
+  team: Team
+  event: Event
+}
+
+@Component({
+  apollo: {
+    user: {
+      query: MeQuery,
+      skip() {
+        return !this.$apolloHelpers.getToken()
+      },
+      update(data): User {
+        return data.me
+      },
+    },
+    underwayCircleListItems: {
+      query: UnderwayEventsForJoinedTeamsQuery,
+      variables() {
+        return { id: this.user.id }
+      },
+      skip() {
+        return !this.user
+      },
+      update(data): UnderwayCircleListItem[] {
+        return data.user.affiliateTeams.flatMap(
+          (affiliationTeam: UserAffiliationTeam) => {
+            const team = affiliationTeam.team!
+            const events = team.underwayEvents as Array<Event>
+
+            return events.map((event) => {
+              return {
+                event,
+                team,
+              }
+            })
+          }
+        )
+      },
+    },
+  },
+})
 export default class DefaultLayout extends Vue {
-  // eslint-disable-next-line camelcase
-  listItems: { event_id: string; team_name: string }[] = [
-    {
-      event_id: 'aaa',
-      team_name: 'test',
-    },
-    {
-      event_id: 'bbb',
-      team_name: 'test2',
-    },
-    {
-      event_id: 'ccc',
-      team_name: 'test3',
-    },
-  ]
+  underwayCircleListItems: UnderwayCircleListItem[] = []
 
   oldListItems: {
     event_id: string // eslint-disable-line camelcase
@@ -77,15 +118,28 @@ export default class DefaultLayout extends Vue {
 
   user: User | null = null
 
-  async created() {
-    if (this.$apolloHelpers.getToken()) {
-      const me = await this.$apollo.query<{ me: User }>({
-        query: MeQuery,
+  private logout(): void {
+    this.$apollo
+      .mutate({
+        mutation: LogoutMutation,
       })
-      this.user = me.data.me
-    }
+      .then(async () => {
+        this.user = null
+        await this.$apolloHelpers.onLogout()
+        this.$toast.success('ログアウトしました。')
+        this.$router.push('/login')
+      })
   }
 
-  mounted() {}
+  // TODO: テストを実行できるように?.にしているのを、テスト側で対応するようにする
+  get isDark(): boolean {
+    return this?.$vuetify?.theme?.dark || false
+  }
+
+  set isDark(dark) {
+    if (this?.$vuetify?.theme?.dark !== undefined) {
+      this.$vuetify.theme.dark = dark
+    }
+  }
 }
 </script>

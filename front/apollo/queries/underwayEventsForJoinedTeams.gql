@@ -1,0 +1,14 @@
+query UnderwayEventsForJoinedTeamsQuery($id: ID!) {
+  user(id: $id) {
+    affiliateTeams {
+      team {
+        id
+        name
+        underwayEvents {
+          id
+          name
+        }
+      }
+    }
+  }
+}
