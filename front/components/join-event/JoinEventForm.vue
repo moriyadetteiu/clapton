@@ -14,7 +14,20 @@
                 {{ eventDate.name }}
               </v-col>
               <v-col cols="8">
-                <v-switch v-model="joinEventDateInputs[eventDate.id].is_join" />
+                <validation-provider
+                  v-slot="{ errors }"
+                  :name="
+                    validation.getItem('join_event_dates.*.is_join').attribute
+                  "
+                  :rules="
+                    validation.getItem('join_event_dates.*.is_join').rules
+                  "
+                >
+                  <v-switch
+                    v-model="joinEventDateInputs[eventDate.id].is_join"
+                    :error-messages="errors"
+                  />
+                </validation-provider>
               </v-col>
             </v-row>
             <v-row>
