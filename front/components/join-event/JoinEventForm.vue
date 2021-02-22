@@ -26,6 +26,11 @@
                   <v-switch
                     v-model="joinEventDateInputs[eventDate.id].is_join"
                     :error-messages="errors"
+                    :label="
+                      joinEventDateInputs[eventDate.id].is_join
+                        ? '参加'
+                        : '不参加'
+                    "
                   />
                 </validation-provider>
               </v-col>
