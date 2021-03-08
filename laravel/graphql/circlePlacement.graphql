@@ -1,0 +1,15 @@
+type CirclePlacement {
+    id: ID!
+    circle: Circle
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+input CirclePlacementInput {
+    event_date_id: ID!
+    hole: String!
+    line: String!
+    number: Int!
+    a_or_b: String!
+    circle_placement_classification_id: ID!
+}

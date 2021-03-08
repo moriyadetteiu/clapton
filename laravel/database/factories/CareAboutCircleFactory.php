@@ -4,18 +4,18 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+use App\Models\CareAboutCircle;
+use App\Models\Circle;
 use App\Models\JoinEvent;
-use App\Models\EventDate;
-use App\Models\JoinEventDate;
 
-class JoinEventDateFactory extends Factory
+class CareAboutCircleFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = JoinEventDate::class;
+    protected $model = CareAboutCircle::class;
 
     /**
      * Define the model's default state.
@@ -24,14 +24,12 @@ class JoinEventDateFactory extends Factory
      */
     public function definition()
     {
+        $circle = Circle::inRandomOrder()->first();
         $joinEvent = JoinEvent::inRandomOrder()->first();
-        $eventDate = EventDate::inRandomOrder()->first();
 
         return [
-            'join_event_id' => $joinEvent->id,
-            'event_date_id' => $eventDate->id,
-            'is_join' => $this->faker->boolean(),
-            'number_of_tickets' => $this->faker->numberBetween(0, 10),
+            'circle_id' => $circle->id,
+            'join_event_id' => $joinEvent->id
         ];
     }
 }

@@ -1,0 +1,39 @@
+type Circle {
+    id: ID!
+    name: String!
+    kana: String
+    memo: String
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+input CircleInput {
+    name: String!
+    kana: String
+    memo: String
+}
+
+input CreateCircleParticipatingInEventInput {
+    circle: CircleInput!
+    placement: CirclePlacementInput!
+    join_event_id: ID!
+}
+
+extend type Query @guard {
+    circle(id: ID @eq): Circle @find
+}
+
+extend type Mutation @guard {
+    createCircle(
+        input: CircleInput! @spread
+    ): Circle!
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\CreateCircle"
+        )
+    createCircleParticipatingInEvent(
+        input: CreateCircleParticipatingInEventInput! @spread
+    ): Circle!
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\CreateCircleParticipatingInEvent"
+        )
+}

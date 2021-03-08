@@ -15,3 +15,6 @@ scalar DateTime
 #import userAffiliationTeam.graphql
 #import joinEvent.graphql
 #import joinEventDate.graphql
+#import circle.graphql
+#import careAboutCircle.graphql
+#import circlePlacement.graphql

@@ -1,0 +1,7 @@
+type CareAboutCircle {
+    id: ID!
+    joinEvent: JoinEvent
+    circle: Circle
+    created_at: DateTime
+    updated_at: DateTime
+}
