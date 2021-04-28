@@ -1,6 +1,12 @@
 type CirclePlacement {
     id: ID!
-    circle: Circle
+    event_date_id: ID
+    hole: String!
+    line: String!
+    number: Int!
+    a_or_b: String!
+    circle_placement_classification_id: ID
+    circle: Circle @belongsTo
     created_at: DateTime
     updated_at: DateTime
 }
@@ -12,4 +18,8 @@ input CirclePlacementInput {
     number: Int!
     a_or_b: String!
     circle_placement_classification_id: ID!
+}
+
+extend type Query @guard {
+    circlePlacementInEvent(circle_id: ID!, event_id: ID!): CirclePlacement!
 }
