@@ -19,4 +19,5 @@ extend('email', email)
 
 Vue.component('validation-observer', ValidationObserver)
 Vue.component('validation-provider', ValidationProvider)
+Vue.component('v-validate-text-field', VValidateTextField)
 Vue.component('v-validate-select', VValidateSelect)
