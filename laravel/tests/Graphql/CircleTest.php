@@ -63,8 +63,7 @@ class CircleTest extends TestCase
                 'number' => $this->faker->numberBetween(0, 80),
                 'a_or_b' => $this->faker->randomElement(['a', 'b']),
                 'circle_placement_classification_id' => $circlePlacementClassification->id,
-            ],
-            'join_event_id' => $joinEvent->id
+            ]
         ];
 
         $response = $this
@@ -93,8 +92,6 @@ class CircleTest extends TestCase
         $responseData = $response->json('data.createCircleParticipatingInEvent');
 
         $circle = Circle::findOrFail($responseData['id']);
-        $careAboutCircle = $circle->careAboutCircles()->first();
-        $this->assertEquals($joinEvent->id, $careAboutCircle->join_event_id);
 
         $placement = $circle->circlePlacements()->first();
         $expectedPlacement = $createCircleParticipatingInEventInput['placement'];

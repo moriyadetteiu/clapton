@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\DB;
 
 use App\Models\Circle;
 use App\Models\CirclePlacement;
-use App\Models\CareAboutCircle;
 use App\UseCase\UseCase;
 
 class CreateCircleParticipatingInEvent extends UseCase
@@ -19,13 +18,7 @@ class CreateCircleParticipatingInEvent extends UseCase
 
             $placementData = $input->getPlacementData();
             $placementData['circle_id'] = $circle->id;
-            $circlePlacement = CirclePlacement::create($placementData);
-
-            $careAboutCircleData = [
-                'join_event_id' => $input->getJoinEventId(),
-                'circle_id' => $circle->id,
-            ];
-            $careAboutCircle = CareAboutCircle::create($careAboutCircleData);
+            CirclePlacement::create($placementData);
 
             $circle->refresh();
 

@@ -18,7 +18,6 @@ class CreateCircleParticipatingInEventInput extends UseCaseInput
             'placement.number' => 'required',
             'placement.a_or_b' => 'required',
             'placement.circle_placement_classification_id' => 'required',
-            'join_event_id' => 'required',
         ];
     }
 
@@ -34,7 +33,6 @@ class CreateCircleParticipatingInEventInput extends UseCaseInput
             'placement.number' => '番号',
             'placement.a_or_b' => 'aかbか',
             'placement.circle_placement_classification_id' => '配置分類',
-            'join_event_id' => 'イベント参加番号',
         ];
     }
 
@@ -46,10 +44,5 @@ class CreateCircleParticipatingInEventInput extends UseCaseInput
     public function getPlacementData(): array
     {
         return $this->toArray()['placement'];
-    }
-
-    public function getJoinEventId(): string
-    {
-        return $this->toArray()['join_event_id'];
     }
 }

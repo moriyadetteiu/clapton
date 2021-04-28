@@ -8,6 +8,7 @@ import {
 import ja from 'vee-validate/dist/locale/ja.json'
 import { required, email } from 'vee-validate/dist/rules'
 import VValidateTextField from '~/components/form/VValidateTextField.vue'
+import VValidateSelect from '~/components/form/VValidateSelect.vue'
 import '~/vee-validate/password'
 
 localize({ ja })
@@ -18,4 +19,4 @@ extend('email', email)
 
 Vue.component('validation-observer', ValidationObserver)
 Vue.component('validation-provider', ValidationProvider)
-Vue.component('v-validate-text-field', VValidateTextField)
+Vue.component('v-validate-select', VValidateSelect)

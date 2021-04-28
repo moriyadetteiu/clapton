@@ -16,7 +16,6 @@ input CircleInput {
 input CreateCircleParticipatingInEventInput {
     circle: CircleInput!
     placement: CirclePlacementInput!
-    join_event_id: ID!
 }
 
 extend type Query @guard {

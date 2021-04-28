@@ -11,7 +11,7 @@ class CareAboutCircle extends Model
 
     protected $fillable = ['circle_id', 'join_event_id'];
 
-    public function team(): BelongsTo
+    public function circle(): BelongsTo
     {
         return $this->belongsTo(Circle::class);
     }
