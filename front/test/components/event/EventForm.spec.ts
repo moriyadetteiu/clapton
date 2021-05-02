@@ -1,10 +1,17 @@
 import { mount } from '@vue/test-utils'
+import Vuetify from 'vuetify'
 import flushPromises from 'flush-promises'
 import EventForm from '~/components/events/EventForm.vue'
 import EventInputFactory from '~/test/factory/EventInputFactory'
 import EventDateInputFactory from '~/test/factory/EventDateInputFactory'
 
 describe('event from', () => {
+  let vuetify: Vuetify
+
+  beforeEach(() => {
+    vuetify = new Vuetify()
+  })
+
   test('join', async () => {
     const mutate = jest.fn((option) => {
       return new Promise<void>((resolve) => {
@@ -18,6 +25,7 @@ describe('event from', () => {
     const eventDateInput = new EventDateInputFactory().make()
 
     const wrapper = mount(EventForm, {
+      vuetify,
       mocks: {
         $apollo: {
           mutate,
@@ -29,7 +37,7 @@ describe('event from', () => {
           success,
         },
       },
-      stubs: ['nuxt-link'],
+      stubs: ['nuxt-link', 'v-icon'],
       propsData: {
         event: eventInput,
         eventDates: [eventDateInput],

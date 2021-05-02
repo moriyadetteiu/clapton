@@ -1,9 +1,16 @@
 import { mount } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
+import Vuetify from 'vuetify'
 import EventCreatePage from '~/pages/teams/_team_id/events/create.vue'
 import TeamFactory from '~/test/factory/TeamFactory'
 
 describe('my page index', () => {
+  let vuetify: Vuetify
+
+  beforeEach(() => {
+    vuetify = new Vuetify()
+  })
+
   test('see contents', async () => {
     const team = new TeamFactory().make()
     const mutate = jest.fn((option) => {
@@ -15,6 +22,7 @@ describe('my page index', () => {
     const success = jest.fn()
 
     const wrapper = mount(EventCreatePage, {
+      vuetify,
       mocks: {
         $route: {
           params: {
