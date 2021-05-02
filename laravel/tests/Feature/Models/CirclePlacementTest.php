@@ -5,12 +5,10 @@ namespace Tests\Feature\Models;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-use App\Models\{
-    Circle,
-    CirclePlacement,
-    Event,
-    EventDate
-};
+use App\Models\Circle;
+use App\Models\CirclePlacement;
+use App\Models\Event;
+use App\Models\EventDate;
 
 class CirclePlacementTest extends TestCase
 {

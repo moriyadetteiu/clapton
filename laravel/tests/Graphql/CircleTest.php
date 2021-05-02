@@ -99,4 +99,9 @@ class CircleTest extends TestCase
         $assertionPlacement = Arr::except($placement->toArray(), ['id', 'created_at', 'updated_at']);
         $this->assertEquals($expectedPlacement, $assertionPlacement);
     }
+
+    public function testUpdateCircleParticipatingInEvent()
+    {
+        $this->markTestSkipped('Factoryを整備したら追加する');
+    }
 }

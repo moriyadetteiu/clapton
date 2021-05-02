@@ -87,17 +87,20 @@
 </template>
 
 <script lang="ts">
-import { Vue, Prop, Component } from 'nuxt-property-decorator'
+import { Vue, Prop, Component, Watch } from 'nuxt-property-decorator'
+import { PropType } from 'vue'
 import { ValidationObserver } from 'vee-validate'
 import { isApolloError } from 'apollo-client/errors/ApolloError'
 import {
   CreateCircleParticipatingInEventInput,
   CreateCircleParticipatingInEventMutation,
+  UpdateCircleParticipatingInEventMutation,
   CreateCareAboutCircleMutation,
   CircleInput,
   CirclePlacementInput,
   EventDate,
   EventWithDateQuery,
+  CirclePlacement,
   CirclePlacementClassification,
   CirclePlacementClassificationsQuery,
   CareAboutCircleInput,
@@ -108,6 +111,22 @@ import { CreateCircleParticipatingInEventInputValidation } from '~/validation/va
 //       https://qiita.com/mizchi/items/5c359fb5b5e921a7d55f
 type Draft<T, D extends keyof T> = {
   [K in keyof T]: K extends D ? T[K] | null : T[K]
+}
+
+type DraftCirclePlacementInput = Draft<CirclePlacementInput, 'number'>
+
+const initialCirclePlacementInput: DraftCirclePlacementInput = {
+  event_date_id: '',
+  hole: '東',
+  line: '',
+  number: null,
+  a_or_b: 'a',
+  circle_placement_classification_id: '',
+}
+
+const initialCircleInput: CircleInput = {
+  name: '',
+  kana: '',
 }
 
 @Component({
@@ -139,20 +158,15 @@ export default class CircleForm extends Vue {
   @Prop({ type: String })
   private joinEventId!: string
 
+  @Prop({ type: Object as PropType<CirclePlacement> })
+  private circlePlacement?: CirclePlacement
+
   private validation: CreateCircleParticipatingInEventInputValidation = new CreateCircleParticipatingInEventInputValidation()
 
-  private circleInput: CircleInput = {
-    name: '',
-    kana: '',
-  }
+  private circleInput: CircleInput = { ...initialCircleInput }
 
-  private circlePlacementInput: Draft<CirclePlacementInput, 'number'> = {
-    event_date_id: '',
-    hole: '東',
-    line: '',
-    number: null,
-    a_or_b: 'a',
-    circle_placement_classification_id: '',
+  private circlePlacementInput: DraftCirclePlacementInput = {
+    ...initialCirclePlacementInput,
   }
 
   private eventDates: EventDate[] = []
@@ -172,48 +186,99 @@ export default class CircleForm extends Vue {
     validationObserver: InstanceType<typeof ValidationObserver>
   }
 
+  @Watch('circlePlacement', { immediate: true })
+  private onUpdateCirclePlacement(): void {
+    if (!this.circlePlacement) {
+      this.circlePlacementInput = { ...initialCirclePlacementInput }
+      this.circleInput = { ...initialCircleInput }
+      return
+    }
+    const circlePlacementInput = {}
+    Object.keys(initialCirclePlacementInput).forEach((key) => {
+      ;(circlePlacementInput as any)[key] = (this.circlePlacement as any)[key]
+    })
+    this.circlePlacementInput = circlePlacementInput as CirclePlacementInput
+    const circleInput = {}
+    Object.keys(initialCircleInput).forEach((key) => {
+      ;(circleInput as any)[key] = (this.circlePlacement?.circle as any)[key]
+    })
+    this.circleInput = circleInput as CircleInput
+  }
+
   private async submit() {
     const observer = this.$refs.validationObserver
     const isValid = await observer.validate()
     if (isValid) {
-      const input: CreateCircleParticipatingInEventInput = {
-        circle: this.circleInput,
-        placement: this.circlePlacementInput as CirclePlacementInput,
-      }
-
-      const circle = await this.$apollo
-        .mutate({
-          mutation: CreateCircleParticipatingInEventMutation,
-          variables: { input },
-        })
-        .then((res) => res.data.createCircleParticipatingInEvent)
-        .catch((error) => {
-          if (isApolloError(error)) {
-            this.$toasted.global.validationError()
-            this.validation.setBackendErrorsFromAppolo(error)
-          }
-        })
-
-      const careAboutCircleInput: CareAboutCircleInput = {
-        join_event_id: this.joinEventId,
-        circle_id: circle.id,
-      }
-      const careAboutCircle = await this.$apollo
-        .mutate({
-          mutation: CreateCareAboutCircleMutation,
-          variables: { input: careAboutCircleInput },
-        })
-        .then((res) => res.data.createCareAboutCircle)
-        .catch((error) => {
-          if (isApolloError(error)) {
-            this.$toasted.global.validationError()
-            this.validation.setBackendErrorsFromAppolo(error)
-          }
-        })
+      const postMethod: Function = this.circlePlacement?.circle?.id
+        ? this.updateCircle
+        : this.createCircle
+      const circle = await postMethod()
 
       this.$toast.success('保存しました')
-      this.$emit('saved', { circle, careAboutCircleInput })
+      this.$emit('saved', { circle })
     }
+  }
+
+  private async createCircle() {
+    const input: CreateCircleParticipatingInEventInput = {
+      circle: this.circleInput,
+      placement: this.circlePlacementInput as CirclePlacementInput,
+    }
+
+    const circle = await this.$apollo
+      .mutate({
+        mutation: CreateCircleParticipatingInEventMutation,
+        variables: { input },
+      })
+      .then((res) => res.data.createCircleParticipatingInEvent)
+      .catch((error) => {
+        if (isApolloError(error)) {
+          this.$toasted.global.validationError()
+          this.validation.setBackendErrorsFromAppolo(error)
+        }
+      })
+
+    const careAboutCircleInput: CareAboutCircleInput = {
+      join_event_id: this.joinEventId,
+      circle_id: circle.id,
+    }
+    await this.$apollo
+      .mutate({
+        mutation: CreateCareAboutCircleMutation,
+        variables: { input: careAboutCircleInput },
+      })
+      .then((res) => res.data.createCareAboutCircle)
+      .catch((error) => {
+        if (isApolloError(error)) {
+          this.$toasted.global.validationError()
+          this.validation.setBackendErrorsFromAppolo(error)
+        }
+      })
+    return circle
+  }
+
+  private async updateCircle() {
+    const input: CreateCircleParticipatingInEventInput = {
+      circle: this.circleInput,
+      placement: this.circlePlacementInput as CirclePlacementInput,
+    }
+
+    const id = this.circlePlacement!.circle!.id
+
+    return await this.$apollo
+      .mutate({
+        mutation: UpdateCircleParticipatingInEventMutation,
+        variables: { id, input },
+      })
+      .then((res) => {
+        return res.data.updateCircleParticipatingInEvent
+      })
+      .catch((error) => {
+        if (isApolloError(error)) {
+          this.$toasted.global.validationError()
+          this.validation.setBackendErrorsFromAppolo(error)
+        }
+      })
   }
 }
 </script>

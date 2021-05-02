@@ -16,6 +16,7 @@
           :event-id="eventId"
           :team-id="teamId"
           :join-event-id="joinEventId"
+          :circle-placement="circlePlacement"
           @saved="onSavedCircle"
         />
         <circle-product-form />
@@ -89,8 +90,11 @@ export default class CircleListForm extends Vue {
   }
 
   private onSavedCircle({ circle }: any) {
-    // TODO: 登録したサークルを読み込む
+    const prevCircleId = this.circleId
     this.circleId = circle.id
+    if (prevCircleId === circle.id) {
+      this.$apollo.queries.circlePlacement.refetch()
+    }
     this.isEditCircle = false
   }
 
