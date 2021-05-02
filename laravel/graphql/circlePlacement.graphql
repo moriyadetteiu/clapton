@@ -5,6 +5,7 @@ type CirclePlacement {
     line: String!
     number: Int!
     a_or_b: String!
+    formatted_placement: String
     circle_placement_classification_id: ID
     circle: Circle @belongsTo
     created_at: DateTime

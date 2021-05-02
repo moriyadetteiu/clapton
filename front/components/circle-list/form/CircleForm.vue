@@ -212,7 +212,7 @@ export default class CircleForm extends Vue {
         })
 
       this.$toast.success('保存しました')
-      this.$emit('saved', { careAboutCircle })
+      this.$emit('saved', { circle, careAboutCircleInput })
     }
   }
 }

@@ -37,4 +37,15 @@ class CirclePlacement extends Model
             ->pluck('id');
         return $builder->whereIn('event_date_id', $eventDateIds);
     }
+
+    public function getFormattedNumberAttribute(): string
+    {
+        return str_pad((string)$this->number, 2, '0', STR_PAD_LEFT);
+    }
+
+    public function getFormattedPlacementAttribute(): string
+    {
+        $eventDate = $this->eventDate;
+        return "{$eventDate->name} {$this->hole} {$this->line}-{$this->formatted_number}{$this->a_or_b}";
+    }
 }

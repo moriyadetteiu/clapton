@@ -2,8 +2,9 @@
   <v-dialog v-model="isOpenSync">
     <v-card>
       <v-card-title>
-        <temlate v-if="isEditCircle">サークルリスト編集</temlate>
+        <template v-if="isEditCircle">サークルリスト編集</template>
         <template v-else>
+          {{ circlePlacement ? circlePlacement.formatted_placement : '' }}
           {{ circle.name }}
           <v-spacer />
           <v-btn color="success" @click="editCircle">編集</v-btn>
@@ -27,12 +28,33 @@
 import { Vue, Prop, PropSync, Component } from 'nuxt-property-decorator'
 import CircleForm from './form/CircleForm.vue'
 import CircleProductForm from './form/CircleProductForm.vue'
-import { Circle } from '~/apollo/graphql'
+import {
+  Circle,
+  CirclePlacement,
+  CirclePlacementInEventQuery,
+} from '~/apollo/graphql'
 
 @Component({
   components: {
     CircleForm,
     CircleProductForm,
+  },
+  apollo: {
+    circlePlacement: {
+      query: CirclePlacementInEventQuery,
+      variables() {
+        const eventId = this.eventId
+        const circleId = this.circleId
+
+        return { eventId, circleId }
+      },
+      skip() {
+        return !this.circleId || !this.eventId
+      },
+      update(data) {
+        return data.circlePlacementInEvent
+      },
+    },
   },
 })
 export default class CircleListForm extends Vue {
@@ -53,14 +75,22 @@ export default class CircleListForm extends Vue {
 
   private isEditCircle: boolean = true
 
-  private circle: Circle = {
+  private circleId: String | null = null
+
+  private circlePlacement: CirclePlacement | null = null
+
+  private get circle(): Circle {
+    return this.circlePlacement?.circle ?? this.nullCircle
+  }
+
+  private readonly nullCircle: Circle = {
     id: '',
     name: '',
   }
 
-  private onSavedCircle() {
+  private onSavedCircle({ circle }: any) {
     // TODO: 登録したサークルを読み込む
-
+    this.circleId = circle.id
     this.isEditCircle = false
   }
 
