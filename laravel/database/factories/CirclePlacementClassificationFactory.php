@@ -24,6 +24,10 @@ class CirclePlacementClassificationFactory extends Factory
     {
         $team = Team::inRandomOrder()->first();
 
+        if (!$team) {
+            $team = Team::factory()->create();
+        }
+
         return [
             'team_id' => $team->id,
             'name' => $this->faker->name,
