@@ -1,0 +1,5 @@
+mutation CreateCareAboutCircleMutation($input: CareAboutCircleInput!) {
+  createCareAboutCircle(input: $input) {
+    id
+  }
+}

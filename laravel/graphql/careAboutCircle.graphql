@@ -1,0 +1,21 @@
+type CareAboutCircle {
+    id: ID!
+    joinEvent: JoinEvent @belongsTo
+    circle: Circle @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+input CareAboutCircleInput {
+    join_event_id: ID!
+    circle_id: ID!
+}
+
+extend type Mutation @guard {
+    createCareAboutCircle(
+        input: CareAboutCircleInput! @spread
+    ): CareAboutCircle!
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\CreateCareAboutCircle"
+        )
+}

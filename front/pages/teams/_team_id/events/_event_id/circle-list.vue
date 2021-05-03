@@ -23,12 +23,38 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </v-expansion-panels>
+
+    <circle-list-form
+      :is-open.sync="isOpenCircleListForm"
+      :event-id="$route.params.event_id"
+      :team-id="$route.params.team_id"
+      :join-event-id="joinEvent ? joinEvent.id : null"
+    />
+
+    <v-data-table
+      class="mt-5"
+      :headers="headers"
+      :items="circleLists"
+      hide-default-footer
+      disable-pagination
+    >
+      <template v-slot:top>
+        <v-toolbar>
+          <v-toolbar-title>サークルリスト</v-toolbar-title>
+          <v-spacer />
+          <v-btn color="register" @click="openCircleListForm"
+            ><v-icon>mdi-plus</v-icon>追加</v-btn
+          >
+        </v-toolbar>
+      </template>
+    </v-data-table>
   </v-container>
 </template>
 
 <script lang="ts">
 import 'vue-apollo'
 import { Vue, Component } from 'nuxt-property-decorator'
+import { DataTableHeader } from 'vuetify/types/index'
 import {
   Event,
   EventDate,
@@ -39,10 +65,12 @@ import {
   MeQuery,
 } from '~/apollo/graphql'
 import JoinEventForm from '~/components/join-event/JoinEventForm.vue'
+import CircleListForm from '~/components/circle-list/CircleListForm.vue'
 
 @Component({
   components: {
     JoinEventForm,
+    CircleListForm,
   },
   apollo: {
     event: {
@@ -96,6 +124,15 @@ export default class CircleListPage extends Vue {
 
   private joinEvent: JoinEvent | null = null
 
+  private readonly headers: DataTableHeader[] = [
+    { text: 'サークル名', value: 'name' },
+  ]
+
+  // TODO: サークルリストが入るようにする、型もgrapgqlの定義を使う
+  private circleLists: { name: string }[] = []
+
+  private isOpenCircleListForm: boolean = false
+
   private isJoin(eventDate: EventDate): boolean {
     if (!this.joinEvent || !this.joinEvent.joinEventDates) {
       return false
@@ -117,6 +154,10 @@ export default class CircleListPage extends Vue {
 
   private onSavedJoinEvent() {
     this.$apollo.queries.joinEvent.refetch()
+  }
+
+  private openCircleListForm(): void {
+    this.isOpenCircleListForm = true
   }
 }
 </script>

@@ -1,0 +1,9 @@
+mutation UpdateCircleParticipatingInEventMutation(
+  $id: ID!
+  $input: CreateCircleParticipatingInEventInput!
+) {
+  updateCircleParticipatingInEvent(id: $id, input: $input) {
+    id
+    name
+  }
+}

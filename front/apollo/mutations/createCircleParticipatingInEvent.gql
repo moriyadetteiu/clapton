@@ -1,0 +1,8 @@
+mutation CreateCircleParticipatingInEventMutation(
+  $input: CreateCircleParticipatingInEventInput!
+) {
+  createCircleParticipatingInEvent(input: $input) {
+    id
+    name
+  }
+}
