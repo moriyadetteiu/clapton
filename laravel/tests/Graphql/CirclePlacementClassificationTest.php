@@ -8,7 +8,6 @@ use Illuminate\Support\Arr;
 use App\Models\Team;
 use App\Models\CirclePlacementClassification;
 
-
 class CirclePlacementClassificationTest extends TestCase
 {
     use WithFaker;
