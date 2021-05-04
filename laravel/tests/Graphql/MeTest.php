@@ -3,8 +3,6 @@
 namespace Tests\Graphql;
 
 use Illuminate\Foundation\Testing\WithFaker;
-// TODO: テスト用のDBを用意したら有効化する
-// use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Arr;
 
 use App\Models\Team;
@@ -13,8 +11,6 @@ use App\Models\User;
 class MeTest extends TestCase
 {
     use WithFaker;
-    // TODO: テスト用のDBを用意したら有効化する
-    // use RefreshDatabase;
 
     public function testCreateUser()
     {

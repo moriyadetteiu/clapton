@@ -7,14 +7,9 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Models\Team;
 use App\Models\User;
 
-// TODO: テスト用のDBを用意したら有効化する
-// use Illuminate\Foundation\Testing\RefreshDatabase;
-
 class UserAffiliationTeamTest extends TestCase
 {
     use WithFaker;
-    // TODO: テスト用のDBを用意したら有効化する
-    // use RefreshDatabase;
 
     public function testUserJoinsTeam()
     {

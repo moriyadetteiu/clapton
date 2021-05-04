@@ -8,14 +8,9 @@ use Illuminate\Support\Arr;
 use App\Models\Team;
 use App\Models\WantPriority;
 
-// TODO: テスト用のDBを用意したら有効化する
-// use Illuminate\Foundation\Testing\RefreshDatabase;
-
 class WantPriorityTest extends TestCase
 {
     use WithFaker;
-    // TODO: テスト用のDBを用意したら有効化する
-    // use RefreshDatabase;
 
     public function testCreateWantPriority()
     {
