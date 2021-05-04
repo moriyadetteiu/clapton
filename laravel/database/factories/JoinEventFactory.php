@@ -26,14 +26,10 @@ class JoinEventFactory extends Factory
      */
     public function definition()
     {
-        $team = Team::inRandomOrder()->first();
-        $event = Event::inRandomOrder()->first();
-        $user = User::inRandomOrder()->first();
-
         return [
-            'team_id' => $team->id,
-            'event_id' => $event->id,
-            'user_id' => $user->id,
+            'team_id' => Team::factory(),
+            'event_id' => Event::factory(),
+            'user_id' => User::factory(),
         ];
     }
 }

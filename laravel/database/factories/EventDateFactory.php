@@ -23,13 +23,11 @@ class EventDateFactory extends Factory
      */
     public function definition()
     {
-        $event = Event::inRandomOrder()->first();
-
         return [
             'name' => $this->faker->name,
             'date' => $this->faker->date('Y-m-d', 'now'),
             'is_production_day' => $this->faker->boolean,
-            'event_id' => $event->id,
+            'event_id' => Event::factory(),
         ];
     }
 }

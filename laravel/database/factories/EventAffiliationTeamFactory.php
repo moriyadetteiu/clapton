@@ -24,12 +24,9 @@ class EventAffiliationTeamFactory extends Factory
      */
     public function definition()
     {
-        $team = Team::inRandomOrder()->first();
-        $event = Event::inRandomOrder()->first();
-
         return [
-            'team_id' => $team->id,
-            'event_id' => $event->id,
+            'team_id' => Team::factory(),
+            'event_id' => Event::factory(),
         ];
     }
 }

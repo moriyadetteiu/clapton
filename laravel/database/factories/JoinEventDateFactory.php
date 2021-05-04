@@ -24,12 +24,9 @@ class JoinEventDateFactory extends Factory
      */
     public function definition()
     {
-        $joinEvent = JoinEvent::inRandomOrder()->first();
-        $eventDate = EventDate::inRandomOrder()->first();
-
         return [
-            'join_event_id' => $joinEvent->id,
-            'event_date_id' => $eventDate->id,
+            'join_event_id' => JoinEvent::factory(),
+            'event_date_id' => EventDate::factory(),
             'is_join' => $this->faker->boolean(),
             'number_of_tickets' => $this->faker->numberBetween(0, 10),
         ];
