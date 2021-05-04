@@ -24,12 +24,9 @@ class CareAboutCircleFactory extends Factory
      */
     public function definition()
     {
-        $circle = Circle::inRandomOrder()->first();
-        $joinEvent = JoinEvent::inRandomOrder()->first();
-
         return [
-            'circle_id' => $circle->id,
-            'join_event_id' => $joinEvent->id
+            'circle_id' => Circle::factory(),
+            'join_event_id' => JoinEvent::factory(),
         ];
     }
 }

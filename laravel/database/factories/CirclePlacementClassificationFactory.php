@@ -29,7 +29,7 @@ class CirclePlacementClassificationFactory extends Factory
         }
 
         return [
-            'team_id' => $team->id,
+            'team_id' => Team::factory(),
             'name' => $this->faker->name,
             'cost' => $this->faker->numberBetween(0, 10)
         ];

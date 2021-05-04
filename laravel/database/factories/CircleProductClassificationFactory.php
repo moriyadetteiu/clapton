@@ -22,10 +22,8 @@ class CircleProductClassificationFactory extends Factory
      */
     public function definition()
     {
-        $team = Team::inRandomOrder()->first();
-
         return [
-            'team_id' => $team->id,
+            'team_id' => Team::factory(),
             'name' => $this->faker->name,
         ];
     }

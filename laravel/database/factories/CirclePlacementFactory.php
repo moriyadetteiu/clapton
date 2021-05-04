@@ -24,8 +24,21 @@ class CirclePlacementFactory extends Factory
      */
     public function definition()
     {
-        $eventDate = EventDate::inRandomOrder()->first();
+        return [
+            'event_date_id' => EventDate::factory(),
+            'hole' => $this->faker->randomElement(['東', '西', '南']),
+            'line' => $this->faker->randomElement(range('A', 'Z')),
+            'number' => $this->faker->numberBetween(0, 80),
+            'a_or_b' => $this->faker->randomElement(['a', 'b']),
+            'circle_placement_classification_id' => function ($attributes) {
+                $eventDate = EventDate::findOrFail($attributes['event_date_id']);
+                return $this->firstRandomRelatedCirclePlacementClassification($eventDate)->id;
+            },
+        ];
+    }
 
+    private function firstRandomRelatedCirclePlacementClassification(EventDate $eventDate): CirclePlacementClassification
+    {
         $eventAffiliationTeam = $eventDate
             ->event
             ->eventAffiliationTeams()
@@ -41,14 +54,6 @@ class CirclePlacementFactory extends Factory
         } else {
             $circlePlacementClassification = CirclePlacementClassification::factory()->create();
         }
-
-        return [
-            'event_date_id' => $eventDate->id,
-            'hole' => $this->faker->randomElement(['東', '西', '南']),
-            'line' => $this->faker->randomElement(range('A', 'Z')),
-            'number' => $this->faker->numberBetween(0, 80),
-            'a_or_b' => $this->faker->randomElement(['a', 'b']),
-            'circle_placement_classification_id' => $circlePlacementClassification,
-        ];
+        return $circlePlacementClassification;
     }
 }

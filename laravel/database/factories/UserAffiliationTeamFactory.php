@@ -24,12 +24,9 @@ class UserAffiliationTeamFactory extends Factory
      */
     public function definition()
     {
-        $team = Team::inRandomOrder()->first();
-        $user = User::inRandomOrder()->first();
-
         return [
-            'team_id' => $team->id,
-            'user_id' => $user->id,
+            'team_id' => Team::factory(),
+            'user_id' => User::factory(),
         ];
     }
 }
