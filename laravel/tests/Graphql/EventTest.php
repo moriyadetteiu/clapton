@@ -7,14 +7,9 @@ use Illuminate\Support\Arr;
 
 use App\Models\Team;
 
-// TODO: テスト用のDBを用意したら有効化する
-// use Illuminate\Foundation\Testing\RefreshDatabase;
-
 class EventTest extends TestCase
 {
     use WithFaker;
-    // TODO: テスト用のDBを用意したら有効化する
-    // use RefreshDatabase;
 
     public function testCreateEvent()
     {
