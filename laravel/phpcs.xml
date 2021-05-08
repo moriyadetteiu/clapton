@@ -28,6 +28,7 @@
         <!-- 除外したい項目 -->
         <exclude name="Generic.Files.LineLength"/>
         <exclude name="PSR1.Classes.ClassDeclaration"/>
+        <exclude name="PSR2.Namespaces.UseDeclaration"/>
     </rule>
 
     <arg name="colors"/>
