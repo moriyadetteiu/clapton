@@ -4,19 +4,29 @@ namespace Database\DatasetFactories;
 
 use App\Models\{
     Circle,
+    CirclePlacement,
 };
 
 class CircleDatasetFactory
 {
-    public function create()
+    private $numberOfCreate = 20;
+
+    public function one(): self
+    {
+        $this->numberOfCreate = null;
+        return $this;
+    }
+
+    public function create(): array
     {
         $eventDataset = (new EventDatasetFactory())->create();
         $event = $eventDataset['event'];
         $joinEvent = $eventDataset['joinEvent'];
-        $circle = Circle::factory(20)
-            ->hasCirclePlacements(1, [
-                'event_date_id' => $event->eventDates->random()->id,
-            ])
+        $circlePlacementFactory = CirclePlacement::factory()
+            ->state(['event_date_id' => $event->eventDates->random()->id])
+            ->hasCircleProducts(1);
+        $circle = Circle::factory($this->numberOfCreate)
+            ->has($circlePlacementFactory)
             ->hasCareAboutCircles(1, [
                 'join_event_id' => $joinEvent->id,
             ])

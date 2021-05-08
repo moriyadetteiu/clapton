@@ -4,7 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\{
+    BelongsTo,
+    HasMany
+};
 
 class CirclePlacement extends Model
 {
@@ -28,6 +31,11 @@ class CirclePlacement extends Model
     public function eventDate(): BelongsTo
     {
         return $this->belongsTo(EventDate::class);
+    }
+
+    public function circleProducts(): HasMany
+    {
+        return $this->hasMany(CircleProduct::class);
     }
 
     public function scopeInEvent(Builder $builder, string $eventId): Builder
