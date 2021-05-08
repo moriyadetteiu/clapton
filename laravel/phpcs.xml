@@ -32,5 +32,5 @@
     </rule>
 
     <arg name="colors"/>
-    <arg value="p"/>
+    <arg value="ps"/>
 </ruleset>
