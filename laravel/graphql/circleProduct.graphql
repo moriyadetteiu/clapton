@@ -3,6 +3,7 @@ type CircleProduct {
     name: String!
     price: Int
     circlePlacement: CirclePlacement @belongsTo
+    circle_product_classification_id: ID
     circleProductClassification: CircleProductClassification @belongsTo
     created_at: DateTime
     updated_at: DateTime

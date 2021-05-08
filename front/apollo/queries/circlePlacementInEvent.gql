@@ -1,5 +1,6 @@
 query CirclePlacementInEventQuery($circleId: ID!, $eventId: ID!) {
   circlePlacementInEvent(circle_id: $circleId, event_id: $eventId) {
+    id
     event_date_id
     hole
     line
@@ -11,6 +12,16 @@ query CirclePlacementInEventQuery($circleId: ID!, $eventId: ID!) {
       id
       name
       kana
+    }
+    circleProducts {
+      id
+      name
+      price
+      circle_product_classification_id
+      circleProductClassification {
+        id
+        name
+      }
     }
   }
 }

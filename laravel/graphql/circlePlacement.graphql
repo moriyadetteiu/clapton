@@ -8,6 +8,7 @@ type CirclePlacement {
     formatted_placement: String
     circle_placement_classification_id: ID
     circle: Circle @belongsTo
+    circleProducts: [CircleProduct!] @hasMany
     created_at: DateTime
     updated_at: DateTime
 }
