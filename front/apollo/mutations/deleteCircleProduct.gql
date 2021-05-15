@@ -1,7 +1,5 @@
-mutation updateCircleProductMutation($id: ID!, $input: CircleProductInput!) {
-  updateCircleProduct(id: $id, input: $input) {
+mutation deleteCircleProductMutation($id: ID!) {
+  deleteCircleProduct(id: $id) {
     id
-    name
-    price
   }
 }
