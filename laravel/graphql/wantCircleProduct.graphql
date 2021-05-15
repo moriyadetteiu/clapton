@@ -1,0 +1,42 @@
+type WantCircleProduct {
+    id: ID!
+    quantity: Int!
+    want_priority_id: ID!
+    wantPriority: WantPriority! @belongsTo
+    careAboutCircle: CareAboutCircle! @belongsTo
+    circleProduct: CircleProduct! @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+input WantCircleProductInput {
+    quantity: Int!
+    want_priority_id: ID!
+    care_about_circle_id: ID!
+    circle_product_id: ID!
+}
+
+extend type Query @guard {
+    wantCircleProduct(id: ID @eq): WantCircleProduct
+        @find
+    wantCircleProducts: [WantCircleProduct]! @all
+}
+
+extend type Mutation @guard {
+    createWantCircleProduct(
+        input: WantCircleProductInput! @spread
+    ): WantCircleProduct!
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\CreateWantCircleProduct"
+        )
+    updateWantCircleProduct(
+        id: ID!,
+        input: WantCircleProductInput! @spread
+    ): WantCircleProduct!
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\UpdateWantCircleProduct"
+        )
+    deleteWantCircleProduct(
+        id: ID!
+    ): WantCircleProduct @delete
+}
