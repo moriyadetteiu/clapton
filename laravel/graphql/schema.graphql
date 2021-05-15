@@ -18,3 +18,4 @@ scalar DateTime
 #import circle.graphql
 #import careAboutCircle.graphql
 #import circlePlacement.graphql
+#import circleProduct.graphql

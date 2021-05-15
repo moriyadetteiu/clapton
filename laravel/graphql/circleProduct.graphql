@@ -1,0 +1,42 @@
+type CircleProduct {
+    id: ID!
+    name: String!
+    price: Int
+    circlePlacement: CirclePlacement @belongsTo
+    circle_product_classification_id: ID
+    circleProductClassification: CircleProductClassification @belongsTo
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+input CircleProductInput {
+    circle_placement_id: ID
+    circle_product_classification_id: ID!
+    name: String!
+    price: Int!
+}
+
+extend type Query @guard {
+    circleProduct(id: ID @eq): CircleProduct
+        @find
+    circleProducts: [CircleProduct]! @all
+}
+
+extend type Mutation @guard {
+    createCircleProduct(
+        input: CircleProductInput! @spread
+    ): CircleProduct!
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\CreateCircleProduct"
+        )
+    updateCircleProduct(
+        id: ID!,
+        input: CircleProductInput! @spread
+    ): CircleProduct!
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\UpdateCircleProduct"
+        )
+    deleteCircleProduct(
+        id: ID!
+    ): CircleProduct @delete
+}
