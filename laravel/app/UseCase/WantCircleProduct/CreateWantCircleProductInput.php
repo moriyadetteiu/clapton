@@ -11,18 +11,18 @@ class CreateWantCircleProductInput extends UseCaseInput
         return [
             'quantity' => 'required',
             'want_priority_id' => 'required',
-            'care_about_circle_id' => 'required',
-            'circle_product_id' => 'required'
+            'join_event_id' => 'required',
+            'circle_product_id' => 'required',
         ];
     }
 
     protected function attributes(): array
     {
         return [
-            'quantity' => '',
-            'want_priority_id' => '',
-            'care_about_circle_id' => '',
-            'circle_product_id' => ''
+            'quantity' => '個数',
+            'want_priority_id' => '優先度',
+            'join_event_id' => 'イベント参加番号',
+            'circle_product_id' => '頒布物番号',
         ];
     }
 }

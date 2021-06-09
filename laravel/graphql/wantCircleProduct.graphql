@@ -12,8 +12,8 @@ type WantCircleProduct {
 input WantCircleProductInput {
     quantity: Int!
     want_priority_id: ID!
-    care_about_circle_id: ID!
-    circle_product_id: ID!
+    join_event_id: ID
+    circle_product_id: ID
 }
 
 extend type Query @guard {

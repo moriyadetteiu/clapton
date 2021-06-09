@@ -1,0 +1,10 @@
+mutation updateWantCircleProductMutation(
+  $id: ID!
+  $input: WantCircleProductInput!
+) {
+  updateWantCircleProduct(id: $id, input: $input) {
+    id
+    quantity
+    want_priority_id
+  }
+}

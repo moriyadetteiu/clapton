@@ -1,0 +1,7 @@
+mutation createWantCircleProductMutation($input: WantCircleProductInput!) {
+  createWantCircleProduct(input: $input) {
+    id
+    quantity
+    want_priority_id
+  }
+}

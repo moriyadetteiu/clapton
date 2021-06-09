@@ -76,10 +76,13 @@ import {
   CircleProductClassification,
   CircleProductClassificationsQuery,
   CreateCircleProductMutation,
+  CreateWantCircleProductMutation,
   UpdateCircleProductMutation,
+  UpdateWantCircleProductMutation,
   WantCircleProductInput,
   WantPrioritiesQuery,
   WantPriority,
+  WantCircleProduct,
 } from '~/apollo/graphql'
 import {
   CreateCircleProductInputValidation,
@@ -99,8 +102,6 @@ const initialCircleProductInput: CircleProductInput = {
 const initialWantCircleProductInput: WantCircleProductInput = {
   quantity: 1,
   want_priority_id: '',
-  care_about_circle_id: '',
-  circle_product_id: '',
 }
 
 @Component({
@@ -140,6 +141,9 @@ export default class CircleProductForm extends Vue {
   @Prop({ type: String, required: true })
   private circlePlacementId!: string
 
+  @Prop({ type: String, required: true })
+  private joinEventId!: string
+
   @Prop({ type: Object as PropType<CircleProduct> })
   private circleProduct?: CircleProduct
 
@@ -151,6 +155,7 @@ export default class CircleProductForm extends Vue {
   private onUpdateCircleProduct(): void {
     if (!this.circleProduct) {
       this.input = { ...initialCircleProductInput }
+      this.wantInput = { ...initialWantCircleProductInput }
       return
     }
     const input = {}
@@ -158,27 +163,66 @@ export default class CircleProductForm extends Vue {
       ;(input as any)[key] = (this.circleProduct as any)[key]
     })
     this.input = input as CircleProductInput
+
+    const wantCircleProduct = this.wantCircleProduct
+    if (!wantCircleProduct) {
+      this.wantInput = { ...initialWantCircleProductInput }
+      return
+    }
+    const wantInput = {}
+    Object.keys(initialWantCircleProductInput).forEach((key) => {
+      ;(wantInput as any)[key] = (wantCircleProduct as any)[key]
+    })
+    this.wantInput = wantInput as WantCircleProductInput
   }
 
   private async submit() {
     const observer = this.$refs.validationObserver
     const isValid = await observer.validate()
     if (isValid) {
-      const mutationName = this.isCreate
-        ? 'createCircleProductMutation'
-        : 'updateCircleProductMutation'
-      const circleProduct = await this.$apollo
-        .mutate(this.mutateOption)
-        .then((res) => res.data![mutationName])
-        .catch((error) => {
-          if (isApolloError(error)) {
-            this.$toasted.global.validationError()
-            this.validation.setBackendErrorsFromAppolo(error)
-          }
-        })
+      const circleProduct = await this.submitCircleProduct()
+      const wantCircleProduct = await this.submitWantCircleProduct(
+        circleProduct.id
+      )
+
       this.$toast.success('保存しました')
-      this.$emit('saved', { circleProduct })
+      this.$emit('saved', { circleProduct, wantCircleProduct })
     }
+  }
+
+  private async submitCircleProduct() {
+    const mutationName = this.isCreate
+      ? 'createCircleProduct'
+      : 'updateCircleProduct'
+    return await this.$apollo
+      .mutate(this.mutateOption)
+      .then((res) => res.data![mutationName])
+      .catch((error) => {
+        if (isApolloError(error)) {
+          this.$toasted.global.validationError()
+          this.validation.setBackendErrorsFromAppolo(error)
+        }
+      })
+  }
+
+  private async submitWantCircleProduct(circleProductId: string) {
+    const wantMutationName = this.isCreate
+      ? 'createWantCircleProduct'
+      : 'updateWantCircleProduct'
+    const wantMutateOption = this.wantMutateOption
+    wantMutateOption.variables!.input = {
+      ...wantMutateOption.variables!.input,
+      circle_product_id: circleProductId,
+    }
+    const wantCircleProduct = await this.$apollo
+      .mutate(this.wantMutateOption)
+      .then((res) => res.data![wantMutationName])
+      .catch((error) => {
+        if (isApolloError(error)) {
+          this.$toasted.global.validationError()
+          this.validation.setBackendErrorsFromAppolo(error)
+        }
+      })
   }
 
   private get isCreate(): boolean {
@@ -203,6 +247,41 @@ export default class CircleProductForm extends Vue {
         input,
       },
     }
+  }
+
+  private get wantMutateOption(): MutationOptions {
+    const input = {
+      ...this.wantInput,
+    }
+    if (this.isCreate) {
+      input.join_event_id = this.joinEventId
+      return {
+        mutation: CreateWantCircleProductMutation,
+        variables: { input },
+      }
+    }
+    return {
+      mutation: UpdateWantCircleProductMutation,
+      variables: {
+        id: this.wantCircleProduct!.id,
+        input,
+      },
+    }
+  }
+
+  private get wantCircleProduct(): WantCircleProduct | null {
+    if (!this.circleProduct || !this.circleProduct.wantCircleProducts) {
+      return null
+    }
+    console.log(this.circleProduct!.wantCircleProducts)
+    const targetWantCircleProduct = this.circleProduct!.wantCircleProducts!.find(
+      (wantCircleProduct) =>
+        wantCircleProduct!.careAboutCircle.join_event_id === this.joinEventId
+    )
+    if (!targetWantCircleProduct) {
+      return null
+    }
+    return targetWantCircleProduct
   }
 }
 </script>

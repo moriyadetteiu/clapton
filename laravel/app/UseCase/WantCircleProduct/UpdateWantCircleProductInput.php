@@ -8,9 +8,13 @@ class UpdateWantCircleProductInput extends CreateWantCircleProductInput
 {
     protected function rules(): array
     {
-        return array_merge(parent::rules(), [
+        $rules = array_merge(parent::rules(), [
             'id' => 'required',
         ]);
+
+        return collect($rules)
+            ->except(['circle_product_id', 'join_event_id'])
+            ->toArray();
     }
 
     protected function attributes(): array

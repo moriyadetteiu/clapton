@@ -20,13 +20,17 @@ class WantCircleProductTest extends TestCase
         $circleProduct = $circle->circlePlacements()->first()->circleProducts()->first();
         $wantCircleProductDefinition = WantCircleProduct::factory()->definition();
         $careAboutCircle = $circle->careAboutCircles()->first();
+        $joinEvent = $dataset['joinEvent'];
         $team = $dataset['team'];
         $wantPriority = $team->wantPriorities()->inRandomOrder()->first();
         $createWantCircleProductInput = array_merge($wantCircleProductDefinition, [
             'circle_product_id' => $circleProduct->id,
-            'care_about_circle_id' => $careAboutCircle->id,
+            'join_event_id' => $joinEvent->id,
             'want_priority_id' => $wantPriority->id,
         ]);
+        $createWantCircleProductInput = collect($createWantCircleProductInput)
+            ->except(['care_about_circle_id'])
+            ->toArray();
 
         $response = $this
             ->actingAsUser()
@@ -52,9 +56,10 @@ class WantCircleProductTest extends TestCase
 
         $expectedWantCircleProductData = Arr::except($createWantCircleProductInput, [
             'circle_product_id',
-            'care_about_circle_id',
+            'join_event_id',
             'want_priority_id',
         ]);
+
         $response
             ->assertStatus(200)
             ->assertJson([
@@ -66,7 +71,7 @@ class WantCircleProductTest extends TestCase
 
         $this->assertDatabaseHas('want_circle_products', $expectedWantCircleProductData);
         $this->assertEquals($createWantCircleProductInput['circle_product_id'], $responseData['circleProduct']['id']);
-        $this->assertEquals($createWantCircleProductInput['care_about_circle_id'], $responseData['careAboutCircle']['id']);
+        $this->assertEquals($careAboutCircle->id, $responseData['careAboutCircle']['id']);
         $this->assertEquals($createWantCircleProductInput['want_priority_id'], $responseData['wantPriority']['id']);
     }
 
@@ -76,18 +81,15 @@ class WantCircleProductTest extends TestCase
 
         $wantCircleProduct = WantCircleProduct::factory()->create();
 
-        $circle = $dataset['circle'];
-        $circleProduct = $circle->circlePlacements()->first()->circleProducts()->first();
         $wantCircleProductDefinition = WantCircleProduct::factory()->definition();
-        $careAboutCircle = $circle->careAboutCircles()->first();
         $team = $dataset['team'];
         $wantPriority = $team->wantPriorities()->inRandomOrder()->first();
-        $createWantCircleProductInput = array_merge($wantCircleProductDefinition, [
-            'circle_product_id' => $circleProduct->id,
-            'care_about_circle_id' => $careAboutCircle->id,
+        $updateWantCircleProductInput = array_merge($wantCircleProductDefinition, [
             'want_priority_id' => $wantPriority->id,
         ]);
-
+        $updateWantCircleProductInput = collect($updateWantCircleProductInput)
+            ->except(['care_about_circle_id', 'circle_product_id'])
+            ->toArray();
 
         $response = $this
             ->actingAsUser()
@@ -109,12 +111,10 @@ class WantCircleProductTest extends TestCase
                 }
             ', [
                 'id' => $wantCircleProduct->id,
-                'input' => $createWantCircleProductInput
+                'input' => $updateWantCircleProductInput
             ]);
 
-        $expectedWantCircleProductData = Arr::except($createWantCircleProductInput, [
-            'circle_product_id',
-            'care_about_circle_id',
+        $expectedWantCircleProductData = Arr::except($updateWantCircleProductInput, [
             'want_priority_id',
         ]);
         $response
@@ -127,8 +127,6 @@ class WantCircleProductTest extends TestCase
         $responseData = $response->json('data.updateWantCircleProduct');
 
         $this->assertDatabaseHas('want_circle_products', $expectedWantCircleProductData);
-        $this->assertEquals($createWantCircleProductInput['circle_product_id'], $responseData['circleProduct']['id']);
-        $this->assertEquals($createWantCircleProductInput['care_about_circle_id'], $responseData['careAboutCircle']['id']);
-        $this->assertEquals($createWantCircleProductInput['want_priority_id'], $responseData['wantPriority']['id']);
+        $this->assertEquals($updateWantCircleProductInput['want_priority_id'], $responseData['wantPriority']['id']);
     }
 }
