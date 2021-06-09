@@ -22,7 +22,7 @@ export default {
     IS_USE_MOCK_SERVER: process.env.IS_USE_MOCK_SERVER === 'true',
     HTTP_ENDPOINT: process.env.HTTP_ENDPOINT ?? 'http://laravel:10800',
     BROWSER_HTTP_ENDPOINT:
-      process.env.BROWSER_HTTP_ENDPOINT ?? 'http://localhost:10800',
+      process.env.BROWSER_HTTP_ENDPOINT ?? 'http://localhost:20080',
     MOCK_BROWSER_HTTP_ENDPOINT:
       process.env.MOCK_BROWSER_HTTP_ENDPOINT ?? 'http://localhost:4000',
     MOCK_HTTP_ENDPOINT: process.env.MOCK_HTTP_ENDPOINT ?? 'MOCK_HTTP_ENDPOINT',
