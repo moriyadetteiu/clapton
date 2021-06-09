@@ -5,6 +5,8 @@ namespace Database\DatasetFactories;
 use App\Models\{
     Circle,
     CirclePlacement,
+    CircleProduct,
+    CareAboutCircle,
 };
 
 class CircleDatasetFactory

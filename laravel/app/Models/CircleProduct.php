@@ -3,7 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\{
+    BelongsTo,
+    HasMany,
+};
 
 class CircleProduct extends Model
 {
@@ -19,5 +22,10 @@ class CircleProduct extends Model
     public function circleProductClassification(): BelongsTo
     {
         return $this->belongsTo(CircleProductClassification::class);
+    }
+
+    public function wantCircleProducts(): HasMany
+    {
+        return $this->hasMany(WantCircleProduct::class);
     }
 }

@@ -1,5 +1,6 @@
 type CareAboutCircle {
     id: ID!
+    join_event_id: ID!
     joinEvent: JoinEvent @belongsTo
     circle: Circle @belongsTo
     created_at: DateTime
