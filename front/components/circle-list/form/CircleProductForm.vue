@@ -34,6 +34,28 @@
 
       <v-row dense>
         <v-col cols="12">
+          <v-validate-text-field
+            v-model="wantInput.quantity"
+            type="number"
+            :validation="validation.getItem('quantity')"
+          />
+        </v-col>
+      </v-row>
+
+      <v-row dense>
+        <v-col cols="12">
+          <v-validate-select
+            v-model="wantInput.want_priority_id"
+            :items="wantPriorities"
+            item-text="name"
+            item-value="id"
+            :validation="validation.getItem('want_priority_id')"
+          />
+        </v-col>
+      </v-row>
+
+      <v-row dense>
+        <v-col cols="12">
           <v-btn color="success" @click="submit">登録</v-btn>
           <v-btn @click="$emit('canceled')">キャンセル</v-btn>
         </v-col>
@@ -55,13 +77,30 @@ import {
   CircleProductClassificationsQuery,
   CreateCircleProductMutation,
   UpdateCircleProductMutation,
+  WantCircleProductInput,
+  WantPrioritiesQuery,
+  WantPriority,
 } from '~/apollo/graphql'
-import { CreateCircleProductInputValidation } from '~/validation/validations'
+import {
+  CreateCircleProductInputValidation,
+  CreateWantCircleProductInputValidation,
+} from '~/validation/validations'
+
+const validation = new CreateCircleProductInputValidation().merge(
+  new CreateWantCircleProductInputValidation()
+)
 
 const initialCircleProductInput: CircleProductInput = {
   circle_product_classification_id: '',
   name: '',
   price: 0,
+}
+
+const initialWantCircleProductInput: WantCircleProductInput = {
+  quantity: 1,
+  want_priority_id: '',
+  care_about_circle_id: '',
+  circle_product_id: '',
 }
 
 @Component({
@@ -73,14 +112,27 @@ const initialCircleProductInput: CircleProductInput = {
         return { teamId }
       },
     },
+    wantPriorities: {
+      query: WantPrioritiesQuery,
+      variables() {
+        const teamId = this.teamId
+        return { teamId }
+      },
+    },
   },
 })
 export default class CircleProductForm extends Vue {
-  private validation: CreateCircleProductInputValidation = new CreateCircleProductInputValidation()
+  private validation: CreateCircleProductInputValidation = validation
 
   private input: CircleProductInput = { ...initialCircleProductInput }
 
+  private wantInput: WantCircleProductInput = {
+    ...initialWantCircleProductInput,
+  }
+
   private circleProductClassifications: CircleProductClassification[] = []
+
+  private wantPriorities: WantPriority[] = []
 
   @Prop({ type: String, required: true })
   private teamId!: string
