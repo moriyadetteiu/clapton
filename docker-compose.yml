@@ -18,7 +18,7 @@ services:
             - ./laravel/public:/var/www/html/public
             - ./nginx/logs:/var/log/nginx
         ports:
-            - 10080:80
+            - 20080:80
         networks:
             - backend
             - api
