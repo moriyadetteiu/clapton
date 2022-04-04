@@ -88,6 +88,15 @@ jobs:
       - pull-mock-node_modules
       - pull-laravel-composer
       - run:
+          name: is spell check project dictionary sorted
+          # note: diffコマンドは差分がある場合、終了ステータスが1になるので、ソート前と後に差分があったらCI上でエラーとみなされる
+          command: diff ./cspell/project-words.txt <(cat ./cspell/project-words.txt | sort)
+          when: always
+      - run:
+          name: spell check
+          command: docker-compose exec spell-checker cspell "**/*.php" "**/*.js" "**/*.ts" "**/*.vue" --gitignore
+          when: always
+      - run:
           name: code style check(front)
           command: docker-compose exec front npm run lint
           when: always
