@@ -37,7 +37,7 @@
             v-if="isEditCircleProduct"
             :team-id="teamId"
             :circle-placement-id="circlePlacement.id"
-            :circle-product="edittingCircleProduct"
+            :circle-product="editingCircleProduct"
             :user-id="userId"
             @saved="onSavedCircleProduct"
             @canceled="cancelCircleProduct"
@@ -114,7 +114,7 @@ export default class CircleListForm extends Vue {
 
   private isEditCircleProduct: boolean = false
 
-  private edittingCircleProduct: CircleProduct | null = null
+  private editingCircleProduct: CircleProduct | null = null
 
   private get circle(): Circle {
     return this.circlePlacement?.circle ?? this.nullCircle
@@ -144,12 +144,12 @@ export default class CircleListForm extends Vue {
   }
 
   private addCircleProduct(): void {
-    this.edittingCircleProduct = null
+    this.editingCircleProduct = null
     this.isEditCircleProduct = true
   }
 
   private editCircleProduct(circleProduct: CircleProduct): void {
-    this.edittingCircleProduct = { ...circleProduct }
+    this.editingCircleProduct = { ...circleProduct }
     this.isEditCircleProduct = true
   }
 
@@ -172,7 +172,7 @@ export default class CircleListForm extends Vue {
 
   private cancelCircleProduct(): void {
     this.isEditCircleProduct = false
-    this.edittingCircleProduct = null
+    this.editingCircleProduct = null
   }
 }
 </script>

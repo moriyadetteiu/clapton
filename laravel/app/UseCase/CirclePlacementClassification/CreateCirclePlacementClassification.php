@@ -7,7 +7,7 @@ use App\UseCase\UseCase;
 
 class CreateCirclePlacementClassification extends UseCase
 {
-    public function execute(CreatecirclePlacementClassificationInput $input)
+    public function execute(CreateCirclePlacementClassificationInput $input)
     {
         $circlePlacementClassificationData = $input->toArray();
         $circlePlacementClassification = CirclePlacementClassification::create($circlePlacementClassificationData);
