@@ -21,6 +21,14 @@ export default class Validation {
     this.items = items
   }
 
+  public merge(validation: Validation): Validation {
+    this.items = {
+      ...this.getItems(),
+      ...validation.getItems(),
+    }
+    return this
+  }
+
   public getItem(name: string): ValidationItem {
     return this.items[name]
   }
