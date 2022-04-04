@@ -2,8 +2,9 @@ type WantCircleProduct {
     id: ID!
     quantity: Int!
     want_priority_id: ID!
+    user_id: ID!
     wantPriority: WantPriority! @belongsTo
-    careAboutCircle: CareAboutCircle! @belongsTo
+    user: User! @belongsTo
     circleProduct: CircleProduct! @belongsTo
     created_at: DateTime
     updated_at: DateTime
@@ -12,7 +13,7 @@ type WantCircleProduct {
 input WantCircleProductInput {
     quantity: Int!
     want_priority_id: ID!
-    join_event_id: ID
+    user_id: ID
     circle_product_id: ID
 }
 

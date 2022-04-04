@@ -142,7 +142,7 @@ export default class CircleProductForm extends Vue {
   private circlePlacementId!: string
 
   @Prop({ type: String, required: true })
-  private joinEventId!: string
+  private userId!: string
 
   @Prop({ type: Object as PropType<CircleProduct> })
   private circleProduct?: CircleProduct
@@ -254,7 +254,7 @@ export default class CircleProductForm extends Vue {
       ...this.wantInput,
     }
     if (this.isCreate) {
-      input.join_event_id = this.joinEventId
+      input.user_id = this.userId
       return {
         mutation: CreateWantCircleProductMutation,
         variables: { input },
@@ -274,8 +274,7 @@ export default class CircleProductForm extends Vue {
       return null
     }
     const targetWantCircleProduct = this.circleProduct!.wantCircleProducts!.find(
-      (wantCircleProduct) =>
-        wantCircleProduct!.careAboutCircle.join_event_id === this.joinEventId
+      (wantCircleProduct) => wantCircleProduct!.user_id === this.userId
     )
     if (!targetWantCircleProduct) {
       return null

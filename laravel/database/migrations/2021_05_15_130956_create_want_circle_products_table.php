@@ -22,7 +22,7 @@ class CreateWantCircleProductsTable extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table
-                ->foreignUuid('care_about_circle_id')
+                ->foreignUuid('user_id')
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
@@ -43,6 +43,6 @@ class CreateWantCircleProductsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('wish_circle_products');
+        Schema::dropIfExists('want_circle_products');
     }
 }
