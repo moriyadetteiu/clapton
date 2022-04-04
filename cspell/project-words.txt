@@ -5,9 +5,7 @@ batchload
 beanstalkd
 behaviour
 camelcase
-createcircle
 dont
-editting
 encrypter
 envoyer
 fideloper
@@ -32,7 +30,6 @@ papertrail
 phpredis
 prerendered
 prioritys
-responce
 semibold
 sslmode
 templating
