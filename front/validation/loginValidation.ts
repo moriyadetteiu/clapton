@@ -4,7 +4,7 @@ export class LoginValidation extends Validation {
   constructor() {
     super({
       email: {
-        rules: 'required',
+        rules: 'required|email',
         attribute: 'メールアドレス',
       },
       password: {
