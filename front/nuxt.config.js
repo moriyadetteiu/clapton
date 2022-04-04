@@ -88,7 +88,7 @@ export default {
           edit: colors.green.accent3,
           delete: colors.deepOrange.accent4,
           register: colors.blue.darken2,
-        }
+        },
       },
     },
   },
