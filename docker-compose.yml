@@ -55,6 +55,12 @@ services:
             - frontend
             - api
 
+    spell_checker:
+        build: ./docker/spell_checker
+        tty: true
+        volumes:
+            - ./:/usr/src/app
+
 networks:
     backend:
     frontend:
