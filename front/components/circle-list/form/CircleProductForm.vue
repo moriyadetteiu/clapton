@@ -214,7 +214,7 @@ export default class CircleProductForm extends Vue {
       ...wantMutateOption.variables!.input,
       circle_product_id: circleProductId,
     }
-    const wantCircleProduct = await this.$apollo
+    await this.$apollo
       .mutate(this.wantMutateOption)
       .then((res) => res.data![wantMutationName])
       .catch((error) => {
@@ -273,7 +273,6 @@ export default class CircleProductForm extends Vue {
     if (!this.circleProduct || !this.circleProduct.wantCircleProducts) {
       return null
     }
-    console.log(this.circleProduct!.wantCircleProducts)
     const targetWantCircleProduct = this.circleProduct!.wantCircleProducts!.find(
       (wantCircleProduct) =>
         wantCircleProduct!.careAboutCircle.join_event_id === this.joinEventId

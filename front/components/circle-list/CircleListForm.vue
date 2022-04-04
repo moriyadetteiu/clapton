@@ -20,18 +20,19 @@
           @saved="onSavedCircle"
         />
         <template v-if="circlePlacement && !isEditCircle">
-          <v-row
-            v-show="!isEditCircleProduct"
-            v-for="circleProduct in circleProducts"
-            :key="circleProduct.id"
-          >
-            <v-col cols="12">
-              {{ circleProduct.circleProductClassification.name }}
-              {{ circleProduct.name }}
-              <v-btn @click="editCircleProduct(circleProduct)">編集</v-btn>
-              <v-btn @click="deleteCircleProduct(circleProduct)">削除</v-btn>
-            </v-col>
-          </v-row>
+          <template v-if="!isEditCircleProduct">
+            <v-row
+              v-for="circleProduct in circleProducts"
+              :key="circleProduct.id"
+            >
+              <v-col cols="12">
+                {{ circleProduct.circleProductClassification.name }}
+                {{ circleProduct.name }}
+                <v-btn @click="editCircleProduct(circleProduct)">編集</v-btn>
+                <v-btn @click="deleteCircleProduct(circleProduct)">削除</v-btn>
+              </v-col>
+            </v-row>
+          </template>
           <circle-product-form
             v-if="isEditCircleProduct"
             :team-id="teamId"
