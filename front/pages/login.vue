@@ -38,14 +38,14 @@ export default class Login extends Vue {
   }
 
   private async login() {
-    const responce = await this.$apollo.mutate({
+    const response = await this.$apollo.mutate({
       mutation: LoginMutation,
       variables: {
         input: this.credential,
       },
     })
 
-    const loginData: LoginData = responce.data.login
+    const loginData: LoginData = response.data.login
     const token = loginData.token
 
     if (token) {
