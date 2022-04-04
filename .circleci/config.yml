@@ -94,7 +94,7 @@ jobs:
           when: always
       - run:
           name: spell check
-          command: docker-compose exec spell-checker cspell "**/*.php" "**/*.js" "**/*.ts" "**/*.vue" --gitignore
+          command: docker-compose exec spell_checker cspell "**/*.php" "**/*.js" "**/*.ts" "**/*.vue" --gitignore
           when: always
       - run:
           name: code style check(front)
