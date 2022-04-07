@@ -25,8 +25,9 @@ class UpdateCircleParticipatingInEvent extends UseCase
             $circlePlacement->update($placementData);
 
             $circle->refresh();
+            $circlePlacement->refresh();
 
-            return $circle;
+            return $circlePlacement;
         });
 
         return $circle;

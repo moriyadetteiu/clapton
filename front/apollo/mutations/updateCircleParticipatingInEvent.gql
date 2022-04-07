@@ -4,6 +4,9 @@ mutation UpdateCircleParticipatingInEventMutation(
 ) {
   updateCircleParticipatingInEvent(id: $id, input: $input) {
     id
-    name
+    circle {
+      id
+      name
+    }
   }
 }

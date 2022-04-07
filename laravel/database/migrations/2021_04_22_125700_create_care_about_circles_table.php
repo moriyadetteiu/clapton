@@ -22,7 +22,7 @@ class CreateCareAboutCirclesTable extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table
-                ->foreignUuid('circle_id')
+                ->foreignUuid('circle_placement_id')
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');

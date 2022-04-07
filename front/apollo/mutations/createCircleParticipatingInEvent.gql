@@ -3,6 +3,9 @@ mutation CreateCircleParticipatingInEventMutation(
 ) {
   createCircleParticipatingInEvent(input: $input) {
     id
-    name
+    circle {
+      id
+      name
+    }
   }
 }

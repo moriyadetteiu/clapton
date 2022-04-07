@@ -18,11 +18,11 @@ class CreateCircleParticipatingInEvent extends UseCase
 
             $placementData = $input->getPlacementData();
             $placementData['circle_id'] = $circle->id;
-            CirclePlacement::create($placementData);
+            $circlePlacement = CirclePlacement::create($placementData);
 
             $circle->refresh();
 
-            return $circle;
+            return $circlePlacement;
         });
 
         return $circle;

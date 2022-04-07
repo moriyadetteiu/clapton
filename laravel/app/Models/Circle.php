@@ -11,11 +11,6 @@ class Circle extends Model
 
     protected $fillable = ['name', 'kana', 'memo'];
 
-    public function careAboutCircles(): HasMany
-    {
-        return $this->hasMany(CareAboutCircle::class);
-    }
-
     public function circlePlacements(): HasMany
     {
         return $this->hasMany(CirclePlacement::class);
