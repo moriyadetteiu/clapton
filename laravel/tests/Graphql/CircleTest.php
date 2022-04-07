@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
 
 use App\Models\Circle;
+use App\Models\CirclePlacement;
 use App\Models\Event;
 use App\Models\EventDate;
 use App\Models\Team;
@@ -68,9 +69,12 @@ class CircleTest extends TestCase
                 mutation createCircleParticipatingInEvent($input: CreateCircleParticipatingInEventInput!) {
                     createCircleParticipatingInEvent(input: $input) {
                         id
-                        name
-                        kana
-                        memo
+                        circle {
+                            id
+                            name
+                            kana
+                            memo
+                        }
                     }
                 }
             ', [
@@ -82,14 +86,16 @@ class CircleTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'data' => [
-                    'createCircleParticipatingInEvent' => $expectedCircleData,
-                ]
+                    'createCircleParticipatingInEvent' => [
+                        'circle' => $expectedCircleData,
+                    ],
+                ],
             ]);
         $responseData = $response->json('data.createCircleParticipatingInEvent');
 
-        $circle = Circle::findOrFail($responseData['id']);
+        $circle = Circle::findOrFail($responseData['circle']['id']);
 
-        $placement = $circle->circlePlacements()->first();
+        $placement = CirclePlacement::findOrFail($responseData['id']);
         $expectedPlacement = $createCircleParticipatingInEventInput['placement'];
         $expectedPlacement['circle_id'] = $circle->id;
         $assertionPlacement = Arr::except($placement->toArray(), ['id', 'created_at', 'updated_at']);

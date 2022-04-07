@@ -26,12 +26,12 @@ class CircleDatasetFactory
         $joinEvent = $eventDataset['joinEvent'];
         $circlePlacementFactory = CirclePlacement::factory()
             ->state(['event_date_id' => $event->eventDates->random()->id])
-            ->hasCircleProducts(1);
-        $circle = Circle::factory($this->numberOfCreate)
-            ->has($circlePlacementFactory)
+            ->hasCircleProducts(1)
             ->hasCareAboutCircles(1, [
                 'join_event_id' => $joinEvent->id,
-            ])
+            ]);
+        $circle = Circle::factory($this->numberOfCreate)
+            ->has($circlePlacementFactory)
             ->create();
         return array_merge($eventDataset, compact('circle'));
     }

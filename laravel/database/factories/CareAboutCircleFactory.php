@@ -5,7 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 use App\Models\CareAboutCircle;
-use App\Models\Circle;
+use App\Models\CirclePlacement;
 use App\Models\JoinEvent;
 
 class CareAboutCircleFactory extends Factory
@@ -25,7 +25,7 @@ class CareAboutCircleFactory extends Factory
     public function definition()
     {
         return [
-            'circle_id' => Circle::factory(),
+            'circle_placement_id' => CirclePlacement::factory(),
             'join_event_id' => JoinEvent::factory(),
         ];
     }

@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
 
 use App\Models\Circle;
+use App\Models\CirclePlacement;
 use App\Models\Event;
 use App\Models\EventDate;
 use App\Models\Team;
@@ -46,10 +47,14 @@ class CareAboutCircleTest extends TestCase
         ])->create();
         $circlePlacementClassification = $team->circlePlacementClassifications()->inRandomOrder()->first();
         $circle = Circle::factory()->create();
+        $circlePlacement = CirclePlacement::factory([
+            'circle_id' => $circle->id,
+            'event_date_id' => $eventDate->id,
+        ])->create();
 
 
         $createCircleParticipatingInEventInput = [
-            'circle_id' => $circle->id,
+            'circle_placement_id' => $circlePlacement->id,
             'join_event_id' => $joinEvent->id,
         ];
 
@@ -59,7 +64,7 @@ class CareAboutCircleTest extends TestCase
                 mutation createCareAboutCircle($input: CareAboutCircleInput!) {
                     createCareAboutCircle(input: $input) {
                         id
-                        circle {
+                        circlePlacement {
                             id
                         }
                         joinEvent {
@@ -76,8 +81,8 @@ class CareAboutCircleTest extends TestCase
             ->assertJson([
                 'data' => [
                     'createCareAboutCircle' => [
-                        'circle' => [
-                            'id' => $circle->id,
+                        'circlePlacement' => [
+                            'id' => $circlePlacement->id,
                         ],
                         'joinEvent' => [
                             'id' => $joinEvent->id,

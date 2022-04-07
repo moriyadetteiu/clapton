@@ -31,14 +31,14 @@ extend type Mutation @guard {
         )
     createCircleParticipatingInEvent(
         input: CreateCircleParticipatingInEventInput! @spread
-    ): Circle!
+    ): CirclePlacement!
         @field(
             resolver: "App\\GraphQL\\Mutations\\CreateCircleParticipatingInEvent"
         )
     updateCircleParticipatingInEvent(
         id: ID!,
         input: CreateCircleParticipatingInEventInput! @spread
-    ): Circle!
+    ): CirclePlacement!
         @field(
             resolver: "App\\GraphQL\\Mutations\\UpdateCircleParticipatingInEvent"
         )

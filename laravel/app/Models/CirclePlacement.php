@@ -33,6 +33,11 @@ class CirclePlacement extends Model
         return $this->belongsTo(EventDate::class);
     }
 
+    public function careAboutCircles(): HasMany
+    {
+        return $this->hasMany(CareAboutCircle::class);
+    }
+
     public function circleProducts(): HasMany
     {
         return $this->hasMany(CircleProduct::class);

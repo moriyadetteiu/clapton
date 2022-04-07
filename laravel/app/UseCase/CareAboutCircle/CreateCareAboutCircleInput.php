@@ -10,7 +10,7 @@ class CreateCareAboutCircleInput extends UseCaseInput
     {
         return [
             'join_event_id' => 'required',
-            'circle_id' => 'required',
+            'circle_placement_id' => 'required',
         ];
     }
 
@@ -18,7 +18,7 @@ class CreateCareAboutCircleInput extends UseCaseInput
     {
         return [
             'join_event_id' => 'イベント参加番号',
-            'circle_id' => 'サークル番号',
+            'circle_placement_id' => 'サークル配置番号',
         ];
     }
 }

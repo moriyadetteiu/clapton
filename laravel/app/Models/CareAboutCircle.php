@@ -9,11 +9,11 @@ class CareAboutCircle extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['circle_id', 'join_event_id'];
+    protected $fillable = ['circle_placement_id', 'join_event_id'];
 
-    public function circle(): BelongsTo
+    public function circlePlacement(): BelongsTo
     {
-        return $this->belongsTo(Circle::class);
+        return $this->belongsTo(CirclePlacement::class);
     }
 
     public function joinEvent(): BelongsTo

@@ -225,7 +225,7 @@ export default class CircleForm extends Vue {
       placement: this.circlePlacementInput as CirclePlacementInput,
     }
 
-    const circle = await this.$apollo
+    const circlePlacement = await this.$apollo
       .mutate({
         mutation: CreateCircleParticipatingInEventMutation,
         variables: { input },
@@ -240,7 +240,7 @@ export default class CircleForm extends Vue {
 
     const careAboutCircleInput: CareAboutCircleInput = {
       join_event_id: this.joinEventId,
-      circle_id: circle.id,
+      circle_placement_id: circlePlacement.id,
     }
     await this.$apollo
       .mutate({
@@ -254,7 +254,7 @@ export default class CircleForm extends Vue {
           this.validation.setBackendErrorsFromAppolo(error)
         }
       })
-    return circle
+    return circlePlacement.circle
   }
 
   private async updateCircle() {
@@ -271,7 +271,7 @@ export default class CircleForm extends Vue {
         variables: { id, input },
       })
       .then((res) => {
-        return res.data.updateCircleParticipatingInEvent
+        return res.data.updateCircleParticipatingInEvent.circle
       })
       .catch((error) => {
         if (isApolloError(error)) {
