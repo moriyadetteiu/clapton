@@ -13,7 +13,7 @@ class UpdateWantCircleProductInput extends CreateWantCircleProductInput
         ]);
 
         return collect($rules)
-            ->except(['circle_product_id', 'user_id'])
+            ->except(['circle_product_id', 'join_event_id'])
             ->toArray();
     }
 

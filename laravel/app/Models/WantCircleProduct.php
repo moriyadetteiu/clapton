@@ -12,13 +12,13 @@ class WantCircleProduct extends Model
     protected $fillable = [
         'quantity',
         'want_priority_id',
-        'user_id',
+        'care_about_circle_id',
         'circle_product_id',
     ];
 
-    public function user(): BelongsTo
+    public function careAboutCircle(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(CareAboutCircle::class);
     }
 
     public function wantPriority(): BelongsTo

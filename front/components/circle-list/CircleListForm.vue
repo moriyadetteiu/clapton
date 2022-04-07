@@ -38,7 +38,7 @@
             :team-id="teamId"
             :circle-placement-id="circlePlacement.id"
             :circle-product="editingCircleProduct"
-            :user-id="userId"
+            :join-event-id="joinEventId"
             @saved="onSavedCircleProduct"
             @canceled="cancelCircleProduct"
           />
@@ -102,9 +102,6 @@ export default class CircleListForm extends Vue {
 
   @Prop({ type: String })
   private joinEventId!: String | null
-
-  @Prop({ type: String })
-  private userId!: String | null
 
   private isEditCircle: boolean = true
 

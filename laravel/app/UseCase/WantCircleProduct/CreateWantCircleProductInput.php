@@ -11,7 +11,7 @@ class CreateWantCircleProductInput extends UseCaseInput
         return [
             'quantity' => 'required',
             'want_priority_id' => 'required',
-            'user_id' => 'required',
+            'join_event_id' => 'required',
             'circle_product_id' => 'required',
         ];
     }
@@ -21,7 +21,7 @@ class CreateWantCircleProductInput extends UseCaseInput
         return [
             'quantity' => '個数',
             'want_priority_id' => '優先度',
-            'user_id' => 'ユーザ番号',
+            'join_event_id' => 'イベント参加番号',
             'circle_product_id' => '頒布物番号',
         ];
     }
