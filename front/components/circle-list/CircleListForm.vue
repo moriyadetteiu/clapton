@@ -133,6 +133,7 @@ export default class CircleListForm extends Vue {
       this.$apollo.queries.circlePlacement.refetch()
     }
     this.isEditCircle = false
+    this.$emit('saved')
   }
 
   private editCircle(): void {
@@ -165,6 +166,7 @@ export default class CircleListForm extends Vue {
   private onSavedCircleProduct(): void {
     this.$apollo.queries.circlePlacement.refetch()
     this.isEditCircleProduct = false
+    this.$emit('saved')
   }
 
   private cancelCircleProduct(): void {

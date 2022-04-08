@@ -5,12 +5,14 @@ batchload
 beanstalkd
 behaviour
 camelcase
+canonicalizing
 dont
 encrypter
 envoyer
 fideloper
 goright
 grapgql
+ifnull
 laracasts
 laravel
 laravel's

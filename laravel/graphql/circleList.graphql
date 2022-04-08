@@ -1,0 +1,49 @@
+type CircleList {
+    id: ID!
+    care_about_circle_id: ID!
+    careAboutCircle: CareAboutCircle @belongsTo
+    circle_placements_id: ID!
+    circlePlacement: CirclePlacement @belongsTo
+    circle_placement_classification_id: ID!
+    circlePlacementClassification: CirclePlacementClassification @belongsTo
+    event_date_id: ID!
+    eventDate: EventDate @belongsTo
+    circle_id: ID!
+    circle: Circle @belongsTo
+    join_event_id: ID!
+    joinEvent: JoinEvent @belongsTo
+    team_id: ID!
+    team: Team @belongsTo
+    event_id: ID!
+    event: Event @belongsTo
+    user_id: ID!
+    user: User @belongsTo
+    want_circle_product_id: ID
+    wantCircleProduct: WantCircleProduct @belongsTo
+    want_priority_id: ID
+    wantPriority: WantPriority @belongsTo
+    circle_product_id: ID
+    circleProduct: CircleProduct @belongsTo
+    circle_product_classification_id: ID
+    circleProductClassification: CircleProductClassification @belongsTo
+    event_date_name: String!
+    placement_hole: String!
+    placement_line: String!
+    placement_number: Int!
+    placement_a_or_b: String!
+    placement_full: String!
+    circle_name: String!
+    circle_placement_classification_name: String!
+    circle_product_classification_name: String
+    circle_product_name: String
+    circle_product_price: Int
+    want_circle_product_quantity: Int
+    want_priority_name: String
+    circle_memo: String
+    user_name: String!
+}
+
+extend type Query @guard {
+    joinEventCircleLists(join_event_id: ID! @eq): [CircleList!]! @all(model: "App\\Models\\ViewCircleList")
+    teamCircleLists(team_id: ID! @eq): [CircleList!]! @all(model: "App\\Models\\ViewCircleList")
+}
