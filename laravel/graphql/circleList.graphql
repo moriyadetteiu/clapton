@@ -31,14 +31,15 @@ type CircleList {
     placement_line: String!
     placement_number: Int!
     placement_a_or_b: String!
+    placement_full: String!
     circle_name: String!
     circle_placement_classification_name: String!
-    circle_product_classification_name: String!
-    circle_product_name: String!
-    circle_product_price: Int!
-    want_circle_product_quantity: Int!
-    want_priority_name: String!
-    circle_memo: String!
+    circle_product_classification_name: String
+    circle_product_name: String
+    circle_product_price: Int
+    want_circle_product_quantity: Int
+    want_priority_name: String
+    circle_memo: String
     user_name: String!
 }
 

@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <join-event-form
       :is-open.sync="isOpenJoinEventForm"
       :event-dates="event.eventDates"
@@ -29,33 +29,22 @@
       :event-id="$route.params.event_id"
       :team-id="$route.params.team_id"
       :join-event-id="joinEvent ? joinEvent.id : null"
+      @saved="onSavedCircle"
     />
 
-    <v-data-table
-      class="mt-5"
-      :headers="headers"
-      :items="circleLists"
-      hide-default-footer
-      disable-pagination
-    >
-      <template v-slot:top>
-        <v-toolbar>
-          <v-toolbar-title>サークルリスト</v-toolbar-title>
-          <v-spacer />
-          <v-btn color="register" @click="openCircleListForm"
-            ><v-icon>mdi-plus</v-icon>追加</v-btn
-          >
-        </v-toolbar>
-      </template>
-    </v-data-table>
+    <circle-list-table
+      :circle-lists="circleLists"
+      @open-circle-list-form="openCircleListForm"
+    />
   </v-container>
 </template>
 
 <script lang="ts">
 import 'vue-apollo'
 import { Vue, Component } from 'nuxt-property-decorator'
-import { DataTableHeader } from 'vuetify/types/index'
 import {
+  CircleList,
+  TeamCircleListsQuery,
   Event,
   EventDate,
   JoinEvent,
@@ -66,11 +55,13 @@ import {
 } from '~/apollo/graphql'
 import JoinEventForm from '~/components/join-event/JoinEventForm.vue'
 import CircleListForm from '~/components/circle-list/CircleListForm.vue'
+import CircleListTable from '~/components/circle-list/CircleListTable.vue'
 
 @Component({
   components: {
     JoinEventForm,
     CircleListForm,
+    CircleListTable,
   },
   apollo: {
     event: {
@@ -93,6 +84,8 @@ import CircleListForm from '~/components/circle-list/CircleListForm.vue'
         const user = this.user
         const teamId: string = this.$route.params.team_id
         const eventId: string = this.$route.params.event_id
+
+        // TODO: gqlの変数をキャメルケースに統一
         return {
           user_id: user.id,
           team_id: teamId,
@@ -104,6 +97,16 @@ import CircleListForm from '~/components/circle-list/CircleListForm.vue'
       },
       update(data) {
         return data.findJoinEvent
+      },
+    },
+    circleLists: {
+      query: TeamCircleListsQuery,
+      variables() {
+        const teamId: string = this.$route.params.team_id
+        return { teamId }
+      },
+      update(data) {
+        return data.teamCircleLists
       },
     },
   },
@@ -124,12 +127,7 @@ export default class CircleListPage extends Vue {
 
   private joinEvent: JoinEvent | null = null
 
-  private readonly headers: DataTableHeader[] = [
-    { text: 'サークル名', value: 'name' },
-  ]
-
-  // TODO: サークルリストが入るようにする、型もgrapgqlの定義を使う
-  private circleLists: { name: string }[] = []
+  private circleLists: CircleList[] = []
 
   private isOpenCircleListForm: boolean = false
 
@@ -158,6 +156,10 @@ export default class CircleListPage extends Vue {
 
   private openCircleListForm(): void {
     this.isOpenCircleListForm = true
+  }
+
+  private onSavedCircle(): void {
+    this.$apollo.queries.circleLists.refetch()
   }
 }
 </script>

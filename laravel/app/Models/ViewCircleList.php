@@ -84,4 +84,9 @@ class ViewCircleList extends Model
     {
         return $this->belongsTo(CircleProductClassification::class);
     }
+
+    public function getPlacementFullAttribute(): string
+    {
+        return "{$this->placement_hole}{$this->placement_line}-{$this->placement_number}{$this->placement_a_or_b}";
+    }
 }
