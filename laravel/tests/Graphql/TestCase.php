@@ -13,6 +13,7 @@ abstract class TestCase extends BaseTestCase
     use MakesGraphQLRequests;
     use RefreshDatabase;
 
+    protected $dropViews = true;
     protected $loginUser = null;
 
     protected function assertIsUuid($value): void
