@@ -29,7 +29,6 @@
       :event-id="$route.params.event_id"
       :team-id="$route.params.team_id"
       :join-event-id="joinEvent ? joinEvent.id : null"
-      :user-id="user.id"
     />
 
     <v-data-table
