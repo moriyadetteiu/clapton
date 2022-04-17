@@ -34,8 +34,8 @@
 import { PropType } from 'vue'
 import { Vue, Component, Prop, Emit } from 'nuxt-property-decorator'
 import { DataTableHeader } from 'vuetify/types/index'
-import { CircleList } from '~/apollo/graphql'
 import TableStateInterface from './table/TableStateInterface'
+import { CircleList } from '~/apollo/graphql'
 
 @Component({})
 export default class CircleListTable extends Vue {

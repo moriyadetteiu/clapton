@@ -32,7 +32,7 @@
       @saved="onSavedCircle"
     />
 
-    <v-tabs class="mt-5" v-model="selectedCircleListTabIndex">
+    <v-tabs v-model="selectedCircleListTabIndex" class="mt-5">
       <v-tab v-for="circleListTab in circleListTabs" :key="circleListTab.key">
         {{ circleListTab.label }}
       </v-tab>
