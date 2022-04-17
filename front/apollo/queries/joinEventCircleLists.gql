@@ -1,0 +1,29 @@
+query joinEventCircleListsQuery($joinEventId: ID!) {
+  joinEventCircleLists(join_event_id: $joinEventId) {
+    id
+    care_about_circle_id
+    circle_placements_id
+    circle_placement_classification_id
+    event_date_id
+    circle_id
+    join_event_id
+    team_id
+    event_id
+    user_id
+    want_circle_product_id
+    want_priority_id
+    circle_product_id
+    circle_product_classification_id
+    event_date_name
+    placement_full
+    circle_name
+    circle_placement_classification_name
+    circle_product_classification_name
+    circle_product_name
+    circle_product_price
+    want_circle_product_quantity
+    want_priority_name
+    circle_memo
+    user_name
+  }
+}

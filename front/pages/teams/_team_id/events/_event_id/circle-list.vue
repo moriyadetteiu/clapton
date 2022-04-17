@@ -32,8 +32,14 @@
       @saved="onSavedCircle"
     />
 
+    <v-tabs v-model="selectedCircleListTabIndex" class="mt-5">
+      <v-tab v-for="circleListTab in circleListTabs" :key="circleListTab.key">
+        {{ circleListTab.label }}
+      </v-tab>
+    </v-tabs>
     <circle-list-table
       :circle-lists="circleLists"
+      :table-state="circleListState"
       @open-circle-list-form="openCircleListForm"
     />
   </v-container>
@@ -48,6 +54,7 @@ import {
   Event,
   EventDate,
   JoinEvent,
+  JoinEventCircleListsQuery,
   User,
   EventWithDateQuery,
   FindJoinEventWithDateQuery,
@@ -56,6 +63,14 @@ import {
 import JoinEventForm from '~/components/join-event/JoinEventForm.vue'
 import CircleListForm from '~/components/circle-list/CircleListForm.vue'
 import CircleListTable from '~/components/circle-list/CircleListTable.vue'
+import TableStateInterface from '~/components/circle-list/table/TableStateInterface'
+import MyCircleListTableState from '~/components/circle-list/table/MyCircleListTableState'
+import TeamCircleListTableState from '~/components/circle-list/table/TeamCircleListTableState'
+
+type CircleListTab = {
+  key: string
+  label: string
+}
 
 @Component({
   components: {
@@ -99,14 +114,33 @@ import CircleListTable from '~/components/circle-list/CircleListTable.vue'
         return data.findJoinEvent
       },
     },
-    circleLists: {
+    myCircleLists: {
+      query: JoinEventCircleListsQuery,
+      variables() {
+        const joinEventId = this.joinEvent.id
+        return { joinEventId }
+      },
+      update(data): CircleList[] {
+        return data.joinEventCircleLists
+      },
+      skip(): boolean {
+        return (
+          this.selectedCircleListTab.key !== 'myList' ||
+          (this.joinEvent?.id || null) === null
+        )
+      },
+    },
+    teamCircleLists: {
       query: TeamCircleListsQuery,
       variables() {
-        const teamId: string = this.$route.params.team_id
+        const teamId = this.$route.params.team_id
         return { teamId }
       },
-      update(data) {
+      update(data): CircleList[] {
         return data.teamCircleLists
+      },
+      skip(): boolean {
+        return this.selectedCircleListTab.key !== 'teamList'
       },
     },
   },
@@ -127,9 +161,46 @@ export default class CircleListPage extends Vue {
 
   private joinEvent: JoinEvent | null = null
 
-  private circleLists: CircleList[] = []
+  private myCircleLists: CircleList[] = []
+
+  private teamCircleLists: CircleList[] = []
 
   private isOpenCircleListForm: boolean = false
+
+  private selectedCircleListTabIndex: number = 0
+
+  private readonly circleListTabs: CircleListTab[] = [
+    {
+      key: 'myList',
+      label: 'マイリスト',
+    },
+    {
+      key: 'teamList',
+      label: '全体リスト',
+    },
+  ]
+
+  private get circleListState(): TableStateInterface {
+    const circleListStateMap: { [key: string]: TableStateInterface } = {
+      myList: new MyCircleListTableState(),
+      teamList: new TeamCircleListTableState(),
+    }
+
+    return circleListStateMap[this.selectedCircleListTab.key]
+  }
+
+  private get selectedCircleListTab(): CircleListTab {
+    return this.circleListTabs[this.selectedCircleListTabIndex]
+  }
+
+  private get circleLists(): CircleList[] {
+    const circleListMap: { [key: string]: CircleList[] } = {
+      myList: this.myCircleLists,
+      teamList: this.teamCircleLists,
+    }
+
+    return circleListMap[this.selectedCircleListTab.key]
+  }
 
   private isJoin(eventDate: EventDate): boolean {
     if (!this.joinEvent || !this.joinEvent.joinEventDates) {
@@ -159,7 +230,8 @@ export default class CircleListPage extends Vue {
   }
 
   private onSavedCircle(): void {
-    this.$apollo.queries.circleLists.refetch()
+    this.$apollo.queries.myCircleLists.refetch()
+    this.$apollo.queries.teamCircleLists.refetch()
   }
 }
 </script>
