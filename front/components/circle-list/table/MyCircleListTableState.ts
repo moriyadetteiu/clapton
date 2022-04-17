@@ -5,6 +5,7 @@ import TableHeaderDefinition from './TableHeaderDefinitions'
 const tableHeaderKeys = [
   'event_date_name',
   'placement_full',
+  'circle_name',
   'circle_placement_classification_name',
   'circle_product_classification_name',
   'circle_product_name',

@@ -18,6 +18,11 @@ const headers: DataTableHeader[] = [
     width: '90px',
   },
   {
+    text: 'サークル名',
+    value: 'circle_name',
+    width: '250px',
+  },
+  {
     text: '頒布物分類',
     value: 'circle_product_classification_name',
     width: '110px',
