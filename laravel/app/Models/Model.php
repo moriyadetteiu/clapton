@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
 
 use App\Models\Traits\PrimaryKeyUuidUsable;
 
-class Model extends BaseModel
+abstract class Model extends BaseModel
 {
     use PrimaryKeyUuidUsable;
 
