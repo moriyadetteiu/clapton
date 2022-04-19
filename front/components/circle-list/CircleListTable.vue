@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="circleLists"
+    :items="filteredCircleLists"
     height="calc(100vh - 90px)"
     hide-default-footer
     disable-pagination
@@ -24,9 +24,10 @@
           <v-card-text>
             <filter-item
               v-for="filter in filters"
-              :key="filter.key"
-              v-model="filterConditions[filter.conditionDataKey]"
-              :conditions="filter.selections"
+              :key="filter.getKey()"
+              :filter="filter"
+              :value="filterConditions[filter.getKey()]"
+              @change="(e) => onChangedFilterItem(e, filter)"
             />
           </v-card-text>
         </v-card>
@@ -50,47 +51,17 @@ import { PropType } from 'vue'
 import { Vue, Component, Prop, Emit } from 'nuxt-property-decorator'
 import { DataTableHeader } from 'vuetify/types/index'
 import TableStateInterface from './table/TableStateInterface'
+import FilterItem from './table/filters/FilterItem.vue'
+import EventDateFilter from './table/filters/EventDateFilter'
+import CirclePlacementClassificationFilter from './table/filters/CirclePlacementClassificationFilter'
+import WantPriorityFilter from './table/filters/WantPriorityFilter'
+import CircleProductClassificationFilter from './table/filters/CircleProductClassificationFilter'
 import {
-  CircleList,
-  EventDate,
-  CirclePlacementClassification,
-  WantPriority,
-} from '~/apollo/graphql'
-import FilterItem, { FilterSelectionItem } from './table/FilterItem.vue'
-
-type filterFunction = (value: any, search: string | null, item: any) => boolean
-
-type Filter = {
-  selections: Array<FilterSelectionItem>
-  filter: filterFunction
-  key: string
-  conditionDataKey: string
-}
-
-export type FilterConditionItems = {
-  eventDates: EventDate[]
-  circlePlacementClassifications: CirclePlacementClassification[]
-  wantPriorities: WantPriority[]
-}
-
-const makeFilter = (
-  filterConditionItems: any,
-  filterConditions: any,
-  key: string,
-  conditionDataKey: string
-) => {
-  return {
-    selections: filterConditionItems.eventDates ?? [],
-    key,
-    conditionDataKey,
-    filter: (_: any, __: any, item: CircleList) => {
-      return (
-        filterConditions.selectedDates.length === 0 ||
-        filterConditions.selectedDates.includes(item.event_date_id)
-      )
-    },
-  }
-}
+  FilterConditionItems,
+  FilterConditions,
+  Filter,
+} from './table/filters/filterInterfaces'
+import { CircleList } from '~/apollo/graphql'
 
 @Component({
   components: {
@@ -118,36 +89,32 @@ export default class CircleListTable extends Vue {
 
   private isShowFilter: boolean = false
 
-  private filterConditions: { [key: string]: string[] } = {
-    selectedDates: [],
-    selectedWantPriorities: [],
-    selectedCirclePlacementClassifications: [],
-  }
+  private filterConditions: FilterConditions = {}
 
   private get headers(): DataTableHeader[] {
-    const filters = this.filters
-    return this.tableState
-      .getTableHeaders()
-      .map<DataTableHeader>((header: DataTableHeader) => {
-        const foundFilter = filters.find(
-          (filter) => (filter.key = header.value)
-        )
-        if (foundFilter) {
-          header.filter = foundFilter.filter
-        }
-        return header
-      })
+    return this.tableState.getTableHeaders()
   }
 
   private get filters(): Filter[] {
     return [
-      makeFilter(
-        this.filterConditionItems,
-        this.filterConditions,
-        'event_date_name',
-        'selectedDates'
+      new EventDateFilter(this.filterConditionItems.eventDates),
+      new CirclePlacementClassificationFilter(
+        this.filterConditionItems.circlePlacementClassifications
+      ),
+      new WantPriorityFilter(this.filterConditionItems.wantPriorities),
+      new CircleProductClassificationFilter(
+        this.filterConditionItems.circleProductClassifications
       ),
     ]
+  }
+
+  // note: フィルタ後の結果を使いたい & vueのリアクティブの関係でフィルタを扱いづらかったため、自前でフィルタリングを行っている
+  private get filteredCircleLists(): CircleList[] {
+    return this.circleLists.filter((circleList) => {
+      return this.filters.every((filter) => {
+        return filter.filter(this.filterConditions, circleList)
+      })
+    })
   }
 
   @Emit()
@@ -155,6 +122,24 @@ export default class CircleListTable extends Vue {
 
   private toggleShowFilter(): void {
     this.isShowFilter = !this.isShowFilter
+  }
+
+  private onChangedFilterItem(e: string[], filter: Filter) {
+    this.filterConditions = {
+      ...this.filterConditions,
+      [filter.getKey()]: e,
+    }
+  }
+
+  public created() {
+    let filterConditions = {}
+    this.filters.forEach((filter) => {
+      filterConditions = {
+        ...filterConditions,
+        [filter.getKey()]: [],
+      }
+    })
+    this.filterConditions = filterConditions
   }
 }
 </script>

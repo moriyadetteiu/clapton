@@ -1,12 +1,12 @@
 <template>
   <v-row dense>
     <v-col cols="2">
-      <v-subheader>日付</v-subheader>
+      <v-subheader>{{ filter.getLabel() }}</v-subheader>
     </v-col>
     <v-col cols="10">
-      <v-chip-group multiple active-class="primary" v-model="selectedCondition">
+      <v-chip-group v-model="selectedCondition" multiple active-class="primary">
         <v-chip
-          v-for="condition in conditions"
+          v-for="condition in filter.getConditionItems()"
           :key="condition.id"
           :value="condition.id"
         >
@@ -19,26 +19,22 @@
 
 <script lang="ts">
 import { PropType } from 'vue'
-import { Vue, Component, Prop, Emit, Model } from 'nuxt-property-decorator'
-
-export interface FilterSelectionItem {
-  id: string
-  name: string
-}
+import { Vue, Component, Prop, Model } from 'nuxt-property-decorator'
+import { Filter } from './filterInterfaces'
 
 @Component({})
 export default class FilterItem extends Vue {
   @Prop({
-    type: Array as PropType<FilterSelectionItem[]>,
+    type: Object as PropType<Filter>,
     required: true,
   })
-  private conditions!: FilterSelectionItem[]
+  private filter!: Filter
 
   @Model('change', {
-    type: Array,
+    type: Array as PropType<string[]>,
     required: true,
   })
-  private value!: Array<any>
+  private value!: Array<string>
 
   get selectedCondition() {
     return this.value

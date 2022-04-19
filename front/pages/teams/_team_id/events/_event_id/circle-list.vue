@@ -64,12 +64,13 @@ import {
   CirclePlacementClassificationsQuery,
   WantPriority,
   CirclePlacementClassification,
+  CircleProductClassification,
+  CircleProductClassificationsQuery,
 } from '~/apollo/graphql'
 import JoinEventForm from '~/components/join-event/JoinEventForm.vue'
 import CircleListForm from '~/components/circle-list/CircleListForm.vue'
-import CircleListTable, {
-  FilterConditionItems,
-} from '~/components/circle-list/CircleListTable.vue'
+import CircleListTable from '~/components/circle-list/CircleListTable.vue'
+import { FilterConditionItems } from '~/components/circle-list/table/filters/filterInterfaces'
 import TableStateInterface from '~/components/circle-list/table/TableStateInterface'
 import MyCircleListTableState from '~/components/circle-list/table/MyCircleListTableState'
 import TeamCircleListTableState from '~/components/circle-list/table/TeamCircleListTableState'
@@ -170,6 +171,16 @@ type CircleListTab = {
         return data.circlePlacementClassifications
       },
     },
+    circleProductClassifications: {
+      query: CircleProductClassificationsQuery,
+      variables() {
+        const teamId = this.$route.params.team_id
+        return { teamId }
+      },
+      update(data): CircleProductClassification[] {
+        return data.circleProductClassifications
+      },
+    },
   },
 })
 export default class CircleListPage extends Vue {
@@ -192,9 +203,11 @@ export default class CircleListPage extends Vue {
 
   private teamCircleLists: CircleList[] = []
 
-  private wantPriorities!: WantPriority[]
+  private wantPriorities: WantPriority[] = []
 
-  private circlePlacementClassifications!: CirclePlacementClassification[]
+  private circlePlacementClassifications: CirclePlacementClassification[] = []
+
+  private circleProductClassifications: CircleProductClassification[] = []
 
   private isOpenCircleListForm: boolean = false
 
@@ -238,6 +251,7 @@ export default class CircleListPage extends Vue {
       eventDates: this.event.eventDates as EventDate[],
       circlePlacementClassifications: this.circlePlacementClassifications,
       wantPriorities: this.wantPriorities,
+      circleProductClassifications: this.circleProductClassifications,
     }
   }
 
