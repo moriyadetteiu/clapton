@@ -12,10 +12,25 @@
       <v-toolbar>
         <v-toolbar-title>サークルリスト</v-toolbar-title>
         <v-spacer />
-        <v-btn color="register" @click="openCircleListForm"
-          ><v-icon>mdi-plus</v-icon>追加</v-btn
+        <v-btn icon @click="toggleShowFilter"
+          ><v-icon>mdi-filter-variant</v-icon></v-btn
         >
+        <v-btn color="register" icon @click="openCircleListForm">
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
       </v-toolbar>
+      <v-expand-transition>
+        <v-card v-show="isShowFilter">
+          <v-card-text>
+            <filter-item
+              v-for="filter in filters"
+              :key="filter.key"
+              v-model="filterConditions[filter.conditionDataKey]"
+              :conditions="filter.selections"
+            />
+          </v-card-text>
+        </v-card>
+      </v-expand-transition>
     </template>
     <template v-slot:item.circle_product_price="{ item }">
       <template v-if="item.circle_product_price"
@@ -35,9 +50,53 @@ import { PropType } from 'vue'
 import { Vue, Component, Prop, Emit } from 'nuxt-property-decorator'
 import { DataTableHeader } from 'vuetify/types/index'
 import TableStateInterface from './table/TableStateInterface'
-import { CircleList } from '~/apollo/graphql'
+import {
+  CircleList,
+  EventDate,
+  CirclePlacementClassification,
+  WantPriority,
+} from '~/apollo/graphql'
+import FilterItem, { FilterSelectionItem } from './table/FilterItem.vue'
 
-@Component({})
+type filterFunction = (value: any, search: string | null, item: any) => boolean
+
+type Filter = {
+  selections: Array<FilterSelectionItem>
+  filter: filterFunction
+  key: string
+  conditionDataKey: string
+}
+
+export type FilterConditionItems = {
+  eventDates: EventDate[]
+  circlePlacementClassifications: CirclePlacementClassification[]
+  wantPriorities: WantPriority[]
+}
+
+const makeFilter = (
+  filterConditionItems: any,
+  filterConditions: any,
+  key: string,
+  conditionDataKey: string
+) => {
+  return {
+    selections: filterConditionItems.eventDates ?? [],
+    key,
+    conditionDataKey,
+    filter: (_: any, __: any, item: CircleList) => {
+      return (
+        filterConditions.selectedDates.length === 0 ||
+        filterConditions.selectedDates.includes(item.event_date_id)
+      )
+    },
+  }
+}
+
+@Component({
+  components: {
+    FilterItem,
+  },
+})
 export default class CircleListTable extends Vue {
   @Prop({
     type: Object as PropType<TableStateInterface>,
@@ -51,11 +110,51 @@ export default class CircleListTable extends Vue {
   })
   circleLists!: CircleList[]
 
+  @Prop({
+    type: Object as PropType<FilterConditionItems>,
+    required: true,
+  })
+  private filterConditionItems!: FilterConditionItems
+
+  private isShowFilter: boolean = false
+
+  private filterConditions: { [key: string]: string[] } = {
+    selectedDates: [],
+    selectedWantPriorities: [],
+    selectedCirclePlacementClassifications: [],
+  }
+
   private get headers(): DataTableHeader[] {
-    return this.tableState.getTableHeaders()
+    const filters = this.filters
+    return this.tableState
+      .getTableHeaders()
+      .map<DataTableHeader>((header: DataTableHeader) => {
+        const foundFilter = filters.find(
+          (filter) => (filter.key = header.value)
+        )
+        if (foundFilter) {
+          header.filter = foundFilter.filter
+        }
+        return header
+      })
+  }
+
+  private get filters(): Filter[] {
+    return [
+      makeFilter(
+        this.filterConditionItems,
+        this.filterConditions,
+        'event_date_name',
+        'selectedDates'
+      ),
+    ]
   }
 
   @Emit()
   private openCircleListForm() {}
+
+  private toggleShowFilter(): void {
+    this.isShowFilter = !this.isShowFilter
+  }
 }
 </script>
