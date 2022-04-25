@@ -41,6 +41,9 @@
       :circle-lists="circleLists"
       :table-state="circleListState"
       :filter-condition-items="circleListTableFilterConditionItems"
+      :user-id="user.id"
+      :favorites="myFavorites"
+      @update-favorite="onUpdateFavorite"
       @open-circle-list-form="openCircleListForm"
     />
   </v-container>
@@ -66,6 +69,8 @@ import {
   CirclePlacementClassification,
   CircleProductClassification,
   CircleProductClassificationsQuery,
+  Favorite,
+  MyFavoritesQuery,
 } from '~/apollo/graphql'
 import JoinEventForm from '~/components/join-event/JoinEventForm.vue'
 import CircleListForm from '~/components/circle-list/CircleListForm.vue'
@@ -181,6 +186,12 @@ type CircleListTab = {
         return data.circleProductClassifications
       },
     },
+    myFavorites: {
+      query: MyFavoritesQuery,
+      update(data): Favorite[] {
+        return data.myFavorites
+      },
+    },
   },
 })
 export default class CircleListPage extends Vue {
@@ -212,6 +223,8 @@ export default class CircleListPage extends Vue {
   private isOpenCircleListForm: boolean = false
 
   private selectedCircleListTabIndex: number = 0
+
+  private myFavorites: Favorite[] = []
 
   private readonly circleListTabs: CircleListTab[] = [
     {
@@ -285,6 +298,10 @@ export default class CircleListPage extends Vue {
   private onSavedCircle(): void {
     this.$apollo.queries.myCircleLists.refetch()
     this.$apollo.queries.teamCircleLists.refetch()
+  }
+
+  private onUpdateFavorite(): void {
+    this.$apollo.queries.myFavorites.refetch()
   }
 }
 </script>
