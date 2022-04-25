@@ -1,0 +1,36 @@
+type Favorite {
+    id: ID!
+    circle_id: ID!
+    circle: Circle @belongsTo
+    user_id: ID!
+    user: User @belongsTo
+    memo: String
+    created_at: DateTime
+    updated_at: DateTime
+}
+
+input FavoriteInput {
+    circle_id: ID!
+    user_id: ID!
+    memo: String
+}
+
+extend type Query @guard {
+    favorite(id: ID @eq): Favorite
+        @find
+    myFavorites: [Favorite]! @field(
+            resolver: "App\\GraphQL\\Queries\\MyFavorites"
+        )
+}
+
+extend type Mutation @guard {
+    createFavorite(
+        input: FavoriteInput! @spread
+    ): Favorite!
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\CreateFavorite"
+        )
+    deleteFavorite(
+        id: ID!
+    ): Favorite @delete
+}
