@@ -83,11 +83,13 @@ export default {
           edit: colors.green.accent3,
           delete: colors.deepOrange.accent4,
           register: colors.blue.darken2,
+          favorite: colors.yellow.accent3,
         },
         light: {
           edit: colors.green.accent3,
           delete: colors.deepOrange.accent4,
           register: colors.blue.darken2,
+          favorite: colors.yellow.accent4,
         },
       },
     },

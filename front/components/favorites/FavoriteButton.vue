@@ -1,5 +1,5 @@
 <template>
-  <v-btn icon v-bind="$attrs" @click="toggleFavorite">
+  <v-btn icon color="favorite" v-bind="$attrs" @click="toggleFavorite">
     <v-icon> {{ mdiIconName }} </v-icon>
   </v-btn>
 </template>
