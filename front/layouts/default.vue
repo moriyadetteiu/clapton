@@ -73,7 +73,7 @@ type UnderwayCircleListItem = {
 
 @Component({
   apollo: {
-    user: {
+    me: {
       query: MeQuery,
       skip() {
         return !this.$apolloHelpers.getToken()

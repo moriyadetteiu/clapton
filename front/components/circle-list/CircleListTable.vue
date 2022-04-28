@@ -35,7 +35,6 @@
     </template>
     <template v-slot:item.circle_name="{ item }">
       <favorite-button
-        :user-id="userId"
         :circle-id="item.circle_id"
         :favorite="findFavorite(item.circle_id)"
         @update-favorite="$emit('update-favorite')"
@@ -97,12 +96,6 @@ export default class CircleListTable extends Vue {
     required: true,
   })
   private filterConditionItems!: FilterConditionItems
-
-  @Prop({
-    type: String,
-    required: true,
-  })
-  userId!: string
 
   @Prop({
     type: Array as PropType<Favorite[]>,

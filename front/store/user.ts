@@ -5,6 +5,15 @@ export interface UserState {
   loginUser: User | null
 }
 
+const emptyUser: User = {
+  id: '',
+  name: '',
+  name_kana: '',
+  handle_name: '',
+  handle_name_kana: '',
+  affiliateTeams: [],
+}
+
 @Module({
   name: 'user',
   stateFactory: true,
@@ -15,6 +24,10 @@ export default class UserModule extends VuexModule implements UserState {
 
   get loginUser(): User | null {
     return this._loginUser
+  }
+
+  get loginUserOrEmptyUser(): User {
+    return this._loginUser || emptyUser
   }
 
   @VuexMutation
