@@ -21,3 +21,4 @@ scalar DateTime
 #import circleProduct.graphql
 #import wantCircleProduct.graphql
 #import circleList.graphql
+#import favorite.graphql

@@ -1,0 +1,7 @@
+query MyFavoritesQuery {
+  myFavorites {
+    id
+    circle_id
+    user_id
+  }
+}

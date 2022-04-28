@@ -33,6 +33,15 @@
         </v-card>
       </v-expand-transition>
     </template>
+    <template v-slot:item.circle_name="{ item }">
+      <favorite-button
+        :user-id="userId"
+        :circle-id="item.circle_id"
+        :favorite="findFavorite(item.circle_id)"
+        @update-favorite="$emit('update-favorite')"
+      />
+      {{ item.circle_name }}
+    </template>
     <template v-slot:item.circle_product_price="{ item }">
       <template v-if="item.circle_product_price"
         >{{ item.circle_product_price }}円
@@ -51,7 +60,6 @@ import { PropType } from 'vue'
 import { Vue, Component, Prop, Emit } from 'nuxt-property-decorator'
 import { DataTableHeader } from 'vuetify/types/index'
 import TableStateInterface from './table/TableStateInterface'
-import FilterItem from './table/filters/FilterItem.vue'
 import EventDateFilter from './table/filters/EventDateFilter'
 import CirclePlacementClassificationFilter from './table/filters/CirclePlacementClassificationFilter'
 import WantPriorityFilter from './table/filters/WantPriorityFilter'
@@ -61,11 +69,14 @@ import {
   FilterConditions,
   Filter,
 } from './table/filters/filterInterfaces'
-import { CircleList } from '~/apollo/graphql'
+import FilterItem from './table/filters/FilterItem.vue'
+import { CircleList, Favorite } from '~/apollo/graphql'
+import FavoriteButton from '~/components/favorites/FavoriteButton.vue'
 
 @Component({
   components: {
     FilterItem,
+    FavoriteButton,
   },
 })
 export default class CircleListTable extends Vue {
@@ -86,6 +97,18 @@ export default class CircleListTable extends Vue {
     required: true,
   })
   private filterConditionItems!: FilterConditionItems
+
+  @Prop({
+    type: String,
+    required: true,
+  })
+  userId!: string
+
+  @Prop({
+    type: Array as PropType<Favorite[]>,
+    required: true,
+  })
+  favorites!: Favorite[]
 
   private isShowFilter: boolean = false
 
@@ -129,6 +152,14 @@ export default class CircleListTable extends Vue {
       ...this.filterConditions,
       [filter.getKey()]: e,
     }
+  }
+
+  private findFavorite(circleId: string): Favorite | null {
+    return (
+      this.favorites.find(
+        (favorite: Favorite) => favorite.circle_id === circleId
+      ) || null
+    )
   }
 
   public created() {

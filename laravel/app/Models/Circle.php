@@ -15,4 +15,9 @@ class Circle extends Model
     {
         return $this->hasMany(CirclePlacement::class);
     }
+
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(Favorite::class);
+    }
 }

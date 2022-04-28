@@ -38,4 +38,5 @@ templating
 testtoken
 tymon
 vuetify
+vuex
 websockets
