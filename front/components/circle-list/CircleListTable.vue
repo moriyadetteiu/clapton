@@ -69,8 +69,8 @@ import {
   FilterConditions,
   Filter,
 } from './table/filters/filterInterfaces'
-import { CircleList, Favorite } from '~/apollo/graphql'
 import FilterItem from './table/filters/FilterItem.vue'
+import { CircleList, Favorite } from '~/apollo/graphql'
 import FavoriteButton from '~/components/favorites/FavoriteButton.vue'
 
 @Component({
