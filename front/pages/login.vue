@@ -29,8 +29,9 @@
 <script lang="ts">
 import { Vue, Component } from 'nuxt-property-decorator'
 import { ValidationObserver } from 'vee-validate'
-import { LoginMutation, LoginInput, LoginData } from '~/apollo/graphql'
+import { LoginMutation, LoginInput, LoginData, MeQuery } from '~/apollo/graphql'
 import { LoginValidation } from '~/validation/loginValidation'
+import { userStore } from '~/utils/store-accessor'
 
 @Component({})
 export default class Login extends Vue {
@@ -71,8 +72,18 @@ export default class Login extends Vue {
     if (token) {
       this.$toast.success('ログインしました')
       await this.$apolloHelpers.onLogin(token)
+      const loginUser = await this.fetchLoginUser()
+      userStore.setLoginUser(loginUser)
       this.$router.push('/')
     }
+  }
+
+  private async fetchLoginUser() {
+    return this.$apollo
+      .query({
+        query: MeQuery,
+      })
+      .then((result) => result.data.me)
   }
 }
 </script>
