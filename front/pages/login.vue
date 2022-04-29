@@ -74,12 +74,12 @@ export default class Login extends Vue {
       await this.$apolloHelpers.onLogin(token)
       const loginUser = await this.fetchLoginUser()
       userStore.setLoginUser(loginUser)
-      this.$router.push('/')
+      this.$router.push('/mypage')
     }
   }
 
   private async fetchLoginUser() {
-    return this.$apollo
+    return await this.$apollo
       .query({
         query: MeQuery,
       })
