@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import Vuex from 'vuex'
 import Vuetify from 'vuetify'
 import {
   extend,
@@ -11,6 +12,7 @@ import VValidateTextField from '~/components/form/VValidateTextField.vue'
 import '~/vee-validate/password'
 
 Vue.use(Vuetify)
+Vue.use(Vuex)
 
 localize({ ja })
 localize('ja')

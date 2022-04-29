@@ -2,11 +2,17 @@ import { mount } from '@vue/test-utils'
 import flushPromises from 'flush-promises'
 import Login from '~/pages/login.vue'
 import { LoginInput } from '~/apollo/graphql'
+import UserFactory from '~/test/factory/UserFactory'
+import { User } from 'apollo/graphql'
+import { resetStore, store, userStore } from '~/test/utils/vuex-store'
 
 describe('login page', () => {
+  beforeEach(() => {
+    resetStore()
+  })
+
   test('success login test', async () => {
     const token: string = 'testtoken'
-
     const mutate = jest.fn((option) => ({
       data: {
         login: {
@@ -14,14 +20,24 @@ describe('login page', () => {
         },
       },
     }))
+
+    const user: User = new UserFactory().make()
+    const query = jest.fn(async () => ({
+      data: {
+        me: user,
+      },
+    }))
+
     const onLogin = jest.fn()
     const push = jest.fn()
     const success = jest.fn()
 
     const wrapper = mount(Login, {
+      store,
       mocks: {
         $apollo: {
           mutate,
+          query,
         },
         $apolloHelpers: {
           onLogin,
@@ -54,7 +70,8 @@ describe('login page', () => {
     expect(onLogin).toBeCalled()
     expect(onLogin.mock.calls[0][0]).toBe(token)
     expect(push).toBeCalled()
-    expect(push.mock.calls[0][0]).toBe('/')
+    expect(push.mock.calls[0][0]).toBe('/mypage')
     expect(success).toBeCalled()
+    expect(userStore.loginUser?.id || null).toBe(user.id)
   })
 })
