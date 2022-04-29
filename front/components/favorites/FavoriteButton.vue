@@ -12,7 +12,7 @@ import {
   CreateFavoriteMutation,
   DeleteFavoriteMutation,
 } from '~/apollo/graphql'
-import { userStore } from '~/utils/store-accessor'
+import { userStore } from '~/store'
 
 @Component({ inheritAttrs: false })
 export default class FavoriteButton extends Vue {

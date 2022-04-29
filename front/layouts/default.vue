@@ -64,7 +64,7 @@ import {
   LogoutMutation,
   UnderwayEventsForJoinedTeamsQuery,
 } from '~/apollo/graphql'
-import { userStore } from '~/utils/store-accessor'
+import { userStore } from '~/store'
 
 type UnderwayCircleListItem = {
   team: Team

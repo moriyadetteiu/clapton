@@ -42,7 +42,7 @@
 <script lang="ts">
 import { Vue, Component } from 'nuxt-property-decorator'
 import { User } from '~/apollo/graphql'
-import { userStore } from '~/utils/store-accessor'
+import { userStore } from '~/store'
 
 @Component({})
 export default class MyPage extends Vue {
