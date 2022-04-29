@@ -1,10 +1,6 @@
 import { VuexModule, VuexMutation, Module } from 'nuxt-property-decorator'
 import { User } from '~/apollo/graphql'
 
-export interface UserState {
-  loginUser: User | null
-}
-
 const emptyUser: User = {
   id: '',
   name: '',
@@ -19,24 +15,24 @@ const emptyUser: User = {
   stateFactory: true,
   namespaced: true,
 })
-export default class UserModule extends VuexModule implements UserState {
+export default class UserModule extends VuexModule {
   private _loginUser: User | null = null
 
-  get loginUser(): User | null {
+  public get loginUser(): User | null {
     return this._loginUser
   }
 
-  get loginUserOrEmptyUser(): User {
+  public get loginUserOrEmptyUser(): User {
     return this._loginUser || emptyUser
   }
 
   @VuexMutation
-  public setLoginUser(user: User) {
+  public setLoginUser(user: User): void {
     this._loginUser = user
   }
 
   @VuexMutation
-  public logout() {
+  public logout(): void {
     this._loginUser = null
   }
 }
