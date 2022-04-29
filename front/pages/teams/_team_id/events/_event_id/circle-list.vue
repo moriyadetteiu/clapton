@@ -41,7 +41,6 @@
       :circle-lists="circleLists"
       :table-state="circleListState"
       :filter-condition-items="circleListTableFilterConditionItems"
-      :user-id="user.id"
       :favorites="myFavorites"
       @update-favorite="onUpdateFavorite"
       @open-circle-list-form="openCircleListForm"
@@ -59,10 +58,9 @@ import {
   EventDate,
   JoinEvent,
   JoinEventCircleListsQuery,
-  User,
   EventWithDateQuery,
   FindJoinEventWithDateQuery,
-  MeQuery,
+  User,
   WantPrioritiesQuery,
   CirclePlacementClassificationsQuery,
   WantPriority,
@@ -79,6 +77,7 @@ import { FilterConditionItems } from '~/components/circle-list/table/filters/fil
 import TableStateInterface from '~/components/circle-list/table/TableStateInterface'
 import MyCircleListTableState from '~/components/circle-list/table/MyCircleListTableState'
 import TeamCircleListTableState from '~/components/circle-list/table/TeamCircleListTableState'
+import { userStore } from '~/utils/store-accessor'
 
 type CircleListTab = {
   key: string
@@ -97,13 +96,6 @@ type CircleListTab = {
       variables() {
         const eventId: string = this.$route.params.event_id
         return { id: eventId }
-      },
-    },
-    // TODO: 全体でログイン情報は共有する
-    user: {
-      query: MeQuery,
-      update(data) {
-        return data.me
       },
     },
     joinEvent: {
@@ -203,11 +195,6 @@ export default class CircleListPage extends Vue {
 
   private isOpenJoinEventForm: Boolean = false
 
-  private user: User = {
-    id: '',
-    name: '',
-  }
-
   private joinEvent: JoinEvent | null = null
 
   private myCircleLists: CircleList[] = []
@@ -236,6 +223,10 @@ export default class CircleListPage extends Vue {
       label: '全体リスト',
     },
   ]
+
+  private get user(): User {
+    return userStore.loginUserOrEmptyUser
+  }
 
   private get circleListState(): TableStateInterface {
     const circleListStateMap: { [key: string]: TableStateInterface } = {

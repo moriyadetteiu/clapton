@@ -12,6 +12,7 @@ import {
   CreateFavoriteMutation,
   DeleteFavoriteMutation,
 } from '~/apollo/graphql'
+import { userStore } from '~/store'
 
 @Component({ inheritAttrs: false })
 export default class FavoriteButton extends Vue {
@@ -26,13 +27,11 @@ export default class FavoriteButton extends Vue {
     type: String,
     required: true,
   })
-  private userId!: string
-
-  @Prop({
-    type: String,
-    required: true,
-  })
   private circleId!: string
+
+  private get userId(): string {
+    return userStore.loginUserOrEmptyUser.id
+  }
 
   private get isFavorite(): boolean {
     return Boolean(this.favorite)

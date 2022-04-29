@@ -41,26 +41,13 @@
 
 <script lang="ts">
 import { Vue, Component } from 'nuxt-property-decorator'
-import { User, MeQuery } from '~/apollo/graphql'
+import { User } from '~/apollo/graphql'
+import { userStore } from '~/store'
 
-@Component({
-  apollo: {
-    user: {
-      query: MeQuery,
-      update(data) {
-        return data.me
-      },
-    },
-  },
-})
+@Component({})
 export default class MyPage extends Vue {
-  private user: User = {
-    id: '',
-    name: '',
-    name_kana: '',
-    handle_name: '',
-    handle_name_kana: '',
-    affiliateTeams: [],
+  private get user(): User {
+    return userStore.loginUserOrEmptyUser
   }
 }
 </script>

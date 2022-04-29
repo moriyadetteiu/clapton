@@ -4,9 +4,11 @@ import DefaultLayout from '~/layouts/default.vue'
 import UserFactory from '~/test/factory/UserFactory'
 import EventFactory from '~/test/factory/EventFactory'
 import TeamFactory from '~/test/factory/TeamFactory'
+import { resetStore, store } from '~/test/utils/vuex-store'
 
 const makeWrapper = () => {
   return mount(DefaultLayout, {
+    store,
     stubs: [
       'nuxt-link',
       'v-app',
@@ -21,6 +23,10 @@ const makeWrapper = () => {
 }
 
 describe('default layout', () => {
+  beforeEach(() => {
+    resetStore()
+  })
+
   test('display during logout', async () => {
     const wrapper = makeWrapper()
 

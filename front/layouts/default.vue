@@ -64,6 +64,7 @@ import {
   LogoutMutation,
   UnderwayEventsForJoinedTeamsQuery,
 } from '~/apollo/graphql'
+import { userStore } from '~/store'
 
 type UnderwayCircleListItem = {
   team: Team
@@ -72,13 +73,15 @@ type UnderwayCircleListItem = {
 
 @Component({
   apollo: {
-    user: {
+    me: {
       query: MeQuery,
       skip() {
         return !this.$apolloHelpers.getToken()
       },
-      update(data): User {
-        return data.me
+      // note: resultで自前で定義することで、computed setを呼び出し、
+      //       vuexStoreへ直接書き出しを行えるようにしている
+      result(result) {
+        this.user = result?.data?.me || null
       },
     },
     underwayCircleListItems: {
@@ -116,8 +119,6 @@ export default class DefaultLayout extends Vue {
     team_name: string // eslint-disable-line camelcase
   }[] = [{ event_id: 'aaa', event_name: 'event', team_name: 'team' }]
 
-  user: User | null = null
-
   private logout(): void {
     this.$apollo
       .mutate({
@@ -139,6 +140,18 @@ export default class DefaultLayout extends Vue {
   set isDark(dark) {
     if (this?.$vuetify?.theme?.dark !== undefined) {
       this.$vuetify.theme.dark = dark
+    }
+  }
+
+  private get user(): User | null {
+    return userStore.loginUser
+  }
+
+  private set user(user: User | null) {
+    if (user) {
+      userStore.setLoginUser(user)
+    } else {
+      userStore.logout()
     }
   }
 }
