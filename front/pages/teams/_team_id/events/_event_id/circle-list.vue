@@ -286,7 +286,7 @@ export default class CircleListPage extends Vue {
   }
 
   private openCircleListForm(circleList: CircleList | null): void {
-    this.editingCircleId = circleList?.circle_id ?? null
+    this.editingCircleId = circleList?.circle_id ?? null // eslint-disable-line camelcase
     this.isOpenCircleListForm = true
   }
 
