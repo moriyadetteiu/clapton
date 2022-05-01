@@ -29,6 +29,7 @@
       :event-id="$route.params.event_id"
       :team-id="$route.params.team_id"
       :join-event-id="joinEvent ? joinEvent.id : null"
+      :editing-circle-id="editingCircleId"
       @saved="onSavedCircle"
     />
 
@@ -77,7 +78,7 @@ import { FilterConditionItems } from '~/components/circle-list/table/filters/fil
 import TableStateInterface from '~/components/circle-list/table/TableStateInterface'
 import MyCircleListTableState from '~/components/circle-list/table/MyCircleListTableState'
 import TeamCircleListTableState from '~/components/circle-list/table/TeamCircleListTableState'
-import { userStore } from '~/utils/store-accessor'
+import { userStore } from '~/store'
 
 type CircleListTab = {
   key: string
@@ -209,6 +210,8 @@ export default class CircleListPage extends Vue {
 
   private isOpenCircleListForm: boolean = false
 
+  private editingCircleId: String | null = null
+
   private selectedCircleListTabIndex: number = 0
 
   private myFavorites: Favorite[] = []
@@ -282,7 +285,8 @@ export default class CircleListPage extends Vue {
     this.$apollo.queries.joinEvent.refetch()
   }
 
-  private openCircleListForm(): void {
+  private openCircleListForm(circleList: CircleList | null): void {
+    this.editingCircleId = circleList?.circle_id ?? null // eslint-disable-line camelcase
     this.isOpenCircleListForm = true
   }
 

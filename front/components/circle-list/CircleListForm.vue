@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Prop, PropSync, Component } from 'nuxt-property-decorator'
+import { Vue, Prop, PropSync, Component, Watch } from 'nuxt-property-decorator'
 import CircleForm from './form/CircleForm.vue'
 import CircleProductForm from './form/CircleProductForm.vue'
 import {
@@ -103,6 +103,9 @@ export default class CircleListForm extends Vue {
   @Prop({ type: String })
   private joinEventId!: String | null
 
+  @Prop({ type: String, default: null })
+  private editingCircleId!: String | null
+
   private isEditCircle: boolean = true
 
   private circleId: String | null = null
@@ -113,6 +116,11 @@ export default class CircleListForm extends Vue {
 
   private editingCircleProduct: CircleProduct | null = null
 
+  private readonly nullCircle: Circle = {
+    id: '',
+    name: '',
+  }
+
   private get circle(): Circle {
     return this.circlePlacement?.circle ?? this.nullCircle
   }
@@ -121,9 +129,23 @@ export default class CircleListForm extends Vue {
     return this.circlePlacement?.circleProducts ?? []
   }
 
-  private readonly nullCircle: Circle = {
-    id: '',
-    name: '',
+  @Watch('editingCircleId')
+  private onUpdateEditingCircleId(editingCircleId: string | null): void {
+    this.cancelCircleProduct()
+    editingCircleId
+      ? this.initializeDisplayCircle(editingCircleId)
+      : this.clearForm()
+  }
+
+  private clearForm(): void {
+    this.isEditCircle = true
+    this.circleId = null
+    this.circlePlacement = null
+  }
+
+  private initializeDisplayCircle(editingCircleId: string): void {
+    this.isEditCircle = false
+    this.circleId = editingCircleId
   }
 
   private onSavedCircle({ circle }: any): void {
@@ -161,6 +183,7 @@ export default class CircleListForm extends Vue {
 
     this.$toast.success('削除しました')
     this.$apollo.queries.circlePlacement.refetch()
+    this.$emit('saved')
   }
 
   private onSavedCircleProduct(): void {
