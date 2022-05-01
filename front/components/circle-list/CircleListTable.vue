@@ -7,6 +7,7 @@
     disable-pagination
     fixed-header
     multi-sort
+    @dblclick:row="openCircleListForm"
   >
     <template v-slot:top>
       <v-toolbar>
@@ -134,7 +135,10 @@ export default class CircleListTable extends Vue {
   }
 
   @Emit()
-  private openCircleListForm() {}
+  private openCircleListForm(_: any, row?: { item: CircleList }) {
+    const circleList = row?.item || null
+    return circleList
+  }
 
   private toggleShowFilter(): void {
     this.isShowFilter = !this.isShowFilter
