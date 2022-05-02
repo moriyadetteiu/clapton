@@ -30,6 +30,7 @@
       :team-id="$route.params.team_id"
       :join-event-id="joinEvent ? joinEvent.id : null"
       :editing-circle-id="editingCircleId"
+      @update-favorite="onUpdateFavorite"
       @saved="onSavedCircle"
     />
 
@@ -42,7 +43,6 @@
       :circle-lists="circleLists"
       :table-state="circleListState"
       :filter-condition-items="circleListTableFilterConditionItems"
-      :favorites="myFavorites"
       @update-favorite="onUpdateFavorite"
       @open-circle-list-form="openCircleListForm"
     />
@@ -78,7 +78,7 @@ import { FilterConditionItems } from '~/components/circle-list/table/filters/fil
 import TableStateInterface from '~/components/circle-list/table/TableStateInterface'
 import MyCircleListTableState from '~/components/circle-list/table/MyCircleListTableState'
 import TeamCircleListTableState from '~/components/circle-list/table/TeamCircleListTableState'
-import { userStore } from '~/store'
+import { userStore, favoriteStore } from '~/store'
 
 type CircleListTab = {
   key: string
@@ -181,8 +181,10 @@ type CircleListTab = {
     },
     myFavorites: {
       query: MyFavoritesQuery,
-      update(data): Favorite[] {
-        return data.myFavorites
+      // note: resultで自前で定義することで、computed setを呼び出し、
+      //       vuexStoreへ直接書き出しを行えるようにしている
+      result(result) {
+        this.myFavorites = result?.data?.myFavorites || []
       },
     },
   },
@@ -213,8 +215,6 @@ export default class CircleListPage extends Vue {
   private editingCircleId: String | null = null
 
   private selectedCircleListTabIndex: number = 0
-
-  private myFavorites: Favorite[] = []
 
   private readonly circleListTabs: CircleListTab[] = [
     {
@@ -260,6 +260,14 @@ export default class CircleListPage extends Vue {
       wantPriorities: this.wantPriorities,
       circleProductClassifications: this.circleProductClassifications,
     }
+  }
+
+  private set myFavorites(myFavorites: Favorite[]) {
+    favoriteStore.setMyFavorites(myFavorites)
+  }
+
+  private get myFavorites(): Favorite[] {
+    return favoriteStore.myFavorites
   }
 
   private isJoin(eventDate: EventDate): boolean {

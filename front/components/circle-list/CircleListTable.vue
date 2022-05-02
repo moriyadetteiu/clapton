@@ -37,7 +37,6 @@
     <template v-slot:item.circle_name="{ item }">
       <favorite-button
         :circle-id="item.circle_id"
-        :favorite="findFavorite(item.circle_id)"
         @update-favorite="$emit('update-favorite')"
       />
       {{ item.circle_name }}
@@ -70,7 +69,7 @@ import {
   Filter,
 } from './table/filters/filterInterfaces'
 import FilterItem from './table/filters/FilterItem.vue'
-import { CircleList, Favorite } from '~/apollo/graphql'
+import { CircleList } from '~/apollo/graphql'
 import FavoriteButton from '~/components/favorites/FavoriteButton.vue'
 
 @Component({
@@ -97,12 +96,6 @@ export default class CircleListTable extends Vue {
     required: true,
   })
   private filterConditionItems!: FilterConditionItems
-
-  @Prop({
-    type: Array as PropType<Favorite[]>,
-    required: true,
-  })
-  favorites!: Favorite[]
 
   private isShowFilter: boolean = false
 
@@ -149,14 +142,6 @@ export default class CircleListTable extends Vue {
       ...this.filterConditions,
       [filter.getKey()]: e,
     }
-  }
-
-  private findFavorite(circleId: string): Favorite | null {
-    return (
-      this.favorites.find(
-        (favorite: Favorite) => favorite.circle_id === circleId
-      ) || null
-    )
   }
 
   public created() {
