@@ -40,18 +40,16 @@ export default class FavoriteButton extends Vue {
     return this.isFavorite ? 'mdi-star' : 'mdi-star-outline'
   }
 
-  private toggleFavorite() {
-    const result = this.isFavorite
-      ? this.deleteFavorite()
-      : this.createFavorite()
+  private async toggleFavorite() {
+    try {
+      const result = await (this.isFavorite
+        ? this.deleteFavorite()
+        : this.createFavorite())
 
-    result
-      .then(() => {
-        this.$emit('update-favorite')
-      })
-      .catch(() => {
-        this.$toast.error('更新に失敗しました')
-      })
+      await favoriteStore.fetchMyFavorites()
+    } catch (e) {
+      this.$toast.error('更新に失敗しました')
+    }
   }
 
   private createFavorite(): Promise<any> {

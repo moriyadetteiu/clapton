@@ -30,7 +30,6 @@
       :team-id="$route.params.team_id"
       :join-event-id="joinEvent ? joinEvent.id : null"
       :editing-circle-id="editingCircleId"
-      @update-favorite="onUpdateFavorite"
       @saved="onSavedCircle"
     />
 
@@ -43,7 +42,6 @@
       :circle-lists="circleLists"
       :table-state="circleListState"
       :filter-condition-items="circleListTableFilterConditionItems"
-      @update-favorite="onUpdateFavorite"
       @open-circle-list-form="openCircleListForm"
     />
   </v-container>
@@ -68,8 +66,6 @@ import {
   CirclePlacementClassification,
   CircleProductClassification,
   CircleProductClassificationsQuery,
-  Favorite,
-  MyFavoritesQuery,
 } from '~/apollo/graphql'
 import JoinEventForm from '~/components/join-event/JoinEventForm.vue'
 import CircleListForm from '~/components/circle-list/CircleListForm.vue'
@@ -179,14 +175,6 @@ type CircleListTab = {
         return data.circleProductClassifications
       },
     },
-    myFavorites: {
-      query: MyFavoritesQuery,
-      // note: resultで自前で定義することで、computed setを呼び出し、
-      //       vuexStoreへ直接書き出しを行えるようにしている
-      result(result) {
-        this.myFavorites = result?.data?.myFavorites || []
-      },
-    },
   },
 })
 export default class CircleListPage extends Vue {
@@ -262,14 +250,6 @@ export default class CircleListPage extends Vue {
     }
   }
 
-  private set myFavorites(myFavorites: Favorite[]) {
-    favoriteStore.setMyFavorites(myFavorites)
-  }
-
-  private get myFavorites(): Favorite[] {
-    return favoriteStore.myFavorites
-  }
-
   private isJoin(eventDate: EventDate): boolean {
     if (!this.joinEvent || !this.joinEvent.joinEventDates) {
       return false
@@ -303,8 +283,8 @@ export default class CircleListPage extends Vue {
     this.$apollo.queries.teamCircleLists.refetch()
   }
 
-  private onUpdateFavorite(): void {
-    this.$apollo.queries.myFavorites.refetch()
+  public created(): void {
+    favoriteStore.fetchMyFavorites()
   }
 }
 </script>

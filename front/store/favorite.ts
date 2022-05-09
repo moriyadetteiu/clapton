@@ -1,5 +1,10 @@
-import { VuexModule, VuexMutation, Module } from 'nuxt-property-decorator'
-import { Favorite } from '~/apollo/graphql'
+import {
+  VuexModule,
+  VuexMutation,
+  Module,
+  VuexAction,
+} from 'nuxt-property-decorator'
+import { Favorite, MyFavoritesQuery } from '~/apollo/graphql'
 
 @Module({
   name: 'favorite',
@@ -22,5 +27,17 @@ export default class FavoriteModule extends VuexModule {
   @VuexMutation
   public setMyFavorites(myFavorites: Favorite[]): void {
     this._myFavorites = myFavorites
+  }
+
+  @VuexAction
+  public async fetchMyFavorites() {
+    const myFavorites = await this.store.$defaultApolloClient
+      .query({
+        query: MyFavoritesQuery,
+        fetchPolicy: 'network-only',
+      })
+      .then<Favorite[]>((result) => result.data.myFavorites)
+
+    this.setMyFavorites(myFavorites)
   }
 }

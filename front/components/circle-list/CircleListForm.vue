@@ -4,11 +4,7 @@
       <v-card-title>
         <template v-if="isEditCircle">サークルリスト編集</template>
         <template v-else>
-          <favorite-button
-            v-if="circleId"
-            :circleId="circleId"
-            @update-favorite="$emit('update-favorite')"
-          />
+          <favorite-button v-if="circleId" :circleId="circleId" />
           {{ circlePlacement ? circlePlacement.formatted_placement : '' }}
           {{ circle.name }}
           <v-spacer />

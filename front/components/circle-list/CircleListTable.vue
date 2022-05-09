@@ -35,10 +35,7 @@
       </v-expand-transition>
     </template>
     <template v-slot:item.circle_name="{ item }">
-      <favorite-button
-        :circle-id="item.circle_id"
-        @update-favorite="$emit('update-favorite')"
-      />
+      <favorite-button :circle-id="item.circle_id" />
       {{ item.circle_name }}
     </template>
     <template v-slot:item.circle_product_price="{ item }">
