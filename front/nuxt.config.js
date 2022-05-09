@@ -32,7 +32,10 @@ export default {
   privateRuntimeConfig: {},
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-  plugins: ['~/plugins/vee-validate', '~/plugins/apollo/inject-default-apollo-client'],
+  plugins: [
+    '~/plugins/vee-validate',
+    '~/plugins/apollo/inject-default-apollo-client',
+  ],
 
   router: {
     middleware: 'auth',

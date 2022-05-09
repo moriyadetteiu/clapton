@@ -42,10 +42,7 @@ export default class FavoriteButton extends Vue {
 
   private async toggleFavorite() {
     try {
-      const result = await (this.isFavorite
-        ? this.deleteFavorite()
-        : this.createFavorite())
-
+      await (this.isFavorite ? this.deleteFavorite() : this.createFavorite())
       await favoriteStore.fetchMyFavorites()
     } catch (e) {
       this.$toast.error('更新に失敗しました')
