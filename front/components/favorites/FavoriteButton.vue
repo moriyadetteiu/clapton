@@ -6,28 +6,27 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
-import { PropType } from 'vue'
 import {
   Favorite,
   CreateFavoriteMutation,
   DeleteFavoriteMutation,
 } from '~/apollo/graphql'
-import { userStore } from '~/store'
+import { userStore, favoriteStore } from '~/store'
 
+/**
+ * note: このコンポーネントはfavoriteStore（vuex）のmyFavoritesが設定されている前提で使用する必要がある
+ */
 @Component({ inheritAttrs: false })
 export default class FavoriteButton extends Vue {
-  // note: propでの受け渡しをしているが、お気に入りはログイン中のユーザのものしか取り扱わないデータのため
-  //       vuexへの移行を検討している
-  @Prop({
-    type: Object as PropType<Favorite>,
-  })
-  private favorite!: Favorite | null
-
   @Prop({
     type: String,
     required: true,
   })
   private circleId!: string
+
+  private get favorite(): Favorite | null {
+    return favoriteStore.findMyFavorite(this.circleId)
+  }
 
   private get userId(): string {
     return userStore.loginUserOrEmptyUser.id
@@ -41,18 +40,13 @@ export default class FavoriteButton extends Vue {
     return this.isFavorite ? 'mdi-star' : 'mdi-star-outline'
   }
 
-  private toggleFavorite() {
-    const result = this.isFavorite
-      ? this.deleteFavorite()
-      : this.createFavorite()
-
-    result
-      .then(() => {
-        this.$emit('update-favorite')
-      })
-      .catch(() => {
-        this.$toast.error('更新に失敗しました')
-      })
+  private async toggleFavorite() {
+    try {
+      await (this.isFavorite ? this.deleteFavorite() : this.createFavorite())
+      await favoriteStore.fetchMyFavorites()
+    } catch (e) {
+      this.$toast.error('更新に失敗しました')
+    }
   }
 
   private createFavorite(): Promise<any> {

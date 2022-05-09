@@ -42,8 +42,6 @@
       :circle-lists="circleLists"
       :table-state="circleListState"
       :filter-condition-items="circleListTableFilterConditionItems"
-      :favorites="myFavorites"
-      @update-favorite="onUpdateFavorite"
       @open-circle-list-form="openCircleListForm"
     />
   </v-container>
@@ -68,8 +66,6 @@ import {
   CirclePlacementClassification,
   CircleProductClassification,
   CircleProductClassificationsQuery,
-  Favorite,
-  MyFavoritesQuery,
 } from '~/apollo/graphql'
 import JoinEventForm from '~/components/join-event/JoinEventForm.vue'
 import CircleListForm from '~/components/circle-list/CircleListForm.vue'
@@ -78,7 +74,7 @@ import { FilterConditionItems } from '~/components/circle-list/table/filters/fil
 import TableStateInterface from '~/components/circle-list/table/TableStateInterface'
 import MyCircleListTableState from '~/components/circle-list/table/MyCircleListTableState'
 import TeamCircleListTableState from '~/components/circle-list/table/TeamCircleListTableState'
-import { userStore } from '~/store'
+import { userStore, favoriteStore } from '~/store'
 
 type CircleListTab = {
   key: string
@@ -179,12 +175,6 @@ type CircleListTab = {
         return data.circleProductClassifications
       },
     },
-    myFavorites: {
-      query: MyFavoritesQuery,
-      update(data): Favorite[] {
-        return data.myFavorites
-      },
-    },
   },
 })
 export default class CircleListPage extends Vue {
@@ -213,8 +203,6 @@ export default class CircleListPage extends Vue {
   private editingCircleId: String | null = null
 
   private selectedCircleListTabIndex: number = 0
-
-  private myFavorites: Favorite[] = []
 
   private readonly circleListTabs: CircleListTab[] = [
     {
@@ -295,8 +283,8 @@ export default class CircleListPage extends Vue {
     this.$apollo.queries.teamCircleLists.refetch()
   }
 
-  private onUpdateFavorite(): void {
-    this.$apollo.queries.myFavorites.refetch()
+  public created(): void {
+    favoriteStore.fetchMyFavorites()
   }
 }
 </script>

@@ -4,6 +4,7 @@
       <v-card-title>
         <template v-if="isEditCircle">サークルリスト編集</template>
         <template v-else>
+          <favorite-button v-if="circleId" :circle-id="circleId" />
           {{ circlePlacement ? circlePlacement.formatted_placement : '' }}
           {{ circle.name }}
           <v-spacer />
@@ -59,6 +60,7 @@
 import { Vue, Prop, PropSync, Component, Watch } from 'nuxt-property-decorator'
 import CircleForm from './form/CircleForm.vue'
 import CircleProductForm from './form/CircleProductForm.vue'
+import FavoriteButton from '~/components/favorites/FavoriteButton.vue'
 import {
   Circle,
   CirclePlacement,
@@ -71,6 +73,7 @@ import {
   components: {
     CircleForm,
     CircleProductForm,
+    FavoriteButton,
   },
   apollo: {
     circlePlacement: {
