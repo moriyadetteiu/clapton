@@ -36,6 +36,7 @@ semibold
 sslmode
 templating
 testtoken
+tokenable
 tymon
 vuetify
 vuex
