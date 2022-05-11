@@ -19,8 +19,8 @@
         </v-col>
         <v-col cols="12" dense>
           <v-switch
-            class="mt-0"
             v-model="credential.remember_me"
+            class="mt-0"
             label="ログインを保持する"
             dense
           />
@@ -83,7 +83,6 @@ export default class Login extends Vue {
       this.$router.push('/mypage')
     } catch (e) {
       this.$toast.error('ログインに失敗しました')
-      return
     }
   }
 

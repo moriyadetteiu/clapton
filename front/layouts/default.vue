@@ -112,7 +112,7 @@ export default class DefaultLayout extends Vue {
       .mutate({
         mutation: LogoutMutation,
       })
-      .then(async () => {
+      .then(() => {
         this.user = null
         this.$toast.success('ログアウトしました。')
         this.$router.push('/login')
