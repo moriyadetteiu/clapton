@@ -67,7 +67,10 @@ export default {
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
-  axios: {},
+  axios: {
+    baseURL: process.env.BROWSER_HTTP_AXIOS_ENDPOINT ?? 'http://localhost:20080',
+    credentials: true,
+  },
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
   vuetify: {
@@ -102,9 +105,6 @@ export default {
     clientConfigs: {
       default: '~/plugins/apollo/client-config.ts',
     },
-    httpLinkOptions: {
-      credentials: 'omit',
-    },
   },
 
   // toast module configuration(https://github.com/nuxt-community/community-modules/tree/master/packages/toast)
@@ -131,4 +131,6 @@ export default {
   server: {
     host: '0.0.0.0',
   },
+
+  ssr: false,
 }

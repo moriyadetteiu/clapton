@@ -39,9 +39,6 @@ describe('login page', () => {
           mutate,
           query,
         },
-        $apolloHelpers: {
-          onLogin,
-        },
         $router: {
           push,
         },

@@ -67,14 +67,14 @@ export default class Login extends Vue {
       return
     }
 
-    const token = loginData.token
-
-    if (token) {
-      this.$toast.success('ログインしました')
-      await this.$apolloHelpers.onLogin(token)
+    try {
       const loginUser = await this.fetchLoginUser()
       userStore.setLoginUser(loginUser)
+      this.$toast.success('ログインしました')
       this.$router.push('/mypage')
+    } catch (e) {
+      this.$toast.error('ログインに失敗しました')
+      return
     }
   }
 
