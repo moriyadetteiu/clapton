@@ -15,7 +15,8 @@ class Login
     public function __invoke($_, array $args)
     {
         $credentials = Arr::only($args, ['email', 'password']);
-        if (!\Auth::attempt($credentials)) {
+        $rememberMe = $args['remember_me'] ?? false;
+        if (!Auth::attempt($credentials, $rememberMe)) {
             return ['error' => 'Unauthorized'];
         }
 

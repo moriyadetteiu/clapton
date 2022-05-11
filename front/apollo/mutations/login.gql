@@ -1,6 +1,5 @@
 mutation LoginMutation($input: LoginInput!) {
   login(input: $input) {
-    token
     error
   }
 }

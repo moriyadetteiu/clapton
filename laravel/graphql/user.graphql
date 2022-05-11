@@ -20,9 +20,7 @@ input UserInput {
 }
 
 type LoginData {
-    token: String
     error: String
-    expires_in: Int
 }
 
 type LogoutData {
@@ -32,6 +30,7 @@ type LogoutData {
 input LoginInput {
     email: String!
     password: String!
+    remember_me: Boolean
 }
 
 extend type Query @guard {
