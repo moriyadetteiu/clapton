@@ -28,7 +28,6 @@ describe('login page', () => {
       },
     }))
 
-    const onLogin = jest.fn()
     const push = jest.fn()
     const success = jest.fn()
 
@@ -64,8 +63,6 @@ describe('login page', () => {
     const loginInputs: LoginInput = mutate.mock.calls[0][0].variables.input
     expect(loginInputs.email).toBe(credential.email)
     expect(loginInputs.password).toBe(credential.password)
-    expect(onLogin).toBeCalled()
-    expect(onLogin.mock.calls[0][0]).toBe(token)
     expect(push).toBeCalled()
     expect(push.mock.calls[0][0]).toBe('/mypage')
     expect(success).toBeCalled()
