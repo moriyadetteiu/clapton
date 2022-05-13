@@ -9,12 +9,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Laravel\Sanctum\HasApiTokens;
 
 use App\Models\Traits\PrimaryKeyUuidUsable;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable, PrimaryKeyUuidUsable;
+    use HasFactory, Notifiable, PrimaryKeyUuidUsable, HasApiTokens;
 
     // primary key でuuidを使うためにoverrideする
     public $incrementing = false;

@@ -4,6 +4,7 @@ namespace Tests\Graphql;
 
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase as BaseTestCase;
 
 use App\Models\User;
@@ -29,6 +30,8 @@ abstract class TestCase extends BaseTestCase
         }
         $this->loginUser = $user;
 
-        return $this->actingAs($user, 'api');
+        Sanctum::actingAs($user, ['*']);
+
+        return $this;
     }
 }
