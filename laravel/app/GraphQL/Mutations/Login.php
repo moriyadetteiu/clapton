@@ -2,6 +2,8 @@
 
 namespace App\GraphQL\Mutations;
 
+use Auth;
+
 use Illuminate\Support\Arr;
 
 class Login
@@ -12,14 +14,15 @@ class Login
      */
     public function __invoke($_, array $args)
     {
-        $auth = auth('api');
         $credentials = Arr::only($args, ['email', 'password']);
-        if (!$token = $auth->attempt($credentials)) {
+        $rememberMe = $args['remember_me'] ?? false;
+        if (!Auth::attempt($credentials, $rememberMe)) {
             return ['error' => 'Unauthorized'];
         }
+
+        session()->regenerate();
         return [
-            'token' => $token,
-            'expires_in' => $auth->factory()->getTTL() * 60,
+            'error' => null,
         ];
     }
 }

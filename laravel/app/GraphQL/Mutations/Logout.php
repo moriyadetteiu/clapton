@@ -2,8 +2,6 @@
 
 namespace App\GraphQL\Mutations;
 
-use Illuminate\Support\Arr;
-
 class Logout
 {
     /**
@@ -12,8 +10,7 @@ class Logout
      */
     public function __invoke($_, array $args)
     {
-        $auth = auth('api');
-        $auth->logout();
+        auth('web')->logout();
         return [];
     }
 }

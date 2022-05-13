@@ -1,9 +1,9 @@
 import { Context } from '@nuxt/types'
-import { ApolloHelpers } from '@nuxtjs/apollo'
 import { GraphQLError } from 'graphql'
 import { onError } from 'apollo-link-error'
+import { userStore } from '~/store'
 
-export default (context: Context & { $apolloHelpers: ApolloHelpers }) => {
+export default (context: Context) => {
   return onError(({ graphQLErrors }) => {
     if (graphQLErrors) {
       graphQLErrors.forEach(async (graphQLError: GraphQLError) => {
@@ -13,10 +13,7 @@ export default (context: Context & { $apolloHelpers: ApolloHelpers }) => {
           category === 'authentication' &&
           ~message.indexOf('Unauthenticated')
         ) {
-          if (!process.server) {
-            await context.$apolloHelpers.onLogout()
-            location.reload()
-          }
+          userStore.logout()
           await context.redirect('/login')
         }
       })

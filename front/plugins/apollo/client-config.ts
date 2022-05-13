@@ -1,9 +1,9 @@
 import { Context } from '@nuxt/types'
 import { ApolloLink } from 'apollo-link'
-import { ApolloHelpers } from '@nuxtjs/apollo'
 import errorHandler from './error-handler'
+import { csrfLink } from './csrf-link'
 
-export default (context: Context & { $apolloHelpers: ApolloHelpers }) => {
+export default (context: Context) => {
   const IS_USE_MOCK_SERVER: boolean = context.$config.IS_USE_MOCK_SERVER
   const MOCK_HTTP_ENDPOINT: string = context.$config.MOCK_HTTP_ENDPOINT
   const MOCK_BROWSER_HTTP_ENDPOINT: string =
@@ -19,8 +19,8 @@ export default (context: Context & { $apolloHelpers: ApolloHelpers }) => {
       ? MOCK_BROWSER_HTTP_ENDPOINT
       : BROWSER_HTTP_ENDPOINT,
     httpLinkOptions: {
-      credentials: 'omit',
+      credentials: 'include',
     },
-    link: ApolloLink.from([errorLink]),
+    link: ApolloLink.from([csrfLink, errorLink]),
   }
 }

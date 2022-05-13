@@ -15,11 +15,11 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'graphql'],
+    'paths' => ['api/*', 'graphql', '/sanctum/csrf-cookie'],
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => [env('FRONTEND_ORIGIN', 'http://localhost:3000'), env('BACKEND_ORIGIN', 'http://localhost:20080')],
 
     'allowed_origins_patterns' => [],
 
@@ -29,6 +29,6 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => false,
+    'supports_credentials' => true,
 
 ];

@@ -20,9 +20,7 @@ input UserInput {
 }
 
 type LoginData {
-    token: String
     error: String
-    expires_in: Int
 }
 
 type LogoutData {
@@ -32,6 +30,7 @@ type LogoutData {
 input LoginInput {
     email: String!
     password: String!
+    remember_me: Boolean
 }
 
 extend type Query @guard {
@@ -44,7 +43,6 @@ extend type Mutation {
     createUser(input: UserInput! @spread): User!
         @field(resolver: "App\\GraphQL\\Mutations\\CreateUser")
     login(input: LoginInput! @spread): LoginData
-        @middleware(checks: ["guest:api"])
     logout: LogoutData @guard
         @field(resolver: "App\\GraphQL\\Mutations\\Logout")
 }

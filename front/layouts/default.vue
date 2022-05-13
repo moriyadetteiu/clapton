@@ -57,7 +57,6 @@
 import { Vue, Component } from 'nuxt-property-decorator'
 import {
   User,
-  MeQuery,
   Event,
   Team,
   UserAffiliationTeam,
@@ -73,17 +72,6 @@ type UnderwayCircleListItem = {
 
 @Component({
   apollo: {
-    me: {
-      query: MeQuery,
-      skip() {
-        return !this.$apolloHelpers.getToken()
-      },
-      // note: resultで自前で定義することで、computed setを呼び出し、
-      //       vuexStoreへ直接書き出しを行えるようにしている
-      result(result) {
-        this.user = result?.data?.me || null
-      },
-    },
     underwayCircleListItems: {
       query: UnderwayEventsForJoinedTeamsQuery,
       variables() {
@@ -124,9 +112,8 @@ export default class DefaultLayout extends Vue {
       .mutate({
         mutation: LogoutMutation,
       })
-      .then(async () => {
+      .then(() => {
         this.user = null
-        await this.$apolloHelpers.onLogout()
         this.$toast.success('ログアウトしました。')
         this.$router.push('/login')
       })

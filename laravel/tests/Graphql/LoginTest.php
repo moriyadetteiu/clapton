@@ -14,8 +14,6 @@ class LoginTest extends TestCase
         mutation login($input: LoginInput!) {
             login(input: $input) {
                 error
-                token
-                expires_in
             }
         }
     ';
@@ -50,8 +48,6 @@ class LoginTest extends TestCase
         $responseData = $response->json('data.login');
 
         $this->assertNull($responseData['error']);
-        $this->assertIsString($responseData['token']);
-        $this->assertIsInt($responseData['expires_in']);
     }
 
     public function testLoginFail()
@@ -68,7 +64,5 @@ class LoginTest extends TestCase
         $responseData = $response->json('data.login');
 
         $this->assertIsString($responseData['error']);
-        $this->assertNull($responseData['token']);
-        $this->assertNull($responseData['expires_in']);
     }
 }

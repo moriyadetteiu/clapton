@@ -36,7 +36,7 @@ export default class CreateUser extends Vue {
 
       // TODO: 自動的にログインさせる
 
-      this.$router.push('/')
+      this.$router.push('/login')
     })
   }
 }
