@@ -299,6 +299,7 @@ export default class CircleListPage extends Vue {
 
   private onSavedJoinEvent() {
     this.$apollo.queries.joinEvent.refetch()
+    this.$apollo.queries.joinEventUsers.refetch()
   }
 
   private openCircleListForm(circleList: CircleList | null): void {
