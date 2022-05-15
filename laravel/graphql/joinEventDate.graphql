@@ -1,7 +1,8 @@
 type JoinEventDate {
     id: ID!
-    joinEvent: JoinEvent @belongsTo
-    eventDate: EventDate @belongsTo
+    joinEvent: JoinEvent! @belongsTo
+    event_date_id: ID!
+    eventDate: EventDate! @belongsTo
     is_join: Boolean
     number_of_tickets: Int
     created_at: DateTime

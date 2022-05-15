@@ -1,9 +1,9 @@
 type JoinEvent {
     id: ID!
-    user: User @belongsTo
-    team: Team @belongsTo
-    event: Event @belongsTo
-    joinEventDates: [JoinEventDate] @hasMany
+    user: User! @belongsTo
+    team: Team! @belongsTo
+    event: Event! @belongsTo
+    joinEventDates: [JoinEventDate!]! @hasMany
     created_at: DateTime
     updated_at: DateTime
 }
@@ -16,6 +16,7 @@ input JoinEventInput {
 
 extend type Query @guard {
     findJoinEvent(event_id: ID! @eq, user_id: ID! @eq, team_id: ID! @eq): JoinEvent @find
+    joinEvents(event_id: ID! @eq, team_id: ID! @eq): [JoinEvent]! @all
 }
 
 extend type Mutation @guard {
