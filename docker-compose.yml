@@ -32,6 +32,13 @@ services:
             - 13306:3306
         networks:
             - backend
+    redis_session:
+        build: ./docker/redis_session
+        volumes:
+            - ./redis/session:/data
+
+        networks:
+            - backend
     front:
         build: ./docker/front
         volumes:
