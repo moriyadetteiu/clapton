@@ -16,6 +16,11 @@ const makeWrapper = (
     })
   })
   const refetch = jest.fn()
+  const confirm = jest.fn((value) => {
+    return new Promise((resolve) => {
+      resolve(true)
+    })
+  })
   const wrapper = mount(pageComponent, {
     mocks: {
       $route: {
@@ -34,6 +39,9 @@ const makeWrapper = (
       $toast: {
         success: jest.fn(),
         error: jest.fn(),
+      },
+      $confirmDialog: {
+        confirm,
       },
     },
     stubs: {
@@ -94,13 +102,7 @@ export const testMasterPage = (
     await flushPromises()
 
     const vm: any = wrapper.vm as any
-    expect(wrapper.findAll('.v-dialog').length).toBe(0)
-
-    vm.confirmRemove(model)
-    await flushPromises()
-    expect(wrapper.findAll('.v-dialog').length).toBe(1)
-
-    vm.remove()
+    vm.remove(model)
     await flushPromises()
     expect(mutate).toBeCalled()
     expect(mutate.mock.calls[0][0].variables.id).toBe(model.id)

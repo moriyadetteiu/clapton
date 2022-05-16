@@ -40,6 +40,7 @@
     </v-app-bar>
     <v-main>
       <v-container fluid>
+        <confirm-dialog />
         <nuxt />
       </v-container>
     </v-main>
@@ -64,6 +65,7 @@ import {
   UnderwayEventsForJoinedTeamsQuery,
 } from '~/apollo/graphql'
 import { userStore } from '~/store'
+import ConfirmDialog from '~/components/dialog/ConfirmDialog.vue'
 
 type UnderwayCircleListItem = {
   team: Team
@@ -71,6 +73,9 @@ type UnderwayCircleListItem = {
 }
 
 @Component({
+  components: {
+    ConfirmDialog,
+  },
   apollo: {
     underwayCircleListItems: {
       query: UnderwayEventsForJoinedTeamsQuery,
