@@ -9,11 +9,17 @@
       :event-id="$route.params.event_id"
       @saved="onSavedJoinEvent"
     />
+    <join-event-users
+      v-model="isOpenJoinEventUsers"
+      :join-events="joinEventUsers"
+      :event-dates="event.eventDates"
+    />
     <v-expansion-panels accordion>
       <v-expansion-panel>
         <v-expansion-panel-header>参加情報 </v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-btn color="register" @click="openJoinEventForm">登録</v-btn>
+          <v-btn color="primary" @click="openJoinEventUsers">一覧</v-btn>
           <v-row v-for="eventDate in event.eventDates" :key="eventDate.id">
             <v-col cols="4" class="font-weight-bold">
               {{ eventDate.name }}
@@ -57,6 +63,7 @@ import {
   EventDate,
   JoinEvent,
   JoinEventCircleListsQuery,
+  JoinEventUsersQuery,
   EventWithDateQuery,
   FindJoinEventWithDateQuery,
   User,
@@ -68,6 +75,7 @@ import {
   CircleProductClassificationsQuery,
 } from '~/apollo/graphql'
 import JoinEventForm from '~/components/join-event/JoinEventForm.vue'
+import JoinEventUsers from '~/components/circle-list/join-events/JoinEventUsers.vue'
 import CircleListForm from '~/components/circle-list/CircleListForm.vue'
 import CircleListTable from '~/components/circle-list/CircleListTable.vue'
 import { FilterConditionItems } from '~/components/circle-list/table/filters/filterInterfaces'
@@ -86,6 +94,7 @@ type CircleListTab = {
     JoinEventForm,
     CircleListForm,
     CircleListTable,
+    JoinEventUsers,
   },
   apollo: {
     event: {
@@ -114,6 +123,21 @@ type CircleListTab = {
       },
       update(data) {
         return data.findJoinEvent
+      },
+    },
+    joinEventUsers: {
+      query: JoinEventUsersQuery,
+      update(data): JoinEvent[] {
+        return data.joinEvents
+      },
+      variables() {
+        const teamId: string = this.$route.params.team_id
+        const eventId: string = this.$route.params.event_id
+
+        return {
+          teamId,
+          eventId,
+        }
       },
     },
     myCircleLists: {
@@ -198,7 +222,11 @@ export default class CircleListPage extends Vue {
 
   private circleProductClassifications: CircleProductClassification[] = []
 
+  private joinEventUsers: JoinEvent[] = []
+
   private isOpenCircleListForm: boolean = false
+
+  private isOpenJoinEventUsers: boolean = false
 
   private editingCircleId: String | null = null
 
@@ -271,6 +299,7 @@ export default class CircleListPage extends Vue {
 
   private onSavedJoinEvent() {
     this.$apollo.queries.joinEvent.refetch()
+    this.$apollo.queries.joinEventUsers.refetch()
   }
 
   private openCircleListForm(circleList: CircleList | null): void {
@@ -281,6 +310,10 @@ export default class CircleListPage extends Vue {
   private onSavedCircle(): void {
     this.$apollo.queries.myCircleLists.refetch()
     this.$apollo.queries.teamCircleLists.refetch()
+  }
+
+  private openJoinEventUsers(): void {
+    this.isOpenJoinEventUsers = true
   }
 
   public created(): void {
