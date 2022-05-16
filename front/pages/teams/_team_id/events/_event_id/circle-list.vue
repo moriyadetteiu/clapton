@@ -135,8 +135,8 @@ type CircleListTab = {
         const eventId: string = this.$route.params.event_id
 
         return {
-          teamId: teamId,
-          eventId: eventId,
+          teamId,
+          eventId,
         }
       },
     },

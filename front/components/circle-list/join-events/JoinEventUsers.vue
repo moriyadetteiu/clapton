@@ -63,7 +63,7 @@ export default class JoinEventUsers extends Vue {
 
   private get items() {
     return this.joinEvents.flatMap((joinEvent: JoinEvent) => {
-      let item: any = {
+      const item: any = {
         userName: joinEvent.user.name,
       }
       joinEvent.joinEventDates.forEach((joinEventDate: JoinEventDate) => {
