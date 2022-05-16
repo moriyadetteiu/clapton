@@ -37,6 +37,14 @@
         <v-btn nuxt :to="`/teams/${team.id}/want-priorities`"> 優先度 </v-btn>
       </v-card-actions>
     </v-card>
+    <v-card class="mt-3">
+      <v-card-title>所属情報</v-card-title>
+      <v-card-actions>
+        <v-btn nuxt :to="`/teams/${team.id}/affiliation-users`">
+          所属者一覧
+        </v-btn>
+      </v-card-actions>
+    </v-card>
   </v-container>
 </template>
 
@@ -61,6 +69,7 @@ export default class TeamPage extends Vue {
     id: '',
     name: '',
     code: '',
+    userAffiliationTeams: [],
   }
 }
 </script>

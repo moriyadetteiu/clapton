@@ -1,0 +1,12 @@
+query TeamWithAffiliationUsersQuery($id: ID!) {
+  team(id: $id) {
+    id
+    userAffiliationTeams {
+      id
+      user {
+        id
+        name
+      }
+    }
+  }
+}

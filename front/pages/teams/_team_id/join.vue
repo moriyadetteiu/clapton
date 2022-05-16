@@ -29,6 +29,7 @@ export default class JoinPage extends Vue {
     id: '',
     name: '',
     code: '',
+    userAffiliationTeams: [],
   }
 
   private join(): void {
