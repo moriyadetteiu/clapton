@@ -33,7 +33,7 @@ class Team extends Model
         return $this->hasMany(WantPriority::class);
     }
 
-    public function affiliateUsers(): HasMany
+    public function userAffiliationTeams(): HasMany
     {
         return $this->hasMany(UserAffiliationTeam::class);
     }
