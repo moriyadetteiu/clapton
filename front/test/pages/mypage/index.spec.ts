@@ -17,6 +17,7 @@ describe('my page index', () => {
       {
         id: '',
         team: team,
+        user,
       },
     ]
 

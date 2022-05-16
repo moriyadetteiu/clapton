@@ -7,6 +7,7 @@ export default class TeamFactory extends Factory<Team> {
       id: this.faker.random.uuid(),
       code: this.faker.random.words(10),
       name: this.faker.name.title(),
+      userAffiliationTeams: [],
     }
   }
 }
