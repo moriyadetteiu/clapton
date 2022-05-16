@@ -1,0 +1,14 @@
+query JoinEventUsersQuery($teamId: ID!, $eventId: ID!) {
+  joinEvents(team_id: $teamId, event_id: $eventId) {
+    id
+    joinEventDates {
+      id
+      is_join
+      event_date_id
+    }
+    user {
+      id
+      name
+    }
+  }
+}

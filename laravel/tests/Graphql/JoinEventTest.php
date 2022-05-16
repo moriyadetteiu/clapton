@@ -195,4 +195,43 @@ class JoinEventTest extends TestCase
             $this->assertDatabaseHas('join_event_dates', $expectedJoinEventDate);
         }
     }
+
+    public function testJoinEventsForCircleList()
+    {
+        $event = Event::factory()->create();
+        $team = Team::factory()->create();
+        $joinEvents = JoinEvent::factory()->count(3)->create([
+            'event_id' => $event->id,
+            'team_id' => $team->id,
+        ]);
+        $otherJoinEvents = JoinEvent::factory()->create();
+
+        $response = $this
+            ->actingAsUser()
+            ->graphQL('
+                query joinEvents($teamId: ID!, $eventId: ID!) {
+                    joinEvents(team_id: $teamId, event_id: $eventId) {
+                        id
+                        team {
+                            id
+                        }
+                    }
+                }
+            ', [
+                'teamId' => $team->id,
+                'eventId' => $event->id,
+            ]);
+
+        $expectData = $joinEvents->map(fn ($joinEvent) => [
+            'id' => $joinEvent->id,
+            'team' => [
+                'id' => $joinEvent->team_id
+            ]
+        ])->toArray();
+        $result = $response
+            ->assertStatus(200)
+            ->json('data.joinEvents');
+        $this->assertEqualsCanonicalizing($expectData, $result);
+        $this->assertCount($joinEvents->count(), $result);
+    }
 }
