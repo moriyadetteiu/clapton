@@ -35,6 +35,7 @@ export default {
   plugins: [
     '~/plugins/vee-validate',
     '~/plugins/apollo/inject-default-apollo-client',
+    '~/plugins/confirm-dialog',
   ],
 
   router: {

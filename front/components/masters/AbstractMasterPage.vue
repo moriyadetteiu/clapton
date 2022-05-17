@@ -8,7 +8,6 @@
         :team-id="teamId"
         @saved="refresh"
       />
-      <confirm-dialog v-model="isOpenConfirmDialog" @confirmed="remove" />
       <v-data-table
         :headers="headers"
         :items="models"
@@ -28,7 +27,7 @@
           <v-btn color="edit" @click="edit(item)"
             ><v-icon left>mdi-pencil</v-icon>編集</v-btn
           >
-          <v-btn color="delete" @click="confirmRemove(item)"
+          <v-btn color="delete" @click="remove(item)"
             ><v-icon left>mdi-delete</v-icon>削除</v-btn
           >
         </template>
@@ -59,7 +58,6 @@ export default abstract class AbstractMasterPage<
   protected models: Model[] = []
 
   private isOpenFormDialog: boolean = false
-  private isOpenConfirmDialog: boolean = false
   private selectedModel?: Model
 
   private setDefaultSelectedModel(): void {
@@ -76,23 +74,21 @@ export default abstract class AbstractMasterPage<
     this.isOpenFormDialog = true
   }
 
-  private confirmRemove(model: Model): void {
-    this.selectedModel = model
-    this.isOpenConfirmDialog = true
-  }
+  private async remove(model: Model) {
+    if (!(await this.$confirmDialog.confirm())) {
+      return
+    }
 
-  private remove(): void {
     const res = this.$apollo.mutate({
       mutation: this.deleteMutation,
       variables: {
-        id: this.selectedModel?.id,
+        id: model.id,
       },
     })
 
     res
       .then(() => {
         this.$toast.success('削除しました')
-        this.isOpenConfirmDialog = false
         this.refresh()
       })
       .catch(() => {

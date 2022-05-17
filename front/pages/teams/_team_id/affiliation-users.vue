@@ -1,12 +1,11 @@
 <template>
   <v-row>
     <v-col>
-      <confirm-dialog v-model="isOpenConfirmDialog" @confirmed="excludeUser" />
       <v-data-table :headers="headers" :items="items" hide-default-footer>
         <template v-slot:item.operations="{ item }">
           <v-btn
             color="delete"
-            @click="confirmExcludeUser(item.userAffiliationTeamId)"
+            @click="excludeUser(item.userAffiliationTeamId)"
           >
             <v-icon left>mdi-account-remove</v-icon>
             除名
@@ -54,10 +53,6 @@ export default class AffiliationUsersPage extends Vue {
     userAffiliationTeams: [],
   }
 
-  private isOpenConfirmDialog: boolean = false
-
-  private operatingUserAffiliationTeamId: string | null = null
-
   private readonly headers: DataTableHeader[] = [
     {
       text: '名前',
@@ -81,21 +76,19 @@ export default class AffiliationUsersPage extends Vue {
     })
   }
 
-  private confirmExcludeUser(userAffiliationTeamId: string): void {
-    this.operatingUserAffiliationTeamId = userAffiliationTeamId
-    this.isOpenConfirmDialog = true
-  }
+  private async excludeUser(userAffiliationTeamId: string) {
+    if (!(await this.$confirmDialog.confirm('除名します。よろしいですか？'))) {
+      return
+    }
 
-  private async excludeUser() {
     const variables = {
-      userAffiliationTeamId: this.operatingUserAffiliationTeamId,
+      userAffiliationTeamId,
     }
     await this.$apollo.mutate({
       mutation: ExcludeUserForTeamMutation,
       variables,
     })
     this.$apollo.queries.teamWithAffiliationUsers.refetch()
-    this.isOpenConfirmDialog = false
     this.$toast.success('除名しました')
   }
 }
