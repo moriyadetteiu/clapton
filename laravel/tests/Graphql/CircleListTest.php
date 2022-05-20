@@ -50,12 +50,13 @@ class CircleListTest extends TestCase
 
         $dataset = (new CircleDatasetFactory())->create();
         $team = $dataset['team'];
+        $event = $dataset['event'];
 
         $response = $this
             ->actingAsUser()
             ->graphQL('
-                query teamCircleLists($teamId: ID!) {
-                    teamCircleLists(team_id: $teamId) {
+                query teamCircleLists($teamId: ID!, $eventId: ID!) {
+                    teamCircleLists(team_id: $teamId, event_id: $eventId) {
                         circle_id
                         circle_name
                         circle {
@@ -65,6 +66,7 @@ class CircleListTest extends TestCase
                 }
             ', [
                 'teamId' => $team->id,
+                'eventId' => $event->id,
             ])
             ->assertStatus(200);
 

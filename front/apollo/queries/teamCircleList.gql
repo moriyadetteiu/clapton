@@ -1,5 +1,5 @@
-query teamCircleListsQuery($teamId: ID!) {
-  teamCircleLists(team_id: $teamId) {
+query teamCircleListsQuery($teamId: ID!, $eventId: ID!) {
+  teamCircleLists(team_id: $teamId, event_id: $eventId) {
     id
     care_about_circle_id
     circle_placements_id
