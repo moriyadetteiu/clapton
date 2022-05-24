@@ -4,7 +4,8 @@ const findCsrfTokenInCookie = (): string | null => {
   const [_, token] = document.cookie
     .split(';')
     .map((value: string) => {
-      return value.split(/(?<=^[^=]+?)=/)
+      const [key, ...values] = value.split('=')
+      return [key, values.join('=')]
     })
     .find(([key, _]) => {
       return key === 'XSRF-TOKEN'
