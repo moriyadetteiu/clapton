@@ -160,7 +160,8 @@ type CircleListTab = {
       query: TeamCircleListsQuery,
       variables() {
         const teamId = this.$route.params.team_id
-        return { teamId }
+        const eventId = this.$route.params.event_id
+        return { teamId, eventId }
       },
       update(data): CircleList[] {
         return data.teamCircleLists
