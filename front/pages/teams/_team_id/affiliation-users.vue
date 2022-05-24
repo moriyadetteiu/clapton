@@ -1,7 +1,12 @@
 <template>
   <v-row>
     <v-col>
-      <v-data-table :headers="headers" :items="items" hide-default-footer>
+      <v-data-table
+        :headers="headers"
+        :items="items"
+        hide-default-footer
+        disable-pagination
+      >
         <template v-slot:item.operations="{ item }">
           <v-btn
             color="delete"
