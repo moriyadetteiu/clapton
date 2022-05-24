@@ -2,11 +2,11 @@
   <v-app :dark="false">
     <v-app-bar fixed app>
       <v-container v-if="user !== null">
-        <v-menu open-on-hover offset-y>
+        <v-menu open-on-hover offset-y :max-height="headerMenuMaxHeight">
           <template v-slot:activator="{ on, attrs }">
             <v-btn text v-bind="attrs" v-on="on"> リスト </v-btn>
           </template>
-          <v-list>
+          <v-list dense>
             <v-list-item
               v-for="(item, idx) in underwayCircleListItems"
               :key="idx"
@@ -18,11 +18,11 @@
             </v-list-item>
           </v-list>
         </v-menu>
-        <v-menu open-on-hover offset-y>
+        <v-menu open-on-hover offset-y :max-height="headerMenuMaxHeight">
           <template v-slot:activator="{ on, attrs }">
             <v-btn text v-bind="attrs" v-on="on"> 過去リスト </v-btn>
           </template>
-          <v-list>
+          <v-list dense>
             <v-list-item v-for="(listItem, idx) in oldListItems" :key="idx">
               {{ listItem.event_name }} ( {{ listItem.team_name }} )
             </v-list-item>
@@ -133,6 +133,10 @@ export default class DefaultLayout extends Vue {
     if (this?.$vuetify?.theme?.dark !== undefined) {
       this.$vuetify.theme.dark = dark
     }
+  }
+
+  private get headerMenuMaxHeight(): string {
+    return 'calc(100vh - 100px)'
   }
 
   private get user(): User | null {
