@@ -22,17 +22,13 @@
         />
         <template v-if="circlePlacement && !isEditCircle">
           <template v-if="!isEditCircleProduct">
-            <v-row
+            <circle-product-row
               v-for="circleProduct in circleProducts"
               :key="circleProduct.id"
-            >
-              <v-col cols="12">
-                {{ circleProduct.circleProductClassification.name }}
-                {{ circleProduct.name }}
-                <v-btn @click="editCircleProduct(circleProduct)">編集</v-btn>
-                <v-btn @click="deleteCircleProduct(circleProduct)">削除</v-btn>
-              </v-col>
-            </v-row>
+              :circle-product="circleProduct"
+              @delete-circle-product="onDeleteCircleProduct"
+              @edit-circle-product="editCircleProduct"
+            />
           </template>
           <circle-product-form
             v-if="isEditCircleProduct"
@@ -43,15 +39,13 @@
             @saved="onSavedCircleProduct"
             @canceled="cancelCircleProduct"
           />
-          <v-btn
-            v-if="!isEditCircleProduct"
-            color="register"
-            @click="addCircleProduct"
-          >
-            頒布物追加
-          </v-btn>
         </template>
       </v-card-text>
+      <v-card-actions
+        v-if="circlePlacement && !isEditCircle && !isEditCircleProduct"
+      >
+        <v-btn color="register" @click="addCircleProduct"> 頒布物追加 </v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -60,19 +54,20 @@
 import { Vue, Prop, PropSync, Component, Watch } from 'nuxt-property-decorator'
 import CircleForm from './form/CircleForm.vue'
 import CircleProductForm from './form/CircleProductForm.vue'
+import CircleProductRow from './form/CircleProductRow.vue'
 import FavoriteButton from '~/components/favorites/FavoriteButton.vue'
 import {
   Circle,
   CirclePlacement,
   CirclePlacementInEventQuery,
   CircleProduct,
-  DeleteCircleProductMutation,
 } from '~/apollo/graphql'
 
 @Component({
   components: {
     CircleForm,
     CircleProductForm,
+    CircleProductRow,
     FavoriteButton,
   },
   apollo: {
@@ -176,15 +171,7 @@ export default class CircleListForm extends Vue {
     this.isEditCircleProduct = true
   }
 
-  private async deleteCircleProduct(circleProduct: CircleProduct) {
-    await this.$apollo
-      .mutate({
-        mutation: DeleteCircleProductMutation,
-        variables: { id: circleProduct.id },
-      })
-      .catch(() => this.$toast.error('削除に失敗しました'))
-
-    this.$toast.success('削除しました')
+  private onDeleteCircleProduct() {
     this.$apollo.queries.circlePlacement.refetch()
     this.$emit('saved')
   }

@@ -27,7 +27,15 @@ query CirclePlacementInEventQuery($circleId: ID!, $eventId: ID!) {
         want_priority_id
         quantity
         careAboutCircle {
+          id
           join_event_id
+          joinEvent {
+            id
+            user {
+              id
+              name
+            }
+          }
         }
       }
     }
