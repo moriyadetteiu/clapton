@@ -119,6 +119,7 @@ export default class DefaultLayout extends Vue {
       })
       .then(() => {
         this.user = null
+        this.$defaultApolloClient.resetStore()
         this.$toast.success('ログアウトしました。')
         this.$router.push('/login')
       })
