@@ -49,9 +49,7 @@ export default class CircleListRow extends Vue {
   }
 
   @Emit('delete-circle-product')
-  private onDeleteCircleProduct(): CircleProduct {
-    return this.circleProduct
-  }
+  private onDeleteCircleProduct(): void {}
 
   private get me(): User {
     return userStore.loginUserOrEmptyUser

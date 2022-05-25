@@ -61,7 +61,6 @@ import {
   CirclePlacement,
   CirclePlacementInEventQuery,
   CircleProduct,
-  DeleteCircleProductMutation,
 } from '~/apollo/graphql'
 
 @Component({
@@ -172,7 +171,7 @@ export default class CircleListForm extends Vue {
     this.isEditCircleProduct = true
   }
 
-  private onDeleteCircleProduct(circleProduct: CircleProduct) {
+  private onDeleteCircleProduct() {
     this.$apollo.queries.circlePlacement.refetch()
     this.$emit('saved')
   }
