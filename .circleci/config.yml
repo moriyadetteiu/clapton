@@ -61,7 +61,7 @@ commands:
 executors:
   test-executer:
     machine:
-      image: circleci/classic:edge
+      image: ubuntu-2204:2022.04.1
 
 jobs:
   test:
