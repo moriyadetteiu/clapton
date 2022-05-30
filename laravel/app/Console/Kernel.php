@@ -20,6 +20,7 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\Make\MakeMutationCommand::class,
         \App\Console\Commands\Make\MakeModelWithInputCommand::class,
         \App\Console\Commands\Make\MakeGraphqlDefinitionCommand::class,
+        \App\Console\Commands\UpdateEventIsProgress::class,
     ];
 
     /**
