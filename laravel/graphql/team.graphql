@@ -3,6 +3,7 @@ type Team {
     name: String!
     code: String!
     underwayEvents: [Event] @belongsToMany
+    finishedEvents: [Event] @belongsToMany
     userAffiliationTeams: [UserAffiliationTeam!]! @hasMany
     created_at: DateTime
     updated_at: DateTime

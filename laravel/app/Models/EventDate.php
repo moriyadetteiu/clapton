@@ -11,6 +11,8 @@ class EventDate extends Model
 
     protected $fillable = ['name', 'date', 'is_production_day'];
 
+    protected $dates = ['date'];
+
     public function event(): BelongsTo
     {
         return $this->belongsTo(Event::class);
