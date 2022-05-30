@@ -14,7 +14,7 @@ class AddIsProgressColumnEventsTable extends Migration
     public function up()
     {
         Schema::table('events', function (Blueprint $table) {
-            $table->boolean('is_progress')->after('name');
+            $table->boolean('is_progress')->after('name')->default(true);
         });
     }
 

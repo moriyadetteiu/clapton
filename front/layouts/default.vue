@@ -23,8 +23,14 @@
             <v-btn text v-bind="attrs" v-on="on"> 過去リスト </v-btn>
           </template>
           <v-list dense>
-            <v-list-item v-for="(listItem, idx) in oldListItems" :key="idx">
-              {{ listItem.event_name }} ( {{ listItem.team_name }} )
+            <v-list-item
+              v-for="(item, idx) in finishedCircleListItems"
+              :key="idx"
+              nuxt
+              :to="`/teams/${item.team.id}/events/${item.event.id}/circle-list`"
+            >
+              {{ item.team.name }}
+              （ {{ item.event.name }} ）
             </v-list-item>
           </v-list>
         </v-menu>
@@ -63,11 +69,12 @@ import {
   UserAffiliationTeam,
   LogoutMutation,
   UnderwayEventsForJoinedTeamsQuery,
+  FinishedEventsForJoinedTeamsQuery,
 } from '~/apollo/graphql'
 import { userStore } from '~/store'
 import ConfirmDialog from '~/components/dialog/ConfirmDialog.vue'
 
-type UnderwayCircleListItem = {
+type UnderwayEventItem = {
   team: Team
   event: Event
 }
@@ -85,7 +92,7 @@ type UnderwayCircleListItem = {
       skip() {
         return !this.user
       },
-      update(data): UnderwayCircleListItem[] {
+      update(data): UnderwayEventItem[] {
         return data.user.affiliateTeams.flatMap(
           (affiliationTeam: UserAffiliationTeam) => {
             const team = affiliationTeam.team!
@@ -101,16 +108,35 @@ type UnderwayCircleListItem = {
         )
       },
     },
+    finishedCircleListItems: {
+      query: FinishedEventsForJoinedTeamsQuery,
+      variables() {
+        return { id: this.user.id }
+      },
+      skip() {
+        return !this.user
+      },
+      update(data): UnderwayEventItem[] {
+        return data.user.affiliateTeams.flatMap(
+          (affiliationTeam: UserAffiliationTeam) => {
+            const team = affiliationTeam.team!
+            const events = team.finishedEvents as Array<Event>
+
+            return events.map((event) => {
+              return {
+                event,
+                team,
+              }
+            })
+          }
+        )
+      },
+    },
   },
 })
 export default class DefaultLayout extends Vue {
-  underwayCircleListItems: UnderwayCircleListItem[] = []
-
-  oldListItems: {
-    event_id: string // eslint-disable-line camelcase
-    event_name: string // eslint-disable-line camelcase
-    team_name: string // eslint-disable-line camelcase
-  }[] = [{ event_id: 'aaa', event_name: 'event', team_name: 'team' }]
+  underwayCircleListItems: UnderwayEventItem[] = []
+  finishedCircleListItems: UnderwayEventItem[] = []
 
   private logout(): void {
     this.$apollo
