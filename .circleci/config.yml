@@ -122,6 +122,11 @@ jobs:
             docker-compose exec front npm run codegen
             docker-compose exec front npm run sync-validation
             docker-compose exec front npm run build
+      - persist_to_workspace:
+          root: ./front
+          paths:
+              - apollo/graphql.ts
+              - validation/validations.ts
       - run:
           name: test front
           command: docker-compose exec front npm run test
@@ -130,9 +135,49 @@ jobs:
           command: docker-compose exec laravel ./vendor/bin/phpunit
       - store_artifacts:
           path: ./laravel/storage/logs
+  build:
+    executor: test-executer
+    steps:
+      - checkout
+      - run: docker-compose -f docker-compose-prod-build.yml up -d --build
+      - run:
+          name: prepare laravel container
+          command: |
+            docker cp ./laravel/. laravel:/var/www/html
+            docker-compose -f docker-compose-prod-build.yml exec laravel chmod -R 777 storage
+            docker-compose -f docker-compose-prod-build.yml exec laravel chmod -R 777 bootstrap/cache
+            docker-compose -f docker-compose-prod-build.yml exec laravel composer install --no-dev
+      - attach_workspace:
+          at: /tmp
+      - run:
+          name: prepare front container
+          command: |
+            cp /tmp/apollo/graphql.ts ./front/apollo
+            cp /tmp/validation/validations.ts ./front/validation
+            cp ./front/.env.prod ./front/.env
+            docker cp ./front/. front:/usr/src/app
+            docker-compose -f docker-compose-prod-build.yml exec front npm install
+            docker-compose -f docker-compose-prod-build.yml exec front npm run build
+      - run:
+          name: commit docker image
+          command: |
+            docker commit laravel clapton_laravel
+            docker commit front clapton_front
+            docker tag clapton_laravel:latest ${DOCKER_HUB_USERNAME}/clapton_laravel:$CIRCLE_TAG
+            docker tag clapton_front:latest ${DOCKER_HUB_USERNAME}/clapton_front:$CIRCLE_TAG
+      - run:
+          name: push docker image
+          command: |
+            docker login -u ${DOCKER_HUB_USERNAME} -p ${DOCKER_HUB_PASSWORD}
+            docker push ${DOCKER_HUB_USERNAME}/clapton_laravel
+            docker push ${DOCKER_HUB_USERNAME}/clapton_front
+
 
 workflows:
   version: 2
   test:
     jobs:
       - test
+      - build:
+          requires:
+              - test
