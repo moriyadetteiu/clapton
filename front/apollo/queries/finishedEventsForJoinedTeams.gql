@@ -1,11 +1,11 @@
-query UnderwayEventsForJoinedTeamsQuery($id: ID!) {
+query FinishedEventsForJoinedTeamsQuery($id: ID!) {
   user(id: $id) {
     id
     affiliateTeams {
       team {
         id
         name
-        underwayEvents {
+        finishedEvents {
           id
           name
         }
