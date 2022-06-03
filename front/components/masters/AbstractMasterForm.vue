@@ -5,7 +5,7 @@
       <v-card-text>
         <validation-observer
           ref="validationObserver"
-          tag="v-form"
+          tag="form"
           @submit.prevent="submit"
         >
           <v-container>
