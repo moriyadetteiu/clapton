@@ -20,7 +20,13 @@
       </v-card-text>
     </v-card>
     <v-card class="mt-3">
-      <v-card-title>所属チーム</v-card-title>
+      <v-card-title>
+        所属チーム
+        <v-spacer />
+        <v-btn icon nuxt color="register" to="teams/create">
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+      </v-card-title>
       <v-card-text>
         <v-container>
           <v-row
