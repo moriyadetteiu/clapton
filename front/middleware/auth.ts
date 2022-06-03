@@ -24,7 +24,7 @@ export default async ({
   if (!isUseMock && !canAccessGuest(routeName)) {
     // note: ログインできていない場合、ここからapolloErrorLinkのUnauthenticatedのログアウト / リダイレクト処理が走る
     const user = await app.$defaultApolloClient
-      .query({ query: MeQuery })
+      .query({ query: MeQuery, fetchPolicy: 'no-cache' })
       .then((result: any) => result.data.me)
     userStore.setLoginUser(user)
   }

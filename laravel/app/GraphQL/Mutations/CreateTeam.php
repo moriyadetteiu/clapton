@@ -2,8 +2,12 @@
 
 namespace App\GraphQL\Mutations;
 
-use App\Models\Team;
+use Auth;
+
 use Illuminate\Support\Arr;
+
+use App\UseCase\Team\CreateTeam as CreateTeamUseCase;
+use App\UseCase\Team\CreateTeamInput;
 
 class CreateTeam
 {
@@ -13,11 +17,9 @@ class CreateTeam
      */
     public function __invoke($_, array $args)
     {
-        // TODO implement the resolver
-        $teamData = Arr::except($args, ['directive']);
-        $code = Team::generateCode();
-        $teamData['code'] = $code;
-        $team = Team::create($teamData);
-        return $team;
+        $userData = Arr::except($args, ['directive']);
+        $userData['owner_user_id'] = Auth::id();
+        $input = new CreateTeamInput($userData);
+        return (new CreateTeamUseCase())->execute($input);
     }
 }
