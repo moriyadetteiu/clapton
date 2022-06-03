@@ -8,6 +8,8 @@ import {
   ValidationProvider,
 } from 'vee-validate'
 import ja from 'vee-validate/dist/locale/ja.json'
+import { config } from '@vue/test-utils'
+import VIconStub from './stubs/VIcon'
 import VValidateTextField from '~/components/form/VValidateTextField.vue'
 import '~/vee-validate/password'
 
@@ -24,3 +26,5 @@ extend('email', email)
 Vue.component('validation-observer', ValidationObserver)
 Vue.component('validation-provider', ValidationProvider)
 Vue.component('v-validate-text-field', VValidateTextField)
+
+config.stubs['v-icon'] = VIconStub
