@@ -23,7 +23,7 @@
             >
           </v-toolbar>
         </template>
-        <template #item.actions="{ item }">
+        <template #[`item.actions`]="{ item }">
           <v-btn color="edit" @click="edit(item)"
             ><v-icon left>mdi-pencil</v-icon>編集</v-btn
           >

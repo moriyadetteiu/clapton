@@ -7,7 +7,7 @@
         hide-default-footer
         disable-pagination
       >
-        <template #item.operations="{ item }">
+        <template #[`item.operations`]="{ item }">
           <v-btn
             color="delete"
             @click="excludeUser(item.userAffiliationTeamId)"
