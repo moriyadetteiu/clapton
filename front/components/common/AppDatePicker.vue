@@ -7,9 +7,9 @@
     offset-y
     min-width="290px"
   >
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <v-text-field :value="date" v-bind="$attrs" type="date" @input="input">
-        <template v-slot:append>
+        <template #append>
           <v-icon v-on="on">mdi-calendar</v-icon>
         </template>
       </v-text-field>

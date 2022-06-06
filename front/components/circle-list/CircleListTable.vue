@@ -9,7 +9,7 @@
     multi-sort
     @dblclick:row="openCircleListForm"
   >
-    <template v-slot:top>
+    <template #top>
       <v-toolbar>
         <v-toolbar-title>サークルリスト</v-toolbar-title>
         <v-spacer />
@@ -34,16 +34,16 @@
         </v-card>
       </v-expand-transition>
     </template>
-    <template v-slot:item.circle_name="{ item }">
+    <template #[`item.circle_name`]="{ item }">
       <favorite-button :circle-id="item.circle_id" />
       {{ item.circle_name }}
     </template>
-    <template v-slot:item.circle_product_price="{ item }">
+    <template #[`item.circle_product_price`]="{ item }">
       <template v-if="item.circle_product_price"
         >{{ item.circle_product_price }}円
       </template>
     </template>
-    <template v-slot:item.want_circle_product_quantity="{ item }">
+    <template #[`item.want_circle_product_quantity`]="{ item }">
       <template v-if="item.want_circle_product_quantity"
         >{{ item.want_circle_product_quantity }}個
       </template>

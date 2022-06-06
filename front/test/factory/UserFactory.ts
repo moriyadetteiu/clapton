@@ -4,7 +4,7 @@ import Factory from './Factory'
 export default class UserFactory extends Factory<User> {
   protected provide(): User {
     return {
-      id: this.faker.random.uuid(),
+      id: this.faker.datatype.uuid(),
       name: this.faker.name.title(),
       name_kana: this.faker.name.title(),
       handle_name: this.faker.name.title(),
