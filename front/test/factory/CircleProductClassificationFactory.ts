@@ -6,7 +6,7 @@ export default class CircleProductClassificationFactory extends Factory<
 > {
   protected provide(): CircleProductClassification {
     return {
-      id: this.faker.random.uuid(),
+      id: this.faker.datatype.uuid(),
       name: this.faker.name.title(),
     }
   }
