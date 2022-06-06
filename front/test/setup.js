@@ -23,8 +23,8 @@ const { required, email } = require('vee-validate/dist/rules.umd')
 extend('required', required)
 extend('email', email)
 
-Vue.component('validation-observer', ValidationObserver)
-Vue.component('validation-provider', ValidationProvider)
-Vue.component('v-validate-text-field', VValidateTextField)
+Vue.component('ValidationObserver', ValidationObserver)
+Vue.component('ValidationProvider', ValidationProvider)
+Vue.component('VValidateTextField', VValidateTextField)
 
 config.stubs['v-icon'] = VIconStub

@@ -14,7 +14,7 @@
         hide-default-footer
         disable-pagination
       >
-        <template v-slot:top>
+        <template #top>
           <v-toolbar>
             <v-toolbar-title>{{ title }}</v-toolbar-title>
             <v-spacer />
@@ -23,7 +23,7 @@
             >
           </v-toolbar>
         </template>
-        <template v-slot:item.actions="{ item }">
+        <template #item.actions="{ item }">
           <v-btn color="edit" @click="edit(item)"
             ><v-icon left>mdi-pencil</v-icon>編集</v-btn
           >

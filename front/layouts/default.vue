@@ -3,7 +3,7 @@
     <v-app-bar fixed app>
       <v-container v-if="user !== null">
         <v-menu open-on-hover offset-y :max-height="headerMenuMaxHeight">
-          <template v-slot:activator="{ on, attrs }">
+          <template #activator="{ on, attrs }">
             <v-btn text v-bind="attrs" v-on="on"> リスト </v-btn>
           </template>
           <v-list dense>
@@ -19,7 +19,7 @@
           </v-list>
         </v-menu>
         <v-menu open-on-hover offset-y :max-height="headerMenuMaxHeight">
-          <template v-slot:activator="{ on, attrs }">
+          <template #activator="{ on, attrs }">
             <v-btn text v-bind="attrs" v-on="on"> 過去リスト </v-btn>
           </template>
           <v-list dense>
