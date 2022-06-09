@@ -68,6 +68,13 @@ jobs:
     executor: test-executer
     steps:
       - checkout
+      - run:
+          name: make front build directories
+          command: |
+            mkdir -m 777 ./front/node_modules
+            mkdir -m 777 ./front/.nuxt
+            mkdir -m 777 ./front/coverage
+            mkdir -m 777 ./front/dist
       - load-docker-images
       - run: docker-compose up -d --build
       - run:
