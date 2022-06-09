@@ -42,7 +42,12 @@ export default class CreateEvent extends Vue {
       variables: {
         input: this.event,
       },
+      refetchQueries: [
+        'UnderwayEventsForJoinedTeamsQuery',
+        'FinishedEventsForJoinedTeamsQuery',
+      ],
     })
+
     res
       .then(() => {
         this.$toast.success('登録しました')
