@@ -14,7 +14,7 @@
       :join-events="joinEventUsers"
       :event-dates="event.eventDates"
     />
-    <v-expansion-panels accordion>
+    <v-expansion-panels v-model="joinEventExpansionPanelOpenIndex" accordion>
       <v-expansion-panel>
         <v-expansion-panel-header>参加情報 </v-expansion-panel-header>
         <v-expansion-panel-content>
@@ -30,26 +30,33 @@
       </v-expansion-panel>
     </v-expansion-panels>
 
-    <circle-list-form
-      :is-open.sync="isOpenCircleListForm"
-      :event-id="$route.params.event_id"
-      :team-id="$route.params.team_id"
-      :join-event-id="joinEvent ? joinEvent.id : null"
-      :editing-circle-id="editingCircleId"
-      @saved="onSavedCircle"
-    />
+    <template v-if="joinEvent">
+      <circle-list-form
+        :is-open.sync="isOpenCircleListForm"
+        :event-id="$route.params.event_id"
+        :team-id="$route.params.team_id"
+        :join-event-id="joinEvent ? joinEvent.id : null"
+        :editing-circle-id="editingCircleId"
+        @saved="onSavedCircle"
+      />
 
-    <v-tabs v-model="selectedCircleListTabIndex" class="mt-5">
-      <v-tab v-for="circleListTab in circleListTabs" :key="circleListTab.key">
-        {{ circleListTab.label }}
-      </v-tab>
-    </v-tabs>
-    <circle-list-table
-      :circle-lists="circleLists"
-      :table-state="circleListState"
-      :filter-condition-items="circleListTableFilterConditionItems"
-      @open-circle-list-form="openCircleListForm"
-    />
+      <v-tabs v-model="selectedCircleListTabIndex" class="mt-5">
+        <v-tab v-for="circleListTab in circleListTabs" :key="circleListTab.key">
+          {{ circleListTab.label }}
+        </v-tab>
+      </v-tabs>
+      <circle-list-table
+        :circle-lists="circleLists"
+        :table-state="circleListState"
+        :filter-condition-items="circleListTableFilterConditionItems"
+        @open-circle-list-form="openCircleListForm"
+      />
+    </template>
+    <v-card v-else-if="!$apollo.queries.joinEvent.loading" class="mt-4">
+      <v-card-text>
+        参加情報を登録すると、サークルリストが表示されます。
+      </v-card-text>
+    </v-card>
   </v-container>
 </template>
 
@@ -123,6 +130,11 @@ type CircleListTab = {
       },
       update(data) {
         return data.findJoinEvent
+      },
+      result(data) {
+        this.joinEventExpansionPanelOpenIndex = data.data?.findJoinEvent
+          ? null
+          : 0
       },
     },
     joinEventUsers: {
@@ -224,6 +236,8 @@ export default class CircleListPage extends Vue {
   private circleProductClassifications: CircleProductClassification[] = []
 
   private joinEventUsers: JoinEvent[] = []
+
+  private joinEventExpansionPanelOpenIndex: number | null = null
 
   private isOpenCircleListForm: boolean = false
 
