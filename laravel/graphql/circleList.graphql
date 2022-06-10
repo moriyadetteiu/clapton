@@ -46,4 +46,5 @@ type CircleList {
 extend type Query @guard {
     joinEventCircleLists(join_event_id: ID! @eq): [CircleList!]! @all(model: "App\\Models\\ViewCircleList")
     teamCircleLists(team_id: ID! @eq, event_id: ID! @eq): [CircleList!]! @all(model: "App\\Models\\ViewCircleList")
+    downloadExcel(circle_list_ids: [ID!]!): String @field(resolver: "App\\GraphQL\\Queries\\DownloadCircleListExcel")
 }
