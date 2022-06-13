@@ -26,6 +26,7 @@ export default {
     MOCK_BROWSER_HTTP_ENDPOINT:
       process.env.MOCK_BROWSER_HTTP_ENDPOINT ?? 'http://localhost:4000',
     MOCK_HTTP_ENDPOINT: process.env.MOCK_HTTP_ENDPOINT ?? 'MOCK_HTTP_ENDPOINT',
+    BROWSER_HTTP_AXIOS_ENDPOINT: process.env.BROWSER_HTTP_AXIOS_ENDPOINT ?? 'http://localhost:20080',
     BASE_URL: process.env.BASE_URL ?? 'http://localhost:3000',
   },
 
@@ -36,6 +37,7 @@ export default {
     '~/plugins/vee-validate',
     '~/plugins/apollo/inject-default-apollo-client',
     '~/plugins/confirm-dialog',
+    '~/plugins/file-downloader',
   ],
 
   router: {
