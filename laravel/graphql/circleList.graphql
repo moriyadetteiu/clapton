@@ -43,7 +43,15 @@ type CircleList {
     user_name: String!
 }
 
+type MadeExcel {
+    file_name: String!
+}
+
 extend type Query @guard {
     joinEventCircleLists(join_event_id: ID! @eq): [CircleList!]! @all(model: "App\\Models\\ViewCircleList")
     teamCircleLists(team_id: ID! @eq, event_id: ID! @eq): [CircleList!]! @all(model: "App\\Models\\ViewCircleList")
+}
+
+extend type Mutation @guard {
+    makeCircleListsExcel(circle_list_ids: [ID!]!, export_columns: [String], grouping_columns: [String]): MadeExcel! @field(resolver: "App\\GraphQL\\Mutations\\MakeCircleListsExcel")
 }

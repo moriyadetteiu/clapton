@@ -8,16 +8,25 @@
     fixed-header
     multi-sort
     @dblclick:row="openCircleListForm"
+    @current-items="onUpdateTableCurrentItems"
   >
     <template #top>
       <v-toolbar>
+        <export-circle-list
+          :is-open.sync="isOpenExportCircleList"
+          :table-state="tableState"
+          :circle-list-ids="shownTableCircleListItemIds"
+        />
         <v-toolbar-title>サークルリスト</v-toolbar-title>
         <v-spacer />
+        <v-btn color="register" icon @click="openCircleListForm">
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
         <v-btn icon @click="toggleShowFilter"
           ><v-icon>mdi-filter-variant</v-icon></v-btn
         >
-        <v-btn color="register" icon @click="openCircleListForm">
-          <v-icon>mdi-plus</v-icon>
+        <v-btn icon @click="openExportCircleList">
+          <v-icon>mdi-file-download</v-icon>
         </v-btn>
       </v-toolbar>
       <v-expand-transition>
@@ -65,6 +74,7 @@ import {
   FilterConditions,
   Filter,
 } from './table/filters/filterInterfaces'
+import ExportCircleList from './table/ExportCircleList.vue'
 import FilterItem from './table/filters/FilterItem.vue'
 import { CircleList } from '~/apollo/graphql'
 import FavoriteButton from '~/components/favorites/FavoriteButton.vue'
@@ -73,6 +83,7 @@ import FavoriteButton from '~/components/favorites/FavoriteButton.vue'
   components: {
     FilterItem,
     FavoriteButton,
+    ExportCircleList,
   },
 })
 export default class CircleListTable extends Vue {
@@ -96,7 +107,11 @@ export default class CircleListTable extends Vue {
 
   private isShowFilter: boolean = false
 
+  private isOpenExportCircleList: boolean = false
+
   private filterConditions: FilterConditions = {}
+
+  private shownTableCircleListItemIds: string[] = []
 
   private get headers(): DataTableHeader[] {
     return this.tableState.getTableHeaders()
@@ -134,11 +149,19 @@ export default class CircleListTable extends Vue {
     this.isShowFilter = !this.isShowFilter
   }
 
+  private openExportCircleList(): void {
+    this.isOpenExportCircleList = true
+  }
+
   private onChangedFilterItem(e: string[], filter: Filter) {
     this.filterConditions = {
       ...this.filterConditions,
       [filter.getKey()]: e,
     }
+  }
+
+  private onUpdateTableCurrentItems(items: CircleList[]): void {
+    this.shownTableCircleListItemIds = items.map((item) => item.id)
   }
 
   public created() {
