@@ -88,14 +88,14 @@ export default class ExportCircleList extends Vue {
     )
   }
 
-  private get selectedGroupingColumnNames(): string[] {
-    return this.selectedGroupingColumnIndexes.map(
-      (index) => this.exportColumnCandidates[index].columnName
-    )
-  }
-
   private get groupingColumnCandidates(): ExportColumnCandidate[] {
     return this.tableState.getExportGroupingColumnCandidates()
+  }
+
+  private get selectedGroupingColumnNames(): string[] {
+    return this.selectedGroupingColumnIndexes.map(
+      (index) => this.groupingColumnCandidates[index].columnName
+    )
   }
 
   @Watch('exportColumnCandidates', { immediate: true })
