@@ -30,8 +30,6 @@ class MakeCircleListsExcel
         $groupingColumns = $args['grouping_columns'] ?? [];
         $exportColumns = $args['export_columns'] ?? [];
 
-        \Log::info($args);
-
         $exporter = (new CircleListsExport($circleLists))
             ->groupingColumns($groupingColumns)
             ->exportColumns($exportColumns);
