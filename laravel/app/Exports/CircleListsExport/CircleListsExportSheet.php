@@ -28,6 +28,7 @@ class CircleListsExportSheet implements FromView, ShouldAutoSize, WithStyles, Wi
 
     private Collection $circleLists;
     private Collection $aggregatedCircleLists;
+    private Collection $exportColumns;
     private string $title;
 
     public function __construct(Collection $circleLists, string $title)
@@ -35,12 +36,19 @@ class CircleListsExportSheet implements FromView, ShouldAutoSize, WithStyles, Wi
         $this->title = $title;
         $this->circleLists = $circleLists;
         $this->aggregatedCircleLists = $this->aggregateSameCircleInRow($circleLists);
+        $this->exportColumns = collect([]);
+    }
+
+    public function exportColumns(Collection $exportColumns)
+    {
+        $this->exportColumns = $exportColumns;
+        return $this;
     }
 
     public function view(): View
     {
         return view('exports.circleLists', [
-            'columns' => self::COLUMN_TITLES,
+            'columns' => $this->filteredExportColumns(),
             'aggregatedCircleLists' => $this->aggregatedCircleLists,
         ]);
     }
@@ -48,7 +56,7 @@ class CircleListsExportSheet implements FromView, ShouldAutoSize, WithStyles, Wi
     public function styles(Worksheet $sheet)
     {
         $alphabets = range('A', 'Z');
-        $lastColumnIndex = count(self::COLUMN_TITLES);
+        $lastColumnIndex = count($this->filteredExportColumns());
         $lastColumnAlphabet = $alphabets[$lastColumnIndex - 1];
 
         $lastRowIndex = $this->circleLists->count() + 1;
@@ -82,5 +90,17 @@ class CircleListsExportSheet implements FromView, ShouldAutoSize, WithStyles, Wi
 
             return $carry;
         }, collect([]));
+    }
+
+    private function filteredExportColumns(): array
+    {
+        return collect(self::COLUMN_TITLES)
+            ->when(
+                $this->exportColumns->isNotEmpty(),
+                fn ($columns) => $columns->filter(
+                    fn ($_, $column) => $this->exportColumns->contains($column)
+                )
+            )
+            ->toArray();
     }
 }

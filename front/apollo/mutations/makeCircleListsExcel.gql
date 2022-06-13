@@ -1,0 +1,5 @@
+mutation MakeCircleListsExcelMutation($circleListIds: [ID!]!, $exportColumns: [String], $groupingColumns: [String]) {
+  makeCircleListsExcel(circle_list_ids: $circleListIds, export_columns: $exportColumns, grouping_columns: $groupingColumns) {
+    file_name
+  }
+}

@@ -60,6 +60,8 @@ import { Vue, Prop, PropSync, Component, Watch } from 'nuxt-property-decorator'
 import TableStateInterface, {
   ExportColumnCandidate,
 } from './TableStateInterface'
+import { MakeCircleListsExcelMutation } from '~/apollo/graphql'
+import FileDownloader from '~/utils/FileDownloader'
 
 @Component({})
 export default class ExportCircleList extends Vue {
@@ -86,6 +88,12 @@ export default class ExportCircleList extends Vue {
     )
   }
 
+  private get selectedGroupingColumnNames(): string[] {
+    return this.selectedGroupingColumnIndexes.map(
+      (index) => this.exportColumnCandidates[index].columnName
+    )
+  }
+
   private get groupingColumnCandidates(): ExportColumnCandidate[] {
     return this.tableState.getExportGroupingColumnCandidates()
   }
@@ -97,8 +105,22 @@ export default class ExportCircleList extends Vue {
     )
   }
 
-  private download(): void {
-    // TODO: ダウンロード処理
+  private async download() {
+    const variables = {
+      circleListIds: this.circleListIds,
+      groupingColumns: this.selectedGroupingColumnNames,
+      exportColumns: this.selectedExportColumnNames,
+    }
+
+    const filename = await this.$apollo
+      .mutate({
+        mutation: MakeCircleListsExcelMutation,
+        variables,
+      })
+      .then((res) => res.data.makeCircleListsExcel.file_name)
+
+    const downloader = new FileDownloader()
+    downloader.download(filename)
   }
 }
 </script>

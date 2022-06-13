@@ -11,18 +11,35 @@ class CircleListsExport implements WithMultipleSheets
 {
     private Collection $circleLists;
     private Collection $groupingColumns;
+    private Collection $exportColumns;
 
-    public function __construct(Collection $circleLists, array $groupingColumns = [])
+    public function __construct(Collection $circleLists)
     {
         $this->circleLists = $circleLists;
+        $this->groupingColumns = collect([]);
+        $this->exportColumns = collect([]);
+    }
+
+    public function groupingColumns(array $groupingColumns)
+    {
         $this->groupingColumns = collect($groupingColumns);
+        return $this;
+    }
+
+    public function exportColumns(array $exportColumns)
+    {
+        $this->exportColumns = collect($exportColumns);
+        return $this;
     }
 
     public function sheets(): array
     {
         return $this
             ->aggregateCircleListsByGroupColumns()
-            ->map(fn ($circleLists, $key) => new CircleListsExportSheet($circleLists, $key))
+            ->map(
+                fn ($circleLists, $sheetName) => (new CircleListsExportSheet($circleLists, $sheetName))
+                    ->exportColumns($this->exportColumns)
+            )
             ->values()
             ->toArray();
     }

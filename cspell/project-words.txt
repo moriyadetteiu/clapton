@@ -6,10 +6,12 @@ beanstalkd
 behaviour
 camelcase
 canonicalizing
+dompdf
 dont
 encrypter
 envoyer
 fideloper
+gnumeric
 goright
 grapgql
 ifnull
@@ -21,6 +23,7 @@ leider
 maatwebsite
 mailgun
 mimetypes
+mpdf
 mydomain
 mypage
 necolas
@@ -35,6 +38,7 @@ prerendered
 prioritys
 semibold
 sslmode
+tcpdf
 templating
 testtoken
 tokenable

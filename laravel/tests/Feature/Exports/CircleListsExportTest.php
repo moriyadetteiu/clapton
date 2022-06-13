@@ -17,7 +17,7 @@ class CircleListsExportTest extends TestCase
     use RefreshDatabase;
     use WithFaker;
 
-    public function testExportNotGrouping()
+    public function testExportBasic()
     {
         $dataset = (new CircleDatasetFactory())->create();
         $circleLists = ViewCircleList::whereIn('circle_id', $dataset['circle']->pluck('id'))->get();
@@ -33,7 +33,7 @@ class CircleListsExportTest extends TestCase
         });
     }
 
-    public function testExportGrouping()
+    public function testExportCustomize()
     {
         $dataset = (new CircleDatasetFactory())->create();
         $circleLists = ViewCircleList::whereIn('circle_id', $dataset['circle']->pluck('id'))->get();
@@ -42,7 +42,9 @@ class CircleListsExportTest extends TestCase
 
         // TODO: 値が出力されているかのテストも増やせたらうれしい
         //       いったん正常系のみテストしている
-        $circleListExport = new CircleListsExport($circleLists, ['event_date_name']);
+        $circleListExport = (new CircleListsExport($circleLists))
+            ->groupingColumns(['event_date_name'])
+            ->exportColumns(['event_date_name', 'user_name', 'circle_name', 'unexpected_column']);
         Excel::store($circleListExport, 'circleList.xlsx');
         $expectedSheetQuantity = $circleLists->pluck('event_date_name')->unique()->count();
         Excel::assertStored('circleList.xlsx', function (CircleListsExport $export) use ($expectedSheetQuantity) {
