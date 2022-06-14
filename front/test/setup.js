@@ -12,6 +12,7 @@ import { config } from '@vue/test-utils'
 import VIconStub from './stubs/VIcon'
 import VValidateTextField from '~/components/form/VValidateTextField.vue'
 import '~/vee-validate/password'
+import '~/plugins/register-btn-components'
 
 Vue.use(Vuetify)
 Vue.use(Vuex)

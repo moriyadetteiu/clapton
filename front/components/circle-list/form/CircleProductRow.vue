@@ -1,11 +1,12 @@
 <template>
   <v-row>
-    <v-col cols="12" class="text--primary pb-0">
+    <v-col cols="12" class="text--primary pb-0 d-flex">
       {{ circleProduct.circleProductClassification.name }}
       {{ circleProduct.name }}
+      <v-spacer />
       <template v-if="hasMyWantCircleProduct">
-        <v-btn @click="editCircleProduct">編集</v-btn>
-        <v-btn @click="deleteCircleProduct">削除</v-btn>
+        <edit-btn @click="editCircleProduct" />
+        <delete-btn @click="deleteCircleProduct" />
       </template>
     </v-col>
     <v-col cols="12" class="pt-0">

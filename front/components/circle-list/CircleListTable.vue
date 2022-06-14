@@ -19,9 +19,7 @@
         />
         <v-toolbar-title>サークルリスト</v-toolbar-title>
         <v-spacer />
-        <v-btn color="register" icon @click="openCircleListForm">
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
+        <register-btn @click="openCircleListForm" />
         <v-btn icon @click="toggleShowFilter"
           ><v-icon>mdi-filter-variant</v-icon></v-btn
         >

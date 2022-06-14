@@ -8,7 +8,7 @@
           {{ circlePlacement ? circlePlacement.formatted_placement : '' }}
           {{ circle.name }}
           <v-spacer />
-          <v-btn color="success" @click="editCircle">編集</v-btn>
+          <edit-btn @click="editCircle" />
         </template>
       </v-card-title>
       <v-card-text>
