@@ -18,12 +18,11 @@
       </v-card-text>
     </v-card>
     <v-card class="mt-3">
-      <v-card-title>イベント</v-card-title>
-      <v-card-actions>
-        <v-btn color="register" nuxt :to="`/teams/${team.id}/events/create`">
-          イベントを作成
-        </v-btn>
-      </v-card-actions>
+      <v-card-title>
+        イベント
+        <v-spacer />
+        <register-btn nuxt :to="`/teams/${team.id}/events/create`" />
+      </v-card-title>
     </v-card>
     <v-card class="mt-3">
       <v-card-title>マスタ管理</v-card-title>

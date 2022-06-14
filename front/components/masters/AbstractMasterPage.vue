@@ -18,18 +18,12 @@
           <v-toolbar>
             <v-toolbar-title>{{ title }}</v-toolbar-title>
             <v-spacer />
-            <v-btn color="register" @click="create"
-              ><v-icon>mdi-plus</v-icon>追加</v-btn
-            >
+            <register-btn @click="create" />
           </v-toolbar>
         </template>
         <template #[`item.actions`]="{ item }">
-          <v-btn color="edit" @click="edit(item)"
-            ><v-icon left>mdi-pencil</v-icon>編集</v-btn
-          >
-          <v-btn color="delete" @click="remove(item)"
-            ><v-icon left>mdi-delete</v-icon>削除</v-btn
-          >
+          <edit-btn @click="edit(item)" />
+          <delete-btn @click="remove(item)" />
         </template>
       </v-data-table>
     </v-col>
@@ -74,11 +68,7 @@ export default abstract class AbstractMasterPage<
     this.isOpenFormDialog = true
   }
 
-  private async remove(model: Model) {
-    if (!(await this.$confirmDialog.confirm())) {
-      return
-    }
-
+  private remove(model: Model) {
     const res = this.$apollo.mutate({
       mutation: this.deleteMutation,
       variables: {

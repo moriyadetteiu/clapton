@@ -38,6 +38,7 @@ export default {
     '~/plugins/apollo/inject-default-apollo-client',
     '~/plugins/confirm-dialog',
     '~/plugins/file-downloader',
+    '~/plugins/register-btn-components',
   ],
 
   router: {
