@@ -29,6 +29,11 @@ abstract class UseCaseInput
         return $this->input;
     }
 
+    public function get(string $key, $default = null)
+    {
+        return array_key_exists($key, $this->input) ? $this->input[$key] : $default;
+    }
+
     protected function makeValidator(array $input): Validator
     {
         return ValidatorFacade::make($input, $this->rules(), [], $this->attributes());

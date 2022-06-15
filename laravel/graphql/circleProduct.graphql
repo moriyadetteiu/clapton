@@ -37,7 +37,10 @@ extend type Mutation @guard {
         @field(
             resolver: "App\\GraphQL\\Mutations\\UpdateCircleProduct"
         )
-    deleteCircleProduct(
+    unnecessaryCircleProduct(
         id: ID!
-    ): CircleProduct @delete
+    ): CircleProduct
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\UnnecessaryCircleProduct"
+        )
 }

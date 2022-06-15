@@ -7,6 +7,7 @@ use App\Models\{
     CirclePlacement,
     CircleProduct,
     CareAboutCircle,
+    WantCircleProduct,
 };
 
 class CircleDatasetFactory
@@ -33,6 +34,31 @@ class CircleDatasetFactory
         $circle = Circle::factory($this->numberOfCreate)
             ->has($circlePlacementFactory)
             ->create();
-        return array_merge($eventDataset, compact('circle'));
+        $circle->load([
+            'circlePlacements.careAboutCircles'
+        ]);
+        $circlePlacements = $circle->circlePlacements;
+        $careAboutCircle = $circlePlacements
+            ->flatMap(fn ($circlePlacement) => $circlePlacement->careAboutCircles);
+        $circleProducts = $circlePlacements
+            ->flatMap(fn ($circlePlacement) => $circlePlacement->circleProducts);
+
+        $wantCircleProducts = $circlePlacements
+            ->map(function ($circlePlacement) {
+                $careAboutCircle = $circlePlacement->careAboutCircles->first();
+                $circleProduct = $circlePlacement->circleProducts->first();
+
+                return WantCircleProduct::factory([
+                    'care_about_circle_id' => $careAboutCircle->id,
+                    'circle_product_id' => $circleProduct->id,
+                ])->create();
+            });
+
+        return array_merge($eventDataset, compact(
+            'circle',
+            'circlePlacements',
+            'circleProducts',
+            'wantCircleProducts'
+        ));
     }
 }

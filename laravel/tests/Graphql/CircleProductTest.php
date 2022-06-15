@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
 
 use App\Models\CircleProduct;
+use App\Models\WantCircleProduct;
 use Database\DatasetFactories\CircleDatasetFactory;
 
 class CircleProductTest extends TestCase
@@ -109,5 +110,59 @@ class CircleProductTest extends TestCase
         $this->assertDatabaseHas('circle_products', $expectedCircleProductData);
         $this->assertEquals($updateCircleProductInput['circle_placement_id'], $responseData['circlePlacement']['id']);
         $this->assertEquals($updateCircleProductInput['circle_product_classification_id'], $responseData['circleProductClassification']['id']);
+    }
+
+    public function testUnnecessaryCircleProductWhenOneUser()
+    {
+        $dataset = (new CircleDatasetFactory())->one()->create();
+        $circleProduct = $dataset['circleProducts']->first();
+
+        $response = $this
+            ->actingAsUser($dataset['user'])
+            ->graphQL('
+                mutation unnecessaryCircleProduct($id: ID!) {
+                    unnecessaryCircleProduct(id: $id) {
+                        id
+                    }
+                }
+            ', [
+                'id' => $circleProduct->id,
+            ])
+            ->assertStatus(200);
+
+        $this->assertDatabaseMissing('circle_products', ['id' => $circleProduct->id]);
+        $this->assertDatabaseMissing('want_circle_products', ['circle_product_id' => $circleProduct->id]);
+    }
+
+    public function testUnnecessaryCircleProductWhenMultiUser()
+    {
+        $dataset = (new CircleDatasetFactory())->one()->create();
+        $user = $dataset['user'];
+        $circleProduct = $dataset['circleProducts']->first();
+        $wantCircleProduct = $dataset['wantCircleProducts']->first();
+        $careAboutCircle = $wantCircleProduct->careAboutCircle;
+        $otherUserWantCircleProduct = WantCircleProduct::factory([
+            'circle_product_id' => $circleProduct->id,
+        ])->create();
+
+        $response = $this
+            ->actingAsUser($user)
+            ->graphQL('
+                mutation unnecessaryCircleProduct($id: ID!) {
+                    unnecessaryCircleProduct(id: $id) {
+                        id
+                    }
+                }
+            ', [
+                'id' => $circleProduct->id,
+            ])
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('circle_products', ['id' => $circleProduct->id]);
+        $this->assertDatabaseHas('want_circle_products', ['id' => $otherUserWantCircleProduct->id]);
+        $this->assertDatabaseMissing('want_circle_products', [
+            'circle_product_id' => $circleProduct->id,
+            'care_about_circle_id' => $careAboutCircle->id,
+        ]);
     }
 }
