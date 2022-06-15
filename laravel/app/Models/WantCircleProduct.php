@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -29,5 +30,13 @@ class WantCircleProduct extends Model
     public function circleProduct(): BelongsTo
     {
         return $this->belongsTo(CircleProduct::class);
+    }
+
+    public function scopeWhereHasUser(Builder $builder, string $userId): Builder
+    {
+        return $builder->whereHas(
+            'careAboutCircle',
+            fn (Builder $whereHasBuilder) => $whereHasBuilder->whereHasUser($userId)
+        );
     }
 }

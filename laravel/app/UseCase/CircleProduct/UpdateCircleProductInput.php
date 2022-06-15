@@ -8,6 +8,7 @@ class UpdateCircleProductInput extends CreateCircleProductInput
     {
         return array_merge(parent::rules(), [
             'id' => 'required',
+            'operation_user_id' => 'required',
         ]);
     }
 
@@ -15,6 +16,7 @@ class UpdateCircleProductInput extends CreateCircleProductInput
     {
         return array_merge(parent::attributes(), [
             'id' => '頒布物番号',
+            'operation_user_id' => '操作ユーザ番号',
         ]);
     }
 }
