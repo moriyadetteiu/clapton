@@ -48,8 +48,10 @@ type MadeExcel {
 }
 
 extend type Query @guard {
-    joinEventCircleLists(join_event_id: ID! @eq): [CircleList!]! @all(model: "App\\Models\\ViewCircleList")
-    teamCircleLists(team_id: ID! @eq, event_id: ID! @eq): [CircleList!]! @all(model: "App\\Models\\ViewCircleList")
+    joinEventCircleLists(join_event_id: ID!): [CircleList!]!
+        @field(resolver: "App\\GraphQL\\Queries\\JoinEventCircleLists")
+    teamCircleLists(team_id: ID!, event_id: ID!): [CircleList!]!
+        @field(resolver: "App\\GraphQL\\Queries\\TeamCircleLists")
 }
 
 extend type Mutation @guard {

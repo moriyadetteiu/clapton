@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -83,6 +84,16 @@ class ViewCircleList extends Model
     public function circleProductClassification(): BelongsTo
     {
         return $this->belongsTo(CircleProductClassification::class);
+    }
+
+    public function scopeOrderByPlacement(Builder $builder): Builder
+    {
+        return $builder
+            ->orderBy('event_date_id')
+            ->orderBy('placement_hole')
+            ->orderBy('placement_line')
+            ->orderBy('placement_number')
+            ->orderBy('placement_a_or_b');
     }
 
     public function getPlacementFullAttribute(): string
