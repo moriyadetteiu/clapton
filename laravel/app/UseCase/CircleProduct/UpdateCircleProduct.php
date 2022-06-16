@@ -13,6 +13,7 @@ class UpdateCircleProduct extends UseCase
     {
         $circleProductData = $input->toArray();
         $circleProduct = CircleProduct::findOrFail($circleProductData['id']);
+        $updatedWantCircleProduct = null;
 
         // note: 名前が変更されていて、他ユーザもほしいものに登録されている頒布物の場合は、
         //       更新してしまうと他ユーザのほしいものも一緒に変更されてしまうため、
@@ -20,13 +21,18 @@ class UpdateCircleProduct extends UseCase
         $operationUserId = $input->get('operation_user_id');
         $isNameChanged = $input->get('name') !== $circleProduct->name;
         if ($isNameChanged && $this->isExistsWantCircleProductWhereHasOtherUser($circleProduct)) {
-            $this->renewWantCircleProduct($operationUserId, $input, $circleProduct);
+            $renewedWantCircleProduct = $this->renewCircleProduct($operationUserId, $input, $circleProduct);
+            $circleProduct = $renewedWantCircleProduct['circleProduct'];
+            $updatedWantCircleProduct = $renewedWantCircleProduct['updatedWantCircleProduct'];
         } else {
             $circleProduct->update($circleProductData);
         }
 
         $circleProduct->refresh();
-        return $circleProduct;
+        return [
+            'circleProduct' => $circleProduct,
+            'updatedWantCircleProduct' => $updatedWantCircleProduct,
+        ];
     }
 
     private function isExistsWantCircleProductWhereHasOtherUser(CircleProduct $circleProduct): bool
@@ -34,7 +40,7 @@ class UpdateCircleProduct extends UseCase
         return $circleProduct->wantCircleProducts()->count() > 1;
     }
 
-    private function renewWantCircleProduct(string $operationUserId, UpdateCircleProductInput $input, CircleProduct $circleProduct): CircleProduct
+    private function renewCircleProduct(string $operationUserId, UpdateCircleProductInput $input, CircleProduct $circleProduct): array
     {
         $operationUserWantCircleProduct = $circleProduct
             ->wantCircleProducts()
@@ -55,8 +61,11 @@ class UpdateCircleProduct extends UseCase
             ->put('circle_product_id', $circleProduct->id)
             ->toArray();
         $createWantCircleProductInput = new CreateWantCircleProductInput($createWantCircleProductValues);
-        (new CreateWantCircleProduct)->execute($createWantCircleProductInput);
+        $wantCircleProduct = (new CreateWantCircleProduct)->execute($createWantCircleProductInput);
 
-        return $circleProduct;
+        return [
+            'circleProduct'  => $circleProduct,
+            'updatedWantCircleProduct' => $wantCircleProduct,
+        ];
     }
 }

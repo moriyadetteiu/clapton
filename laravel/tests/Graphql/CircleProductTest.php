@@ -81,14 +81,16 @@ class CircleProductTest extends TestCase
             ->graphQL('
                 mutation updateCircleProduct($id: ID!, $input: CircleProductInput!) {
                     updateCircleProduct(id: $id, input: $input) {
-                        id
-                        name
-                        price
-                        circlePlacement {
+                        circleProduct {
                             id
-                        }
-                        circleProductClassification {
-                            id
+                            name
+                            price
+                            circlePlacement {
+                                id
+                            }
+                            circleProductClassification {
+                                id
+                            }
                         }
                     }
                 }
@@ -102,10 +104,12 @@ class CircleProductTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'data' => [
-                    'updateCircleProduct' => $expectedCircleProductData,
+                    'updateCircleProduct' => [
+                        'circleProduct' => $expectedCircleProductData,
+                    ]
                 ]
             ]);
-        $responseData = $response->json('data.updateCircleProduct');
+        $responseData = $response->json('data.updateCircleProduct.circleProduct');
 
         $this->assertDatabaseHas('circle_products', $expectedCircleProductData);
         $this->assertEquals($updateCircleProductInput['circle_placement_id'], $responseData['circlePlacement']['id']);
@@ -140,14 +144,16 @@ class CircleProductTest extends TestCase
             ->graphQL('
                 mutation updateCircleProduct($id: ID!, $input: CircleProductInput!) {
                     updateCircleProduct(id: $id, input: $input) {
-                        id
-                        name
-                        price
-                        circlePlacement {
+                        circleProduct {
                             id
-                        }
-                        circleProductClassification {
-                            id
+                            name
+                            price
+                            circlePlacement {
+                                id
+                            }
+                            circleProductClassification {
+                                id
+                            }
                         }
                     }
                 }
@@ -161,10 +167,12 @@ class CircleProductTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'data' => [
-                    'updateCircleProduct' => $expectedCircleProductData,
+                    'updateCircleProduct' => [
+                        'circleProduct' => $expectedCircleProductData,
+                    ]
                 ]
             ]);
-        $responseData = $response->json('data.updateCircleProduct');
+        $responseData = $response->json('data.updateCircleProduct.circleProduct');
 
         $this->assertDatabaseHas('circle_products', $expectedCircleProductData);
         $this->assertEquals($updateCircleProductInput['circle_placement_id'], $responseData['circlePlacement']['id']);
