@@ -24,8 +24,10 @@ class UpdateCircleParticipatingInEvent extends UseCase
 
             // note: 他ユーザも関連している場合にサークル名の変更があった場合は、チェック済みのサークルが意図せずして変更される可能性があるため、更新を拒否する
             $isNameChanged = $circle->name !== $circleData['name'];
-            $isExistsCareAboutCircleWhereHasOtherUser = $this->isExistsCareAboutCircleWhereHasOtherUser($input->get('operation_user_id'), $circlePlacement);
-            if ($isNameChanged && $isExistsCareAboutCircleWhereHasOtherUser) {
+            $isExistsCareAboutCircleWhereHasOtherUser = $this->isExistsCareAboutCircleWhereHasOtherUser($circlePlacement);
+            $isExistsFavoriteWhereHasOtherUser = $this->isExistsFavoriteWhereHasOtherUser($input->get('operation_user_id'), $circle);
+            $isExistsRelatedUser = $isExistsCareAboutCircleWhereHasOtherUser || $isExistsFavoriteWhereHasOtherUser;
+            if ($isNameChanged && $isExistsRelatedUser) {
                 throw new UpdateDeniedException("他メンバーもこのサークルをチェックしているため、サークル名の変更はできません。\nサークルを削除後に新規登録をお願いします。");
             }
 
@@ -41,8 +43,13 @@ class UpdateCircleParticipatingInEvent extends UseCase
         return $circle;
     }
 
-    private function isExistsCareAboutCircleWhereHasOtherUser(string $operationUserId, CirclePlacement $circlePlacement): bool
+    private function isExistsCareAboutCircleWhereHasOtherUser(CirclePlacement $circlePlacement): bool
     {
         return $circlePlacement->careAboutCircles()->count() > 1;
+    }
+
+    private function isExistsFavoriteWhereHasOtherUser(string $operationUserId, Circle $circle): bool
+    {
+        return $circle->favorites()->where('user_id', '!=', $operationUserId)->exists();
     }
 }
