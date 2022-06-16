@@ -2,6 +2,7 @@
 
 namespace Tests\Graphql;
 
+use App\Models\CareAboutCircle;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
 
@@ -15,6 +16,7 @@ use App\Models\EventAffiliationTeam;
 use App\Models\UserAffiliationTeam;
 use App\Models\JoinEvent;
 use App\Models\JoinEventDate;
+use Database\DatasetFactories\CircleDatasetFactory;
 
 class CircleTest extends TestCase
 {
@@ -104,6 +106,95 @@ class CircleTest extends TestCase
 
     public function testUpdateCircleParticipatingInEvent()
     {
-        $this->markTestSkipped('Factoryを整備したら追加する');
+        $dataset = (new CircleDatasetFactory())
+            ->one()
+            ->create();
+        $user = $dataset['user'];
+        $team = $dataset['team'];
+
+        $placementValues = collect(CirclePlacement::factory()->definition())
+            ->except('circle_id', 'event_date_id', 'circle_placement_classification_id')
+            ->put('event_date_id', $dataset['eventDates']->random()->id)
+            ->put('circle_placement_classification_id', $team->circlePlacementClassifications->random()->id)
+            ->toArray();
+
+        $updateCircleParticipatingInEventInput = [
+            'circle' => Circle::factory()->definition(),
+            'placement' => $placementValues,
+        ];
+
+        $response = $this
+            ->actingAsUser($user)
+            ->graphQL('
+                mutation updateCircleParticipatingInEvent($id: ID!, $input: CreateCircleParticipatingInEventInput!) {
+                    updateCircleParticipatingInEvent(id: $id, input: $input) {
+                        id
+                        circle {
+                            id
+                            name
+                            kana
+                            memo
+                        }
+                    }
+                }
+            ', [
+                'id' => $dataset['circle']->id,
+                'input' => $updateCircleParticipatingInEventInput
+            ]);
+        $responseData = $response->json('data.updateCircleParticipatingInEvent');
+
+        $circle = Circle::findOrFail($responseData['circle']['id']);
+
+        $placement = CirclePlacement::findOrFail($responseData['id']);
+        $expectedPlacement = $updateCircleParticipatingInEventInput['placement'];
+        $expectedPlacement['circle_id'] = $circle->id;
+        $assertionPlacement = Arr::except($placement->toArray(), ['id', 'created_at', 'updated_at']);
+        $this->assertEquals($expectedPlacement, $assertionPlacement);
+    }
+
+
+    public function testUpdateCircleParticipatingInEventWhenHasOtherUserCareAboutCircle()
+    {
+        $dataset = (new CircleDatasetFactory())
+            ->one()
+            ->create();
+        $user = $dataset['user'];
+        $team = $dataset['team'];
+        CareAboutCircle::factory([
+            'circle_placement_id' => $dataset['circlePlacements']->first()->id,
+        ])->create();
+
+        $placementValues = collect(CirclePlacement::factory()->definition())
+            ->except('circle_id', 'event_date_id', 'circle_placement_classification_id')
+            ->put('event_date_id', $dataset['eventDates']->random()->id)
+            ->put('circle_placement_classification_id', $team->circlePlacementClassifications->random()->id)
+            ->toArray();
+
+        $updateCircleParticipatingInEventInput = [
+            'circle' => Circle::factory()->definition(),
+            'placement' => $placementValues,
+        ];
+
+        $response = $this
+            ->actingAsUser($user)
+            ->graphQL('
+                mutation updateCircleParticipatingInEvent($id: ID!, $input: CreateCircleParticipatingInEventInput!) {
+                    updateCircleParticipatingInEvent(id: $id, input: $input) {
+                        id
+                        circle {
+                            id
+                            name
+                            kana
+                            memo
+                        }
+                    }
+                }
+            ', [
+                'id' => $dataset['circle']->id,
+                'input' => $updateCircleParticipatingInEventInput
+            ]);
+
+        $errors = $response->json('errors');
+        $this->assertEquals($errors[0]['extensions']['category'], 'updateDenied');
     }
 }

@@ -8,6 +8,7 @@ use App\Models\Circle;
 use App\Models\CirclePlacement;
 use App\Models\EventDate;
 use App\UseCase\UseCase;
+use App\UseCase\UpdateDeniedException;
 
 class UpdateCircleParticipatingInEvent extends UseCase
 {
@@ -17,11 +18,18 @@ class UpdateCircleParticipatingInEvent extends UseCase
             $circle = Circle::findOrFail($input->getCircleId());
 
             $circleData = $input->getCircleData();
-            $circle->update($circleData);
-
             $placementData = $input->getPlacementData();
             $eventDate = EventDate::findOrFail($placementData['event_date_id']);
             $circlePlacement = $circle->circlePlacements()->inEvent($eventDate->event_id)->firstOrFail();
+
+            // note: 他ユーザも関連している場合にサークル名の変更があった場合は、チェック済みのサークルが意図せずして変更される可能性があるため、更新を拒否する
+            $isNameChanged = $circle->name !== $circleData['name'];
+            $isExistsCareAboutCircleWhereHasOtherUser = $this->isExistsCareAboutCircleWhereHasOtherUser($input->get('operation_user_id'), $circlePlacement);
+            if ($isNameChanged && $isExistsCareAboutCircleWhereHasOtherUser) {
+                throw new UpdateDeniedException("他メンバーもこのサークルをチェックしているため、サークル名の変更はできません。\nサークルを削除後に新規登録をお願いします。");
+            }
+
+            $circle->update($circleData);
             $circlePlacement->update($placementData);
 
             $circle->refresh();
@@ -31,5 +39,10 @@ class UpdateCircleParticipatingInEvent extends UseCase
         });
 
         return $circle;
+    }
+
+    private function isExistsCareAboutCircleWhereHasOtherUser(string $operationUserId, CirclePlacement $circlePlacement): bool
+    {
+        return $circlePlacement->careAboutCircles()->count() > 1;
     }
 }
