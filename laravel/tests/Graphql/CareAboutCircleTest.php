@@ -5,6 +5,7 @@ namespace Tests\Graphql;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
 
+use App\Models\CareAboutCircle;
 use App\Models\Circle;
 use App\Models\CirclePlacement;
 use App\Models\Event;
@@ -12,9 +13,11 @@ use App\Models\EventDate;
 use App\Models\Team;
 use App\Models\User;
 use App\Models\EventAffiliationTeam;
+use App\Models\Favorite;
 use App\Models\UserAffiliationTeam;
 use App\Models\JoinEvent;
 use App\Models\JoinEventDate;
+use Database\DatasetFactories\CircleDatasetFactory;
 
 class CareAboutCircleTest extends TestCase
 {
@@ -92,5 +95,91 @@ class CareAboutCircleTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('care_about_circles', $createCircleParticipatingInEventInput);
+    }
+
+    public function testDontCareCircleWhenOnlyLoginUser()
+    {
+        $dataset = (new CircleDatasetFactory)->one()->create();
+        $user = $dataset['user'];
+        $careAboutCircle = $dataset['careAboutCircles']->first();
+        $circlePlacement = $careAboutCircle->circlePlacement;
+        $circle = $circlePlacement->circle;
+
+        $this
+            ->actingAsUser($user)
+            ->graphQL('
+                mutation dontCareCircle($id: ID!) {
+                    dontCareCircle(id: $id) {
+                        id
+                    }
+                }
+            ', [
+                'id' => $careAboutCircle->id
+            ])
+            ->assertStatus(200);
+
+        $this->assertDatabaseMissing('care_about_circles', ['id' => $careAboutCircle->id]);
+        $this->assertDatabaseMissing('circles', ['id' => $circle->id]);
+        $this->assertDatabaseMissing('circle_placements', ['id' => $circlePlacement->id]);
+    }
+
+    public function testDontCareCircleWhenExistsOtherUserCareAboutCircle()
+    {
+        $dataset = (new CircleDatasetFactory)->one()->create();
+        $user = $dataset['user'];
+        $careAboutCircle = $dataset['careAboutCircles']->first();
+        $circlePlacement = $careAboutCircle->circlePlacement;
+        $circle = $circlePlacement->circle;
+
+        CareAboutCircle::factory([
+            'circle_placement_id' => $circlePlacement->id,
+        ])->create();
+
+        $this
+            ->actingAsUser($user)
+            ->graphQL('
+                mutation dontCareCircle($id: ID!) {
+                    dontCareCircle(id: $id) {
+                        id
+                    }
+                }
+            ', [
+                'id' => $careAboutCircle->id
+            ])
+            ->assertStatus(200);
+
+        $this->assertDatabaseMissing('care_about_circles', ['id' => $careAboutCircle->id]);
+        $this->assertDatabaseHas('circles', ['id' => $circle->id]);
+        $this->assertDatabaseHas('circle_placements', ['id' => $circlePlacement->id]);
+    }
+
+    public function testDontCareCircleWhenExistsFavorite()
+    {
+        $dataset = (new CircleDatasetFactory)->one()->create();
+        $user = $dataset['user'];
+        $careAboutCircle = $dataset['careAboutCircles']->first();
+        $circlePlacement = $careAboutCircle->circlePlacement;
+        $circle = $circlePlacement->circle;
+
+        Favorite::factory([
+            'circle_id' => $circle->id,
+        ])->create();
+
+        $this
+            ->actingAsUser($user)
+            ->graphQL('
+                mutation dontCareCircle($id: ID!) {
+                    dontCareCircle(id: $id) {
+                        id
+                    }
+                }
+            ', [
+                'id' => $careAboutCircle->id
+            ])
+            ->assertStatus(200);
+
+        $this->assertDatabaseMissing('care_about_circles', ['id' => $careAboutCircle->id]);
+        $this->assertDatabaseHas('circles', ['id' => $circle->id]);
+        $this->assertDatabaseHas('circle_placements', ['id' => $circlePlacement->id]);
     }
 }

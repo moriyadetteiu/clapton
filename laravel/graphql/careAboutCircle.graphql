@@ -19,4 +19,10 @@ extend type Mutation @guard {
         @field(
             resolver: "App\\GraphQL\\Mutations\\CreateCareAboutCircle"
         )
+    dontCareCircle(
+        id: ID!
+    ): CareAboutCircle
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\DontCareCircle"
+        )
 }

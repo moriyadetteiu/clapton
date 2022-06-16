@@ -9,6 +9,7 @@
           {{ circle.name }}
           <v-spacer />
           <edit-btn @click="editCircle" />
+          <delete-btn v-if="this.myCareAboutCircle" @click="dontCareCircle" />
         </template>
       </v-card-title>
       <v-card-text>
@@ -61,6 +62,8 @@ import {
   CirclePlacement,
   CirclePlacementInEventQuery,
   CircleProduct,
+  CareAboutCircle,
+  DontCareCircleMutation,
 } from '~/apollo/graphql'
 
 @Component({
@@ -127,6 +130,14 @@ export default class CircleListForm extends Vue {
     return this.circlePlacement?.circleProducts ?? []
   }
 
+  private get myCareAboutCircle(): CareAboutCircle | null {
+    return (
+      this.circlePlacement?.careAboutCircles?.find(
+        (careAboutCircle) => careAboutCircle.join_event_id === this.joinEventId
+      ) ?? null
+    )
+  }
+
   @Watch('editingCircleId')
   private onUpdateEditingCircleId(editingCircleId: string | null): void {
     this.cancelCircleProduct()
@@ -159,6 +170,21 @@ export default class CircleListForm extends Vue {
   private editCircle(): void {
     this.cancelCircleProduct()
     this.isEditCircle = true
+  }
+
+  private async dontCareCircle() {
+    const variables = {
+      id: this.myCareAboutCircle?.id,
+    }
+
+    await this.$apollo.mutate({
+      mutation: DontCareCircleMutation,
+      variables,
+    })
+
+    this.isOpenSync = false
+    this.$toast.success('マイリストからサークルを削除しました')
+    this.$emit('saved')
   }
 
   private addCircleProduct(): void {

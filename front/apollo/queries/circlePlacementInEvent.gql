@@ -13,6 +13,10 @@ query CirclePlacementInEventQuery($circleId: ID!, $eventId: ID!) {
       name
       kana
     }
+    careAboutCircles {
+      id
+      join_event_id
+    }
     circleProducts {
       id
       name
