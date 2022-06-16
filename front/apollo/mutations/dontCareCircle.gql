@@ -1,0 +1,5 @@
+mutation DontCareCircleMutation($id: ID!) {
+  dontCareCircle(id: $id) {
+    id
+  }
+}

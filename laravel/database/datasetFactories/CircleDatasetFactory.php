@@ -24,7 +24,7 @@ class CircleDatasetFactory
 
         $circle = $this->createCircleAndPlacement($eventDataset);
         $circlePlacements = $circle instanceof Circle ? $circle->circlePlacements : $circle->flatMap(fn ($circle) => $circle->circlePlacements);
-        $careAboutCircle = $circlePlacements
+        $careAboutCircles = $circlePlacements
             ->flatMap(fn ($circlePlacement) => $circlePlacement->careAboutCircles);
         $circleProducts = $circlePlacements
             ->flatMap(fn ($circlePlacement) => $circlePlacement->circleProducts);
@@ -44,6 +44,7 @@ class CircleDatasetFactory
             'circle',
             'circlePlacements',
             'circleProducts',
+            'careAboutCircles',
             'wantCircleProducts'
         ));
     }
