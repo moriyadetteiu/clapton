@@ -37,7 +37,7 @@ class CircleDatasetFactory
         $circle->load([
             'circlePlacements.careAboutCircles'
         ]);
-        $circlePlacements = $circle->circlePlacements;
+        $circlePlacements = $circle instanceof Circle ? $circle->circlePlacements : $circle->flatMap(fn ($circle) => $circle->circlePlacements);
         $careAboutCircle = $circlePlacements
             ->flatMap(fn ($circlePlacement) => $circlePlacement->careAboutCircles);
         $circleProducts = $circlePlacements
