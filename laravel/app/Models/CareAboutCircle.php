@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Builder;
 
 class CareAboutCircle extends Model
 {
@@ -19,5 +20,13 @@ class CareAboutCircle extends Model
     public function joinEvent(): BelongsTo
     {
         return $this->belongsTo(JoinEvent::class);
+    }
+
+    public function scopeWhereHasUser(Builder $builder, string $userId)
+    {
+        return $builder->whereHas(
+            'joinEvent',
+            fn (Builder $whereHasBuilder) => $whereHasBuilder->where('user_id', $userId)
+        );
     }
 }

@@ -4,11 +4,12 @@ namespace App\GraphQL\Mutations;
 
 use Auth;
 
-use App\UseCase\CircleProduct\UpdateCircleProduct as UpdateCircleProductUseCase;
-use App\UseCase\CircleProduct\UpdateCircleProductInput;
 use Illuminate\Support\Arr;
 
-class UpdateCircleProduct
+use App\UseCase\CircleProduct\UnnecessaryCircleProduct as UnnecessaryCircleProductUseCase;
+use App\UseCase\CircleProduct\UnnecessaryCircleProductInput;
+
+class UnnecessaryCircleProduct
 {
     /**
      * @param  null  $_
@@ -18,7 +19,7 @@ class UpdateCircleProduct
     {
         $data = Arr::except($args, ['directive']);
         $data['operation_user_id'] = Auth::id();
-        $input = new UpdateCircleProductInput($data);
-        return (new UpdateCircleProductUseCase())->execute($input);
+        $input = new UnnecessaryCircleProductInput($data);
+        return (new UnnecessaryCircleProductUseCase())->execute($input);
     }
 }

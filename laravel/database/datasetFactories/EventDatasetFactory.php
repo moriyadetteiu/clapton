@@ -28,6 +28,7 @@ class EventDatasetFactory
                 )
                 ->state(['is_production_day' => true])
         )->create();
+        $eventDates = $event->eventDates;
         EventAffiliationTeam::factory()
             ->create([
                 'event_id' => $event->id,
@@ -46,6 +47,6 @@ class EventDatasetFactory
                     'join_event_id' => $joinEvent->id,
                 ]);
         });
-        return array_merge($teamDataset, compact('event', 'joinEvent'));
+        return array_merge($teamDataset, compact('event', 'eventDates', 'joinEvent'));
     }
 }

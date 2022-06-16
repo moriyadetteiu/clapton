@@ -10,6 +10,11 @@ type CircleProduct {
     updated_at: DateTime
 }
 
+type UpdatedCircleProduct {
+    circleProduct: CircleProduct!
+    updatedWantCircleProduct: WantCircleProduct
+}
+
 input CircleProductInput {
     circle_placement_id: ID
     circle_product_classification_id: ID!
@@ -33,11 +38,14 @@ extend type Mutation @guard {
     updateCircleProduct(
         id: ID!,
         input: CircleProductInput! @spread
-    ): CircleProduct!
+    ): UpdatedCircleProduct!
         @field(
             resolver: "App\\GraphQL\\Mutations\\UpdateCircleProduct"
         )
-    deleteCircleProduct(
+    unnecessaryCircleProduct(
         id: ID!
-    ): CircleProduct @delete
+    ): CircleProduct
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\UnnecessaryCircleProduct"
+        )
 }

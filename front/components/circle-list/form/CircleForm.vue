@@ -161,7 +161,8 @@ export default class CircleForm extends Vue {
   @Prop({ type: Object as PropType<CirclePlacement> })
   private circlePlacement?: CirclePlacement
 
-  private validation: CreateCircleParticipatingInEventInputValidation = new CreateCircleParticipatingInEventInputValidation()
+  private validation: CreateCircleParticipatingInEventInputValidation =
+    new CreateCircleParticipatingInEventInputValidation()
 
   private circleInput: CircleInput = { ...initialCircleInput }
 
@@ -213,6 +214,10 @@ export default class CircleForm extends Vue {
         ? this.updateCircle
         : this.createCircle
       const circle = await postMethod()
+
+      if (!circle) {
+        return
+      }
 
       this.$toast.success('保存しました')
       this.$emit('saved', { circle })
@@ -275,6 +280,12 @@ export default class CircleForm extends Vue {
       })
       .catch((error) => {
         if (isApolloError(error)) {
+          const errorExtensions = error.graphQLErrors[0].extensions
+          if (errorExtensions.category === 'updateDenied') {
+            this.$toast.error(errorExtensions.message)
+            return
+          }
+
           this.$toasted.global.validationError()
           this.validation.setBackendErrorsFromAppolo(error)
         }

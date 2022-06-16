@@ -1,0 +1,5 @@
+mutation unnecessaryCircleProductMutation($id: ID!) {
+  unnecessaryCircleProduct(id: $id) {
+    id
+  }
+}

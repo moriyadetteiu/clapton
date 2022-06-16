@@ -191,12 +191,23 @@ export default class CircleProductForm extends Vue {
   }
 
   private async submitCircleProduct() {
-    const mutationName = this.isCreate
-      ? 'createCircleProduct'
-      : 'updateCircleProduct'
     return await this.$apollo
       .mutate(this.mutateOption)
-      .then((res) => res.data![mutationName])
+      .then((res) => {
+        // FIXME: #258 computedで取得したobjectのプロパティへの書き込みを行うことで実装している部分があり、
+        //             バグの温床になっているかつ、コードが複雑化している。issueの通りに直すこと
+        const data = res.data!
+
+        if (this.isCreate) {
+          return data.createCircleProduct
+        }
+
+        if (data.updateCircleProduct.updatedWantCircleProduct) {
+          this.wantCircleProduct!.id =
+            data.updateCircleProduct.updatedWantCircleProduct.id
+        }
+        return data.updateCircleProduct.circleProduct
+      })
       .catch((error) => {
         if (isApolloError(error)) {
           this.$toasted.global.validationError()
@@ -273,10 +284,11 @@ export default class CircleProductForm extends Vue {
     if (!this.circleProduct || !this.circleProduct.wantCircleProducts) {
       return null
     }
-    const targetWantCircleProduct = this.circleProduct!.wantCircleProducts!.find(
-      (wantCircleProduct) =>
-        wantCircleProduct!.careAboutCircle.join_event_id === this.joinEventId
-    )
+    const targetWantCircleProduct =
+      this.circleProduct!.wantCircleProducts!.find(
+        (wantCircleProduct) =>
+          wantCircleProduct!.careAboutCircle.join_event_id === this.joinEventId
+      )
     if (!targetWantCircleProduct) {
       return null
     }

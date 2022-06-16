@@ -33,7 +33,7 @@ import { PropType } from 'vue'
 import { Vue, Prop, Component, Emit } from 'nuxt-property-decorator'
 import {
   CircleProduct,
-  DeleteCircleProductMutation,
+  UnnecessaryCircleProductMutation,
   User,
   WantCircleProduct,
 } from '~/apollo/graphql'
@@ -73,7 +73,7 @@ export default class CircleListRow extends Vue {
     const id = this.circleProduct.id
     await this.$apollo
       .mutate({
-        mutation: DeleteCircleProductMutation,
+        mutation: UnnecessaryCircleProductMutation,
         variables: { id },
       })
       .catch(() => this.$toast.error('削除に失敗しました'))
