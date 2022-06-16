@@ -19,27 +19,8 @@ class UpdateCircleProduct extends UseCase
         //       直接更新せずに、新規で頒布物を登録し、ほしいもののレコードは新しい頒布物に付け替える形にしている
         $operationUserId = $input->get('operation_user_id');
         $isNameChanged = $input->get('name') !== $circleProduct->name;
-        if ($isNameChanged && $this->isExistsWantCircleProductWhereHasOtherUser($operationUserId, $circleProduct)) {
-            $operationUserWantCircleProduct = $circleProduct
-                ->wantCircleProducts()
-                ->whereHasUser($operationUserId)
-                ->firstOrFail();
-
-            $operationUserWantCircleProduct->delete();
-
-            $createCircleProductInput = new CreateCircleProductInput($input->toArray());
-            $circleProduct = (new CreateCircleProduct())->execute($createCircleProductInput);
-
-            $createWantCircleProductValues = collect($operationUserWantCircleProduct->toArray())
-                ->only([
-                    'quantity',
-                    'want_priority_id',
-                ])
-                ->put('join_event_id', $operationUserWantCircleProduct->careAboutCircle->join_event_id)
-                ->put('circle_product_id', $circleProduct->id)
-                ->toArray();
-            $createWantCircleProductInput = new CreateWantCircleProductInput($createWantCircleProductValues);
-            (new CreateWantCircleProduct)->execute($createWantCircleProductInput);
+        if ($isNameChanged && $this->isExistsWantCircleProductWhereHasOtherUser($circleProduct)) {
+            $this->renewWantCircleProduct($operationUserId, $input, $circleProduct);
         } else {
             $circleProduct->update($circleProductData);
         }
@@ -48,8 +29,34 @@ class UpdateCircleProduct extends UseCase
         return $circleProduct;
     }
 
-    private function isExistsWantCircleProductWhereHasOtherUser(string $operationUserId, CircleProduct $circleProduct): bool
+    private function isExistsWantCircleProductWhereHasOtherUser(CircleProduct $circleProduct): bool
     {
         return $circleProduct->wantCircleProducts()->count() > 1;
+    }
+
+    private function renewWantCircleProduct(string $operationUserId, UpdateCircleProductInput $input, CircleProduct $circleProduct): CircleProduct
+    {
+        $operationUserWantCircleProduct = $circleProduct
+            ->wantCircleProducts()
+            ->whereHasUser($operationUserId)
+            ->firstOrFail();
+
+        $operationUserWantCircleProduct->delete();
+
+        $createCircleProductInput = new CreateCircleProductInput($input->toArray());
+        $circleProduct = (new CreateCircleProduct())->execute($createCircleProductInput);
+
+        $createWantCircleProductValues = collect($operationUserWantCircleProduct->toArray())
+            ->only([
+                'quantity',
+                'want_priority_id',
+            ])
+            ->put('join_event_id', $operationUserWantCircleProduct->careAboutCircle->join_event_id)
+            ->put('circle_product_id', $circleProduct->id)
+            ->toArray();
+        $createWantCircleProductInput = new CreateWantCircleProductInput($createWantCircleProductValues);
+        (new CreateWantCircleProduct)->execute($createWantCircleProductInput);
+
+        return $circleProduct;
     }
 }

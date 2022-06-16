@@ -5,8 +5,6 @@ namespace Database\DatasetFactories;
 use App\Models\{
     Circle,
     CirclePlacement,
-    CircleProduct,
-    CareAboutCircle,
     WantCircleProduct,
 };
 
@@ -23,20 +21,8 @@ class CircleDatasetFactory
     public function create(): array
     {
         $eventDataset = (new EventDatasetFactory())->create();
-        $event = $eventDataset['event'];
-        $joinEvent = $eventDataset['joinEvent'];
-        $circlePlacementFactory = CirclePlacement::factory()
-            ->state(['event_date_id' => $event->eventDates->random()->id])
-            ->hasCircleProducts(1)
-            ->hasCareAboutCircles(1, [
-                'join_event_id' => $joinEvent->id,
-            ]);
-        $circle = Circle::factory($this->numberOfCreate)
-            ->has($circlePlacementFactory)
-            ->create();
-        $circle->load([
-            'circlePlacements.careAboutCircles'
-        ]);
+
+        $circle = $this->createCircleAndPlacement($eventDataset);
         $circlePlacements = $circle instanceof Circle ? $circle->circlePlacements : $circle->flatMap(fn ($circle) => $circle->circlePlacements);
         $careAboutCircle = $circlePlacements
             ->flatMap(fn ($circlePlacement) => $circlePlacement->careAboutCircles);
@@ -60,5 +46,25 @@ class CircleDatasetFactory
             'circleProducts',
             'wantCircleProducts'
         ));
+    }
+
+    private function createCircleAndPlacement(array $eventDataset)
+    {
+        $event = $eventDataset['event'];
+        $joinEvent = $eventDataset['joinEvent'];
+
+        $circlePlacementFactory = CirclePlacement::factory()
+            ->state(['event_date_id' => $event->eventDates->random()->id])
+            ->hasCircleProducts(1)
+            ->hasCareAboutCircles(1, [
+                'join_event_id' => $joinEvent->id,
+            ]);
+        $circle = Circle::factory($this->numberOfCreate)
+            ->has($circlePlacementFactory)
+            ->create();
+        $circle->load([
+            'circlePlacements.careAboutCircles'
+        ]);
+        return $circle;
     }
 }
