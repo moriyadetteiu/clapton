@@ -191,9 +191,6 @@ export default class CircleProductForm extends Vue {
   }
 
   private async submitCircleProduct() {
-    const mutationName = this.isCreate
-      ? 'createCircleProduct'
-      : 'updateCircleProduct'
     return await this.$apollo
       .mutate(this.mutateOption)
       .then((res) => {

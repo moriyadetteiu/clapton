@@ -282,12 +282,10 @@ export default class CircleForm extends Vue {
         if (isApolloError(error)) {
           const errorExtensions = error.graphQLErrors[0].extensions
           if (errorExtensions.category === 'updateDenied') {
-            console.log(errorExtensions)
             this.$toast.error(errorExtensions.message)
             return
           }
 
-          console.log(errorExtensions)
           this.$toasted.global.validationError()
           this.validation.setBackendErrorsFromAppolo(error)
         }
