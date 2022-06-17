@@ -19,6 +19,7 @@
           :join-event-id="joinEventId"
           :team-id="teamId"
           @saved="onSavedWantMeTooForm"
+          @canceled="cancelWantMeTo"
         />
         <template v-else>
           <circle-form
