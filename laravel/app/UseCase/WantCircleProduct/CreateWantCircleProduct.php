@@ -37,13 +37,13 @@ class CreateWantCircleProduct extends UseCase
             return $careAboutCircle;
         }
 
-        return $this->createCareAboutCircle($input);
+        return $this->createCareAboutCircle($circlePlacementId, $input);
     }
 
-    private function createCareAboutCircle(CreateWantCircleProductInput $input)
+    private function createCareAboutCircle(string $circlePlacementId, CreateWantCircleProductInput $input)
     {
         $input = new CreateCareAboutCircleInput([
-            'circle_placement_id' => $input->toArray()['circle_product_id'],
+            'circle_placement_id' => $circlePlacementId,
             'join_event_id' => $input->toArray()['join_event_id'],
         ]);
         return (new CreateCareAboutCircle())->execute($input);

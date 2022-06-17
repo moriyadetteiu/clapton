@@ -13,37 +13,53 @@
         </template>
       </v-card-title>
       <v-card-text>
-        <circle-form
-          v-if="isEditCircle"
-          :event-id="eventId"
-          :team-id="teamId"
+        <want-me-too-form
+          v-if="wantMeToCircleProduct"
+          :circle-product="wantMeToCircleProduct"
           :join-event-id="joinEventId"
-          :circle-placement="circlePlacement"
-          @saved="onSavedCircle"
+          :team-id="teamId"
+          @saved="onSavedWantMeTooForm"
+          @canceled="cancelWantMeTo"
         />
-        <template v-if="circlePlacement && !isEditCircle">
-          <template v-if="!isEditCircleProduct">
-            <circle-product-row
-              v-for="circleProduct in circleProducts"
-              :key="circleProduct.id"
-              :circle-product="circleProduct"
-              @delete-circle-product="onDeleteCircleProduct"
-              @edit-circle-product="editCircleProduct"
+        <template v-else>
+          <circle-form
+            v-if="isEditCircle"
+            :event-id="eventId"
+            :team-id="teamId"
+            :join-event-id="joinEventId"
+            :circle-placement="circlePlacement"
+            @saved="onSavedCircle"
+          />
+          <template v-if="circlePlacement && !isEditCircle">
+            <template v-if="!isEditCircleProduct">
+              <circle-product-row
+                v-for="circleProduct in circleProducts"
+                :key="circleProduct.id"
+                :circle-product="circleProduct"
+                @delete-circle-product="onDeleteCircleProduct"
+                @edit-circle-product="editCircleProduct"
+                @want-me-too="onWantMeToo"
+              />
+            </template>
+            <circle-product-form
+              v-if="isEditCircleProduct"
+              :team-id="teamId"
+              :circle-placement-id="circlePlacement.id"
+              :circle-product="editingCircleProduct"
+              :join-event-id="joinEventId"
+              @saved="onSavedCircleProduct"
+              @canceled="cancelCircleProduct"
             />
           </template>
-          <circle-product-form
-            v-if="isEditCircleProduct"
-            :team-id="teamId"
-            :circle-placement-id="circlePlacement.id"
-            :circle-product="editingCircleProduct"
-            :join-event-id="joinEventId"
-            @saved="onSavedCircleProduct"
-            @canceled="cancelCircleProduct"
-          />
         </template>
       </v-card-text>
       <v-card-actions
-        v-if="circlePlacement && !isEditCircle && !isEditCircleProduct"
+        v-if="
+          circlePlacement &&
+          !isEditCircle &&
+          !isEditCircleProduct &&
+          !wantMeToCircleProduct
+        "
       >
         <v-btn color="register" @click="addCircleProduct"> 頒布物追加 </v-btn>
       </v-card-actions>
@@ -56,6 +72,7 @@ import { Vue, Prop, PropSync, Component, Watch } from 'nuxt-property-decorator'
 import CircleForm from './form/CircleForm.vue'
 import CircleProductForm from './form/CircleProductForm.vue'
 import CircleProductRow from './form/CircleProductRow.vue'
+import WantMeTooForm from './form/WantMeTooForm.vue'
 import FavoriteButton from '~/components/favorites/FavoriteButton.vue'
 import {
   Circle,
@@ -72,6 +89,7 @@ import {
     CircleProductForm,
     CircleProductRow,
     FavoriteButton,
+    WantMeTooForm,
   },
   apollo: {
     circlePlacement: {
@@ -117,6 +135,8 @@ export default class CircleListForm extends Vue {
 
   private editingCircleProduct: CircleProduct | null = null
 
+  private wantMeToCircleProduct: CircleProduct | null = null
+
   private readonly nullCircle: Circle = {
     id: '',
     name: '',
@@ -141,6 +161,7 @@ export default class CircleListForm extends Vue {
   @Watch('editingCircleId')
   private onUpdateEditingCircleId(editingCircleId: string | null): void {
     this.cancelCircleProduct()
+    this.cancelWantMeTo()
     editingCircleId
       ? this.initializeDisplayCircle(editingCircleId)
       : this.clearForm()
@@ -150,6 +171,7 @@ export default class CircleListForm extends Vue {
     this.isEditCircle = true
     this.circleId = null
     this.circlePlacement = null
+    this.wantMeToCircleProduct = null
   }
 
   private initializeDisplayCircle(editingCircleId: string): void {
@@ -211,6 +233,20 @@ export default class CircleListForm extends Vue {
   private cancelCircleProduct(): void {
     this.isEditCircleProduct = false
     this.editingCircleProduct = null
+  }
+
+  private onWantMeToo(circleProduct: CircleProduct): void {
+    this.wantMeToCircleProduct = circleProduct
+  }
+
+  private onSavedWantMeTooForm(): void {
+    this.onSavedCircleProduct()
+    this.cancelCircleProduct()
+    this.cancelWantMeTo()
+  }
+
+  private cancelWantMeTo(): void {
+    this.wantMeToCircleProduct = null
   }
 }
 </script>

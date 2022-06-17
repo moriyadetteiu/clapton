@@ -24,6 +24,9 @@
       >
         {{ wantCircleProduct.careAboutCircle.joinEvent.user.name }}
       </v-chip>
+      <v-btn v-if="!hasMyWantCircleProduct" icon @click="wantMeToo">
+        <v-icon>mdi-cart-plus</v-icon>
+      </v-btn>
     </v-col>
   </v-row>
 </template>
@@ -82,6 +85,9 @@ export default class CircleListRow extends Vue {
     this.$toast.success('削除しました')
   }
 
-  private wantMeToo() {}
+  @Emit('want-me-too')
+  private wantMeToo() {
+    return this.circleProduct
+  }
 }
 </script>
