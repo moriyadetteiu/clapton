@@ -39,4 +39,10 @@ extend type Mutation @guard {
     deleteWantCircleProduct(
         id: ID!
     ): WantCircleProduct @delete
+    wantMeTooCircleProduct(
+        input: WantCircleProductInput @spread
+    ): WantCircleProduct!
+        @field(
+            resolver: "App\\GraphQL\\Mutations\\WantMeTooCircleProduct"
+        )
 }
