@@ -22,13 +22,11 @@
           @canceled="cancelWantMeTo"
         />
         <template v-else>
-          <circle-form
+          <component
+            :is="formState.getComponentName()"
             v-if="isEditCircle"
-            :event-id="eventId"
-            :team-id="teamId"
-            :join-event-id="joinEventId"
-            :circle-placement="circlePlacement"
-            @saved="onSavedCircle"
+            v-bind="formState.getAttrs()"
+            v-on="formState.getOn()"
           />
           <template v-if="circlePlacement && !isEditCircle">
             <template v-if="!isEditCircleProduct">
@@ -73,6 +71,7 @@ import CircleForm from './form/CircleForm.vue'
 import CircleProductForm from './form/CircleProductForm.vue'
 import CircleProductRow from './form/CircleProductRow.vue'
 import WantMeTooForm from './form/WantMeTooForm.vue'
+import CircleFormState from './form/states/CircleFormState'
 import FavoriteButton from '~/components/favorites/FavoriteButton.vue'
 import {
   Circle,
@@ -82,6 +81,7 @@ import {
   CareAboutCircle,
   DontCareCircleMutation,
 } from '~/apollo/graphql'
+import FormStateInterface from './form/states/FormStateInterface'
 
 @Component({
   components: {
@@ -155,6 +155,20 @@ export default class CircleListForm extends Vue {
       this.circlePlacement?.careAboutCircles?.find(
         (careAboutCircle) => careAboutCircle.join_event_id === this.joinEventId
       ) ?? null
+    )
+  }
+
+  private get formState(): FormStateInterface {
+    return new CircleFormState(
+      {
+        eventId: this.eventId,
+        teamId: this.teamId,
+        joinEventId: this.joinEventId as String,
+        circlePlacement: this.circlePlacement,
+      },
+      {
+        saved: this.onSavedCircle,
+      }
     )
   }
 
