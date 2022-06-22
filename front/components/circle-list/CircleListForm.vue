@@ -9,7 +9,7 @@
           {{ circle.name }}
           <v-spacer />
           <edit-btn @click="editCircle" />
-          <delete-btn v-if="this.myCareAboutCircle" @click="dontCareCircle" />
+          <delete-btn v-if="myCareAboutCircle" @click="dontCareCircle" />
         </template>
       </v-card-title>
       <v-card-text>
@@ -31,6 +31,7 @@ import { Vue, Prop, PropSync, Component, Watch } from 'nuxt-property-decorator'
 import CircleForm from './form/CircleForm.vue'
 import CircleProductForm from './form/CircleProductForm.vue'
 import CircleProducts from './form/CircleProducts.vue'
+import FormStateInterface from './form/states/FormStateInterface'
 import WantMeTooForm from './form/WantMeTooForm.vue'
 import CircleFormState from './form/states/CircleFormState'
 import CircleProductFormState from './form/states/CircleProductFormState'
@@ -45,7 +46,6 @@ import {
   CareAboutCircle,
   DontCareCircleMutation,
 } from '~/apollo/graphql'
-import FormStateInterface from './form/states/FormStateInterface'
 
 @Component({
   components: {
