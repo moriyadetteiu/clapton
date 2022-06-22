@@ -9,6 +9,7 @@ type CircleProductStateEventObservers = {
   'delete-circle-product': () => void
   'edit-circle-product': (circleProduct: CircleProduct) => void
   'want-me-too': (circleProduct: CircleProduct) => void
+  'add-circle-product': () => void
 }
 
 export default class CircleProductsState extends AbstractFormState<
@@ -16,8 +17,4 @@ export default class CircleProductsState extends AbstractFormState<
   CircleProductStateEventObservers
 > {
   protected componentName: string = 'circle-products'
-
-  public shouldDisplayActions(): boolean {
-    return true
-  }
 }

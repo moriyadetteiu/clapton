@@ -19,9 +19,6 @@
           v-on="formState.getOn()"
         />
       </v-card-text>
-      <v-card-actions v-if="formState.shouldDisplayActions()">
-        <v-btn color="register" @click="addCircleProduct"> 頒布物追加 </v-btn>
-      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -174,6 +171,7 @@ export default class CircleListForm extends Vue {
         'delete-circle-product': this.onDeleteCircleProduct,
         'edit-circle-product': this.editCircleProduct,
         'want-me-too': this.onWantMeToo,
+        'add-circle-product': this.addCircleProduct,
       }
     )
   }

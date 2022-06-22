@@ -6,6 +6,11 @@
       :circle-product="circleProduct"
       v-on="$listeners"
     />
+    <v-card-actions>
+      <v-btn color="register" @click="$emit('add-circle-product')">
+        頒布物追加
+      </v-btn>
+    </v-card-actions>
   </v-container>
 </template>
 

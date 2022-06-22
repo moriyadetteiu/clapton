@@ -25,8 +25,4 @@ export default abstract class AbstractFormState<
   public getComponentName(): string {
     return this.componentName
   }
-
-  public shouldDisplayActions(): boolean {
-    return false
-  }
 }
