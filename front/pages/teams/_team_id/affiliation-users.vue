@@ -37,6 +37,11 @@ interface AffiliationUserDataTableItems {
 }
 
 @Component({
+  head() {
+    return {
+      title: '所属者一覧',
+    }
+  },
   apollo: {
     teamWithAffiliationUsers: {
       query: TeamWithAffiliationUsersQuery,
@@ -70,15 +75,15 @@ export default class AffiliationUsersPage extends Vue {
   ]
 
   private get items(): AffiliationUserDataTableItems[] {
-    return this.teamWithAffiliationUsers.userAffiliationTeams.map<
-      AffiliationUserDataTableItems
-    >((userAffiliationTeam: UserAffiliationTeam) => {
-      const user = userAffiliationTeam.user
-      return {
-        userName: user.name,
-        userAffiliationTeamId: userAffiliationTeam.id,
+    return this.teamWithAffiliationUsers.userAffiliationTeams.map<AffiliationUserDataTableItems>(
+      (userAffiliationTeam: UserAffiliationTeam) => {
+        const user = userAffiliationTeam.user
+        return {
+          userName: user.name,
+          userAffiliationTeamId: userAffiliationTeam.id,
+        }
       }
-    })
+    )
   }
 
   private async excludeUser(userAffiliationTeamId: string) {

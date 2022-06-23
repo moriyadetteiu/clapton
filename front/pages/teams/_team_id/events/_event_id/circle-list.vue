@@ -97,6 +97,11 @@ type CircleListTab = {
 }
 
 @Component({
+  head() {
+    return {
+      title: 'サークルリスト',
+    }
+  },
   components: {
     JoinEventForm,
     CircleListForm,

@@ -53,6 +53,11 @@ import { Vue, Component } from 'nuxt-property-decorator'
 import { Team, TeamQuery } from '~/apollo/graphql'
 
 @Component({
+  head() {
+    return {
+      title: (this as TeamPage).team.name,
+    }
+  },
   apollo: {
     team: {
       query: TeamQuery,

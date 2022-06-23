@@ -11,6 +11,11 @@ import {
 import AbstractMasterPage from '~/components/masters/AbstractMasterPage.vue'
 
 @Component({
+  head() {
+    return {
+      title: '優先度マスタ',
+    }
+  },
   components: { WantPriorityForm, ConfirmDialog },
   apollo: {
     models: {

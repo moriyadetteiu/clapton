@@ -11,6 +11,11 @@ import {
 import AbstractMasterPage from '~/components/masters/AbstractMasterPage.vue'
 
 @Component({
+  head() {
+    return {
+      title: '配置分類マスタ',
+    }
+  },
   components: { CirclePlacementClassificationForm, ConfirmDialog },
   apollo: {
     models: {
@@ -25,9 +30,7 @@ import AbstractMasterPage from '~/components/masters/AbstractMasterPage.vue'
     },
   },
 })
-export default class CirclePlacementClassificationPage extends AbstractMasterPage<
-  CirclePlacementClassification
-> {
+export default class CirclePlacementClassificationPage extends AbstractMasterPage<CirclePlacementClassification> {
   protected readonly headers: DataTableHeader[] = [
     { text: '配置分類名', value: 'name' },
     { text: 'コスト', value: 'cost' },
@@ -40,7 +43,8 @@ export default class CirclePlacementClassificationPage extends AbstractMasterPag
     cost: 0,
   }
 
-  protected readonly deleteMutation = DeleteCirclePlacementClassificationMutation
+  protected readonly deleteMutation =
+    DeleteCirclePlacementClassificationMutation
 
   protected readonly formComponentName: string =
     'circle-placement-classification-form'
