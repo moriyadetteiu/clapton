@@ -2,67 +2,25 @@
   <v-dialog v-model="isOpenSync">
     <v-card>
       <v-card-title>
-        <template v-if="isEditCircle">サークルリスト編集</template>
+        <template v-if="isEditCircle">サークルリスト登録</template>
         <template v-else>
           <favorite-button v-if="circleId" :circle-id="circleId" />
           {{ circlePlacement ? circlePlacement.formatted_placement : '' }}
           {{ circle.name }}
           <v-spacer />
           <edit-btn @click="editCircle" />
-          <delete-btn v-if="this.myCareAboutCircle" @click="dontCareCircle" />
+          <delete-btn v-if="myCareAboutCircle" @click="dontCareCircle" />
         </template>
       </v-card-title>
       <v-card-text>
-        <want-me-too-form
-          v-if="wantMeToCircleProduct"
-          :circle-product="wantMeToCircleProduct"
-          :join-event-id="joinEventId"
-          :team-id="teamId"
-          @saved="onSavedWantMeTooForm"
-          @canceled="cancelWantMeTo"
+        <component
+          :is="formState.getComponentName()"
+          v-bind="formState.getAttrs()"
+          v-on="formState.getOn()"
+          @saved="onSaved"
+          @canceled="cancelEdit"
         />
-        <template v-else>
-          <circle-form
-            v-if="isEditCircle"
-            :event-id="eventId"
-            :team-id="teamId"
-            :join-event-id="joinEventId"
-            :circle-placement="circlePlacement"
-            @saved="onSavedCircle"
-          />
-          <template v-if="circlePlacement && !isEditCircle">
-            <template v-if="!isEditCircleProduct">
-              <circle-product-row
-                v-for="circleProduct in circleProducts"
-                :key="circleProduct.id"
-                :circle-product="circleProduct"
-                @delete-circle-product="onDeleteCircleProduct"
-                @edit-circle-product="editCircleProduct"
-                @want-me-too="onWantMeToo"
-              />
-            </template>
-            <circle-product-form
-              v-if="isEditCircleProduct"
-              :team-id="teamId"
-              :circle-placement-id="circlePlacement.id"
-              :circle-product="editingCircleProduct"
-              :join-event-id="joinEventId"
-              @saved="onSavedCircleProduct"
-              @canceled="cancelCircleProduct"
-            />
-          </template>
-        </template>
       </v-card-text>
-      <v-card-actions
-        v-if="
-          circlePlacement &&
-          !isEditCircle &&
-          !isEditCircleProduct &&
-          !wantMeToCircleProduct
-        "
-      >
-        <v-btn color="register" @click="addCircleProduct"> 頒布物追加 </v-btn>
-      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -71,8 +29,13 @@
 import { Vue, Prop, PropSync, Component, Watch } from 'nuxt-property-decorator'
 import CircleForm from './form/CircleForm.vue'
 import CircleProductForm from './form/CircleProductForm.vue'
-import CircleProductRow from './form/CircleProductRow.vue'
+import CircleProducts from './form/CircleProducts.vue'
+import FormStateInterface from './form/states/FormStateInterface'
 import WantMeTooForm from './form/WantMeTooForm.vue'
+import CircleFormState from './form/states/CircleFormState'
+import CircleProductFormState from './form/states/CircleProductFormState'
+import CircleProductsState from './form/states/CircleProductsState'
+import WantMeTooFormState from './form/states/WantMeTooFormState'
 import FavoriteButton from '~/components/favorites/FavoriteButton.vue'
 import {
   Circle,
@@ -87,7 +50,7 @@ import {
   components: {
     CircleForm,
     CircleProductForm,
-    CircleProductRow,
+    CircleProducts,
     FavoriteButton,
     WantMeTooForm,
   },
@@ -158,13 +121,59 @@ export default class CircleListForm extends Vue {
     )
   }
 
+  private get formState(): FormStateInterface {
+    if (this.wantMeToCircleProduct) {
+      return new WantMeTooFormState(
+        {
+          circleProduct: this.wantMeToCircleProduct!,
+          joinEventId: this.joinEventId!,
+          teamId: this.teamId,
+        },
+        {}
+      )
+    }
+
+    if (this.isEditCircle) {
+      return new CircleFormState(
+        {
+          eventId: this.eventId,
+          teamId: this.teamId,
+          joinEventId: this.joinEventId as String,
+          circlePlacement: this.circlePlacement,
+        },
+        {}
+      )
+    }
+
+    if (this.isEditCircleProduct) {
+      return new CircleProductFormState(
+        {
+          teamId: this.teamId,
+          circlePlacementId: this.circlePlacement!.id,
+          circleProduct: this.editingCircleProduct,
+          joinEventId: this.joinEventId!,
+        },
+        {}
+      )
+    }
+
+    return new CircleProductsState(
+      {
+        circleProducts: this.circleProducts,
+      },
+      {
+        'delete-circle-product': this.onDeleteCircleProduct,
+        'edit-circle-product': this.editCircleProduct,
+        'want-me-too': this.onWantMeToo,
+        'add-circle-product': this.addCircleProduct,
+      }
+    )
+  }
+
   @Watch('editingCircleId')
   private onUpdateEditingCircleId(editingCircleId: string | null): void {
-    this.cancelCircleProduct()
-    this.cancelWantMeTo()
-    editingCircleId
-      ? this.initializeDisplayCircle(editingCircleId)
-      : this.clearForm()
+    this.circleId = editingCircleId
+    this.cancelEdit()
   }
 
   private clearForm(): void {
@@ -179,18 +188,8 @@ export default class CircleListForm extends Vue {
     this.circleId = editingCircleId
   }
 
-  private onSavedCircle({ circle }: any): void {
-    const prevCircleId = this.circleId
-    this.circleId = circle.id
-    if (prevCircleId === circle.id) {
-      this.$apollo.queries.circlePlacement.refetch()
-    }
-    this.isEditCircle = false
-    this.$emit('saved')
-  }
-
   private editCircle(): void {
-    this.cancelCircleProduct()
+    this.cancelEdit()
     this.isEditCircle = true
   }
 
@@ -206,7 +205,9 @@ export default class CircleListForm extends Vue {
 
     this.isOpenSync = false
     this.$toast.success('マイリストからサークルを削除しました')
-    this.$emit('saved')
+
+    this.circleId = null
+    this.onSaved()
   }
 
   private addCircleProduct(): void {
@@ -219,34 +220,33 @@ export default class CircleListForm extends Vue {
     this.isEditCircleProduct = true
   }
 
-  private onDeleteCircleProduct() {
+  private onDeleteCircleProduct(): void {
     this.$apollo.queries.circlePlacement.refetch()
     this.$emit('saved')
   }
 
-  private onSavedCircleProduct(): void {
-    this.$apollo.queries.circlePlacement.refetch()
-    this.isEditCircleProduct = false
-    this.$emit('saved')
-  }
-
-  private cancelCircleProduct(): void {
+  private cancelEdit(): void {
+    this.isEditCircle = false
     this.isEditCircleProduct = false
     this.editingCircleProduct = null
+    this.wantMeToCircleProduct = null
+
+    if (!this.circleId) {
+      this.clearForm()
+    }
+  }
+
+  private onSaved(payload?: any): void {
+    if (payload?.circle?.id) {
+      this.circleId = payload.circle.id
+    }
+    this.$apollo.queries.circlePlacement.refetch()
+    this.cancelEdit()
+    this.$emit('saved')
   }
 
   private onWantMeToo(circleProduct: CircleProduct): void {
     this.wantMeToCircleProduct = circleProduct
-  }
-
-  private onSavedWantMeTooForm(): void {
-    this.onSavedCircleProduct()
-    this.cancelCircleProduct()
-    this.cancelWantMeTo()
-  }
-
-  private cancelWantMeTo(): void {
-    this.wantMeToCircleProduct = null
   }
 }
 </script>
