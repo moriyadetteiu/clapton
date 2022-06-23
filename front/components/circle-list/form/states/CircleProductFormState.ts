@@ -8,10 +8,7 @@ type CircleProductFormStateProps = {
   circleProduct?: CircleProduct | null
 }
 
-type CircleProductFormStateEventObservers = {
-  saved: () => void
-  canceled: () => void
-}
+type CircleProductFormStateEventObservers = {}
 
 export default class CircleProductFormState extends AbstractFormState<
   CircleProductFormStateProps,

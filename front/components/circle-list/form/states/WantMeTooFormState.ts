@@ -7,10 +7,7 @@ type WantMeTooFormStateProps = {
   circleProduct: CircleProduct
 }
 
-type WantMeTooFormStateEventObservers = {
-  saved: () => void
-  canceled: () => void
-}
+type WantMeTooFormStateEventObservers = {}
 
 export default class WantMeTooFormState extends AbstractFormState<
   WantMeTooFormStateProps,

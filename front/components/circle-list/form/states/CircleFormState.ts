@@ -8,9 +8,7 @@ type CircleFormStateProps = {
   circlePlacement?: CirclePlacement | null
 }
 
-type CircleFormStateEventObservers = {
-  saved: ({ circle }: { circle: Circle }) => void
-}
+type CircleFormStateEventObservers = {}
 
 export default class CircleFormState extends AbstractFormState<
   CircleFormStateProps,

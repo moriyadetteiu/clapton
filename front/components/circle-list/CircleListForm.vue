@@ -17,6 +17,8 @@
           :is="formState.getComponentName()"
           v-bind="formState.getAttrs()"
           v-on="formState.getOn()"
+          @saved="onSaved"
+          @canceled="cancelEdit"
         />
       </v-card-text>
     </v-card>
@@ -127,10 +129,7 @@ export default class CircleListForm extends Vue {
           joinEventId: this.joinEventId!,
           teamId: this.teamId,
         },
-        {
-          saved: this.onSavedWantMeTooForm,
-          canceled: this.cancelWantMeTo,
-        }
+        {}
       )
     }
 
@@ -142,9 +141,7 @@ export default class CircleListForm extends Vue {
           joinEventId: this.joinEventId as String,
           circlePlacement: this.circlePlacement,
         },
-        {
-          saved: this.onSavedCircle,
-        }
+        {}
       )
     }
 
@@ -156,10 +153,7 @@ export default class CircleListForm extends Vue {
           circleProduct: this.editingCircleProduct,
           joinEventId: this.joinEventId!,
         },
-        {
-          saved: this.onSavedCircleProduct,
-          canceled: this.cancelCircleProduct,
-        }
+        {}
       )
     }
 
@@ -178,8 +172,7 @@ export default class CircleListForm extends Vue {
 
   @Watch('editingCircleId')
   private onUpdateEditingCircleId(editingCircleId: string | null): void {
-    this.cancelCircleProduct()
-    this.cancelWantMeTo()
+    this.cancelEdit()
     editingCircleId
       ? this.initializeDisplayCircle(editingCircleId)
       : this.clearForm()
@@ -197,18 +190,8 @@ export default class CircleListForm extends Vue {
     this.circleId = editingCircleId
   }
 
-  private onSavedCircle({ circle }: any): void {
-    const prevCircleId = this.circleId
-    this.circleId = circle.id
-    if (prevCircleId === circle.id) {
-      this.$apollo.queries.circlePlacement.refetch()
-    }
-    this.isEditCircle = false
-    this.$emit('saved')
-  }
-
   private editCircle(): void {
-    this.cancelCircleProduct()
+    this.cancelEdit()
     this.isEditCircle = true
   }
 
@@ -248,23 +231,29 @@ export default class CircleListForm extends Vue {
     this.$emit('saved')
   }
 
-  private cancelCircleProduct(): void {
+  private cancelEdit(): void {
+    this.isEditCircle = false
     this.isEditCircleProduct = false
     this.editingCircleProduct = null
+    this.wantMeToCircleProduct = null
+
+    if (!this.circleId) {
+      this.clearForm()
+      this.isOpenSync = false
+    }
+  }
+
+  private onSaved(payload: any): void {
+    if (payload?.circle?.id) {
+      this.circleId = payload.circle.id
+    }
+    this.$apollo.queries.circlePlacement.refetch()
+    this.cancelEdit()
+    this.$emit('saved')
   }
 
   private onWantMeToo(circleProduct: CircleProduct): void {
     this.wantMeToCircleProduct = circleProduct
-  }
-
-  private onSavedWantMeTooForm(): void {
-    this.onSavedCircleProduct()
-    this.cancelCircleProduct()
-    this.cancelWantMeTo()
-  }
-
-  private cancelWantMeTo(): void {
-    this.wantMeToCircleProduct = null
   }
 }
 </script>
