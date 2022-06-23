@@ -225,12 +225,6 @@ export default class CircleListForm extends Vue {
     this.$emit('saved')
   }
 
-  private onSavedCircleProduct(): void {
-    this.$apollo.queries.circlePlacement.refetch()
-    this.isEditCircleProduct = false
-    this.$emit('saved')
-  }
-
   private cancelEdit(): void {
     this.isEditCircle = false
     this.isEditCircleProduct = false
