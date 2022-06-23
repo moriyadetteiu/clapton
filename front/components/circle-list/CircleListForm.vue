@@ -172,10 +172,8 @@ export default class CircleListForm extends Vue {
 
   @Watch('editingCircleId')
   private onUpdateEditingCircleId(editingCircleId: string | null): void {
+    this.circleId = editingCircleId
     this.cancelEdit()
-    editingCircleId
-      ? this.initializeDisplayCircle(editingCircleId)
-      : this.clearForm()
   }
 
   private clearForm(): void {
@@ -207,7 +205,9 @@ export default class CircleListForm extends Vue {
 
     this.isOpenSync = false
     this.$toast.success('マイリストからサークルを削除しました')
-    this.$emit('saved')
+
+    this.circleId = null
+    this.onSaved()
   }
 
   private addCircleProduct(): void {
@@ -239,11 +239,10 @@ export default class CircleListForm extends Vue {
 
     if (!this.circleId) {
       this.clearForm()
-      this.isOpenSync = false
     }
   }
 
-  private onSaved(payload: any): void {
+  private onSaved(payload?: any): void {
     if (payload?.circle?.id) {
       this.circleId = payload.circle.id
     }
