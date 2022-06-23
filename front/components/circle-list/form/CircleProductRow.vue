@@ -24,9 +24,20 @@
       >
         {{ wantCircleProduct.careAboutCircle.joinEvent.user.name }}
       </v-chip>
-      <v-btn v-if="!hasMyWantCircleProduct" icon @click="wantMeToo">
-        <v-icon>mdi-cart-plus</v-icon>
-      </v-btn>
+      <v-tooltip top>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            v-if="!hasMyWantCircleProduct"
+            icon
+            @click="wantMeToo"
+            v-on="on"
+            v-bind="attrs"
+          >
+            <v-icon>mdi-cart-plus</v-icon>
+          </v-btn>
+        </template>
+        <span>欲しい</span>
+      </v-tooltip>
     </v-col>
   </v-row>
 </template>
