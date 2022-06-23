@@ -20,12 +20,22 @@
         <v-toolbar-title>サークルリスト</v-toolbar-title>
         <v-spacer />
         <register-btn @click="openCircleListForm" />
-        <v-btn icon @click="toggleShowFilter"
-          ><v-icon>mdi-filter-variant</v-icon></v-btn
-        >
-        <v-btn icon @click="openExportCircleList">
-          <v-icon>mdi-file-download</v-icon>
-        </v-btn>
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon @click="toggleShowFilter" v-bind="attrs" v-on="on">
+              <v-icon>mdi-filter-variant</v-icon>
+            </v-btn>
+          </template>
+          <span>フィルター</span>
+        </v-tooltip>
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon @click="openExportCircleList" v-on="on" v-bind="attrs">
+              <v-icon>mdi-file-download</v-icon>
+            </v-btn>
+          </template>
+          <span>Excelダウンロード</span>
+        </v-tooltip>
       </v-toolbar>
       <v-expand-transition>
         <v-card v-show="isShowFilter">

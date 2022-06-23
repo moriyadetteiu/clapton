@@ -1,7 +1,17 @@
 <template>
-  <v-btn color="delete" icon v-bind="$attrs" v-on="listeners">
-    <v-icon>mdi-delete</v-icon>
-  </v-btn>
+  <v-tooltip top>
+    <template v-slot:activator="{ on, attrs }">
+      <v-btn
+        color="delete"
+        icon
+        v-bind="{ ...attrs, ...$attrs }"
+        v-on="{ ...on, ...listeners }"
+      >
+        <v-icon>mdi-delete</v-icon>
+      </v-btn>
+    </template>
+    <span>削除</span>
+  </v-tooltip>
 </template>
 
 <script lang="ts">

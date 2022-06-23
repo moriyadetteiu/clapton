@@ -1,7 +1,17 @@
 <template>
-  <v-btn color="register" icon v-bind="$attrs" v-on="listeners">
-    <v-icon>mdi-plus</v-icon>
-  </v-btn>
+  <v-tooltip top>
+    <template v-slot:activator="{ on, attrs }">
+      <v-btn
+        color="register"
+        icon
+        v-bind="{ ...$attrs, ...attrs }"
+        v-on="{ ...on, ...listeners }"
+      >
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+    </template>
+    <span>追加</span>
+  </v-tooltip>
 </template>
 
 <script lang="ts">
