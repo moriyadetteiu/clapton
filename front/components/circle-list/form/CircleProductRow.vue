@@ -25,13 +25,13 @@
         {{ wantCircleProduct.careAboutCircle.joinEvent.user.name }}
       </v-chip>
       <v-tooltip top>
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <v-btn
             v-if="!hasMyWantCircleProduct"
             icon
+            v-bind="attrs"
             @click="wantMeToo"
             v-on="on"
-            v-bind="attrs"
           >
             <v-icon>mdi-cart-plus</v-icon>
           </v-btn>
