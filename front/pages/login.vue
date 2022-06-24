@@ -41,7 +41,13 @@ import { LoginMutation, LoginInput, LoginData, MeQuery } from '~/apollo/graphql'
 import { LoginValidation } from '~/validation/loginValidation'
 import { userStore } from '~/utils/store-accessor'
 
-@Component({})
+@Component({
+  head() {
+    return {
+      title: 'ログイン',
+    }
+  },
+})
 export default class Login extends Vue {
   private validation: LoginValidation = new LoginValidation()
 

@@ -11,6 +11,11 @@ import {
 import AbstractMasterPage from '~/components/masters/AbstractMasterPage.vue'
 
 @Component({
+  head() {
+    return {
+      title: '頒布物分類マスタ',
+    }
+  },
   components: { CircleProductClassificationForm, ConfirmDialog },
   apollo: {
     models: {

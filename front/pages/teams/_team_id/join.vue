@@ -12,8 +12,12 @@
 import { Vue, Component } from 'nuxt-property-decorator'
 import { Team, TeamQuery, JoinTeamMutation } from '~/apollo/graphql'
 
-// @ts-ignore
 @Component({
+  head() {
+    return {
+      title: `${(this as JoinPage).team.name}へ参加`,
+    }
+  },
   apollo: {
     team: {
       query: TeamQuery,

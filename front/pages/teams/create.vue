@@ -11,6 +11,11 @@ import { TeamInput, CreateTeamMutation } from '~/apollo/graphql'
 import TeamForm from '~/components/teams/TeamForm.vue'
 
 @Component({
+  head() {
+    return {
+      title: 'チーム追加',
+    }
+  },
   components: {
     TeamForm,
   },

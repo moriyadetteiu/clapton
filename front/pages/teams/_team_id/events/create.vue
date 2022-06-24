@@ -15,6 +15,11 @@ import {
 import EventForm from '~/components/events/EventForm.vue'
 
 @Component({
+  head() {
+    return {
+      title: 'イベント追加',
+    }
+  },
   components: {
     EventForm,
   },

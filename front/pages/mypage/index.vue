@@ -48,7 +48,13 @@ import { Vue, Component } from 'nuxt-property-decorator'
 import { User } from '~/apollo/graphql'
 import { userStore } from '~/store'
 
-@Component({})
+@Component({
+  head() {
+    return {
+      title: 'マイページ',
+    }
+  },
+})
 export default class MyPage extends Vue {
   private get user(): User {
     return userStore.loginUserOrEmptyUser
