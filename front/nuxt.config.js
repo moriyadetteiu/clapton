@@ -14,7 +14,9 @@ export default {
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
-  css: [],
+  css: [
+    '~/assets/themeAssistance.scss',
+  ],
 
   // 環境変数の設定 .envファイルが参照される(https://nuxtjs.org/guide/runtime-config)
   // .envが自動でboolean値として解釈してくれないので、基本的に文字列として扱う・・・
