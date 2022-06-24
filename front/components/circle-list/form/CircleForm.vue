@@ -20,7 +20,7 @@
       </v-row>
 
       <v-row dense>
-        <v-col cols="4">
+        <v-col cols="6" sm="4">
           <v-validate-select
             v-model="circlePlacementInput.event_date_id"
             :items="eventDates"
@@ -29,7 +29,7 @@
             :validation="validation.getItem('placement.event_date_id')"
           />
         </v-col>
-        <v-col cols="2">
+        <v-col cols="6" sm="2">
           <v-validate-select
             v-model="circlePlacementInput.hole"
             :items="holes"
@@ -38,14 +38,14 @@
             :validation="validation.getItem('placement.hole')"
           />
         </v-col>
-        <v-col cols="2">
+        <v-col cols="4" sm="2">
           <v-validate-text-field
             v-model="circlePlacementInput.line"
             :validation="validation.getItem('placement.line')"
             placeholder="A"
           />
         </v-col>
-        <v-col cols="2">
+        <v-col cols="4" sm="2">
           <v-validate-text-field
             v-model.number="circlePlacementInput.number"
             :validation="validation.getItem('placement.number')"
@@ -53,7 +53,7 @@
             placeholder="10"
           />
         </v-col>
-        <v-col cols="2">
+        <v-col cols="4" sm="2">
           <v-validate-select
             v-model="circlePlacementInput.a_or_b"
             :items="aOrB"
