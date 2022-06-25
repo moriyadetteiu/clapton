@@ -14,7 +14,7 @@ class UpdateCircleParticipatingInEventInput extends CreateCircleParticipatingInE
 
     protected function attributes(): array
     {
-        return array_merge(parent::rules(), [
+        return array_merge(parent::attributes(), [
             'id' => 'サークル番号',
             'operation_user_id' => '操作ユーザ番号',
         ]);

@@ -19,40 +19,32 @@
 </template>
 
 <script lang="ts">
-import { Vue, Prop, Component, Watch } from 'nuxt-property-decorator'
+import { Prop, Component, Watch } from 'nuxt-property-decorator'
 import { PropType } from 'vue'
-import { ValidationObserver } from 'vee-validate'
 import { isApolloError } from 'apollo-client/errors/ApolloError'
-import CirclePlacementForm, {
+import CircleFormInput from './CircleFormInput.vue'
+import CirclePlacementFormInput, {
   DraftCirclePlacementInput,
 } from './CirclePlacementFormInput.vue'
 import {
+  initialCirclePlacementInput,
+  initialCircleInput,
+} from './CircleRegister.vue'
+import {
   CreateCircleParticipatingInEventInput,
   UpdateCircleParticipatingInEventMutation,
+  Circle,
   CircleInput,
   CirclePlacementInput,
   CirclePlacement,
 } from '~/apollo/graphql'
 import { CreateCircleParticipatingInEventInputValidation } from '~/validation/validations'
-
-const initialCirclePlacementInput: DraftCirclePlacementInput = {
-  event_date_id: '',
-  hole: '東',
-  line: '',
-  number: null,
-  a_or_b: 'a',
-  circle_placement_classification_id: '',
-}
-
-const initialCircleInput: CircleInput = {
-  name: '',
-  kana: '',
-}
+import AbstractForm from '~/components/form/AbstractForm.vue'
 
 @Component({
-  components: { CircleForm, CirclePlacementForm },
+  components: { CircleFormInput, CirclePlacementFormInput },
 })
-export default class CircleForm extends Vue {
+export default class CircleEditor extends AbstractForm<CreateCircleParticipatingInEventInputValidation> {
   @Prop({ type: String, required: true })
   private eventId!: String
 
@@ -65,7 +57,7 @@ export default class CircleForm extends Vue {
   @Prop({ type: Object as PropType<CirclePlacement>, required: true })
   private circlePlacement!: CirclePlacement
 
-  private validation: CreateCircleParticipatingInEventInputValidation =
+  protected validation: CreateCircleParticipatingInEventInputValidation =
     new CreateCircleParticipatingInEventInputValidation()
 
   private circleInput: CircleInput = { ...initialCircleInput }
@@ -74,51 +66,25 @@ export default class CircleForm extends Vue {
     ...initialCirclePlacementInput,
   }
 
-  $refs!: {
-    validationObserver: InstanceType<typeof ValidationObserver>
-  }
-
   @Watch('circlePlacement', { immediate: true })
   private onUpdateCirclePlacement(): void {
-    if (!this.circlePlacement) {
-      this.circlePlacementInput = { ...initialCirclePlacementInput }
-      this.circleInput = { ...initialCircleInput }
-      return
-    }
-    const circlePlacementInput = {}
-    Object.keys(initialCirclePlacementInput).forEach((key) => {
-      ;(circlePlacementInput as any)[key] = (this.circlePlacement as any)[key]
-    })
-    this.circlePlacementInput = circlePlacementInput as CirclePlacementInput
-    const circleInput = {}
-    Object.keys(initialCircleInput).forEach((key) => {
-      ;(circleInput as any)[key] = (this.circlePlacement?.circle as any)[key]
-    })
-    this.circleInput = circleInput as CircleInput
+    this.circlePlacementInput = this.migrateModelToInput(
+      this.circlePlacementInput,
+      this.circlePlacement
+    )
+    this.circleInput = this.migrateModelToInput(
+      this.circleInput,
+      this.circlePlacement.circle
+    )
   }
 
-  private async submit() {
-    const observer = this.$refs.validationObserver
-    const isValid = await observer.validate()
-    if (isValid) {
-      const circle = await this.updateCircle()
-
-      if (!circle) {
-        return
-      }
-
-      this.$toast.success('保存しました')
-      this.$emit('saved', { circle })
-    }
-  }
-
-  private async updateCircle() {
+  protected async mutate(): Promise<any> {
     const input: CreateCircleParticipatingInEventInput = {
       circle: this.circleInput,
       placement: this.circlePlacementInput as CirclePlacementInput,
     }
 
-    const id = this.circlePlacement!.circle!.id
+    const id = this.circlePlacement.circle!.id
 
     return await this.$apollo
       .mutate({
@@ -128,18 +94,23 @@ export default class CircleForm extends Vue {
       .then((res) => {
         return res.data.updateCircleParticipatingInEvent.circle
       })
-      .catch((error) => {
-        if (isApolloError(error)) {
-          const errorExtensions = error.graphQLErrors[0].extensions
-          if (errorExtensions.category === 'updateDenied') {
-            this.$toast.error(errorExtensions.message)
-            return
-          }
+  }
 
-          this.$toasted.global.validationError()
-          this.validation.setBackendErrorsFromAppolo(error)
-        }
-      })
+  protected async afterMutate(circle: Circle) {
+    this.$emit('saved', { circle })
+  }
+
+  protected handleError(error: any): void {
+    if (isApolloError(error)) {
+      const errorExtensions = error.graphQLErrors[0].extensions
+      if (errorExtensions.category === 'updateDenied') {
+        this.$toast.error(errorExtensions.message)
+        return
+      }
+
+      this.$toasted.global.validationError()
+      this.validation.setBackendErrorsFromAppolo(error)
+    }
   }
 }
 </script>

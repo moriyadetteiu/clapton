@@ -36,9 +36,9 @@ export default abstract class AbstractVValidateInput extends Vue {
   @Prop({ type: String })
   private vid?: String
 
-  @Prop({ type: Object as PropType<ValidationItem> } as PropOptions<
-    ValidationItem
-  >)
+  @Prop({
+    type: Object as PropType<ValidationItem>,
+  } as PropOptions<ValidationItem>)
   private validation?: ValidationItem
 
   @Prop({ type: Array as PropType<String[]> })
@@ -60,7 +60,9 @@ export default abstract class AbstractVValidateInput extends Vue {
   }
 
   get safeBackendErrors() {
-    return this.backendErrors ?? []
+    return (this.backendErrors ?? []).concat(
+      this.validation?.backendErrors ?? []
+    )
   }
 }
 </script>

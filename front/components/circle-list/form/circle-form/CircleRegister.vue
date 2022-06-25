@@ -18,11 +18,9 @@
 </template>
 
 <script lang="ts">
-import { Vue, Prop, Component } from 'nuxt-property-decorator'
-import { ValidationObserver } from 'vee-validate'
-import { isApolloError } from 'apollo-client/errors/ApolloError'
-import CircleForm from './CircleFormInput.vue'
-import CirclePlacementForm, {
+import { Prop, Component } from 'nuxt-property-decorator'
+import CircleFormInput from './CircleFormInput.vue'
+import CirclePlacementFormInput, {
   DraftCirclePlacementInput,
 } from './CirclePlacementFormInput.vue'
 import {
@@ -32,10 +30,12 @@ import {
   CircleInput,
   CirclePlacementInput,
   CareAboutCircleInput,
+  CirclePlacement,
 } from '~/apollo/graphql'
 import { CreateCircleParticipatingInEventInputValidation } from '~/validation/validations'
+import AbstractForm from '~/components/form/AbstractForm.vue'
 
-const initialCirclePlacementInput: DraftCirclePlacementInput = {
+export const initialCirclePlacementInput: DraftCirclePlacementInput = {
   event_date_id: '',
   hole: '東',
   line: '',
@@ -44,15 +44,15 @@ const initialCirclePlacementInput: DraftCirclePlacementInput = {
   circle_placement_classification_id: '',
 }
 
-const initialCircleInput: CircleInput = {
+export const initialCircleInput: CircleInput = {
   name: '',
   kana: '',
 }
 
 @Component({
-  components: { CircleForm, CirclePlacementForm },
+  components: { CircleFormInput, CirclePlacementFormInput },
 })
-export default class CircleRegister extends Vue {
+export default class CircleRegister extends AbstractForm<CreateCircleParticipatingInEventInputValidation> {
   @Prop({ type: String, required: true })
   private eventId!: String
 
@@ -62,7 +62,7 @@ export default class CircleRegister extends Vue {
   @Prop({ type: String })
   private joinEventId!: string
 
-  private validation: CreateCircleParticipatingInEventInputValidation =
+  protected validation: CreateCircleParticipatingInEventInputValidation =
     new CreateCircleParticipatingInEventInputValidation()
 
   private circleInput: CircleInput = { ...initialCircleInput }
@@ -71,44 +71,27 @@ export default class CircleRegister extends Vue {
     ...initialCirclePlacementInput,
   }
 
-  $refs!: {
-    validationObserver: InstanceType<typeof ValidationObserver>
-  }
-
-  private async submit() {
-    const observer = this.$refs.validationObserver
-    const isValid = await observer.validate()
-    if (isValid) {
-      const circle = await this.createCircle()
-
-      if (!circle) {
-        return
-      }
-
-      this.$toast.success('保存しました')
-      this.$emit('saved', { circle })
-    }
-  }
-
-  private async createCircle() {
+  protected async mutate(): Promise<any> {
     const input: CreateCircleParticipatingInEventInput = {
       circle: this.circleInput,
       placement: this.circlePlacementInput as CirclePlacementInput,
     }
 
-    const circlePlacement = await this.$apollo
+    return await this.$apollo
       .mutate({
         mutation: CreateCircleParticipatingInEventMutation,
         variables: { input },
       })
       .then((res) => res.data.createCircleParticipatingInEvent)
-      .catch((error) => {
-        if (isApolloError(error)) {
-          this.$toasted.global.validationError()
-          this.validation.setBackendErrorsFromAppolo(error)
-        }
-      })
+  }
 
+  protected async afterMutate(circlePlacement: CirclePlacement) {
+    await this.createCareAboutCircle(circlePlacement)
+    const circle = circlePlacement.circle
+    this.$emit('saved', { circle })
+  }
+
+  private async createCareAboutCircle(circlePlacement: CirclePlacement) {
     const careAboutCircleInput: CareAboutCircleInput = {
       join_event_id: this.joinEventId,
       circle_placement_id: circlePlacement.id,
@@ -120,10 +103,7 @@ export default class CircleRegister extends Vue {
       })
       .then((res) => res.data.createCareAboutCircle)
       .catch((error) => {
-        if (isApolloError(error)) {
-          this.$toasted.global.validationError()
-          this.validation.setBackendErrorsFromAppolo(error)
-        }
+        this.handleError(error)
       })
     return circlePlacement.circle
   }
