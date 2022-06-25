@@ -3,7 +3,7 @@
     <v-row dense>
       <v-col cols="6" sm="4">
         <v-validate-select
-          v-model="circlePlacementInput.event_date_id"
+          v-model="input.event_date_id"
           :items="eventDates"
           item-text="name"
           item-value="id"
@@ -12,7 +12,7 @@
       </v-col>
       <v-col cols="6" sm="2">
         <v-validate-select
-          v-model="circlePlacementInput.hole"
+          v-model="input.hole"
           :items="holes"
           item-text="name"
           item-value="name"
@@ -21,14 +21,14 @@
       </v-col>
       <v-col cols="4" sm="2">
         <v-validate-text-field
-          v-model="circlePlacementInput.line"
+          v-model="input.line"
           :validation="validation.getItem('placement.line')"
           placeholder="A"
         />
       </v-col>
       <v-col cols="4" sm="2">
         <v-validate-text-field
-          v-model.number="circlePlacementInput.number"
+          v-model.number="input.number"
           :validation="validation.getItem('placement.number')"
           type="number"
           placeholder="10"
@@ -36,7 +36,7 @@
       </v-col>
       <v-col cols="4" sm="2">
         <v-validate-select
-          v-model="circlePlacementInput.a_or_b"
+          v-model="input.a_or_b"
           :items="aOrB"
           item-text="name"
           item-value="name"
@@ -47,7 +47,7 @@
     <v-row dense>
       <v-col cols="12">
         <v-validate-select
-          v-model="circlePlacementInput.circle_placement_classification_id"
+          v-model="input.circle_placement_classification_id"
           :items="circlePlacementClassifications"
           item-text="name"
           item-value="id"
@@ -61,13 +61,12 @@
 </template>
 
 <script lang="ts">
-import { Vue, Prop, PropSync, Component } from 'nuxt-property-decorator'
-import { PropType } from 'vue'
+import { Prop, Component } from 'nuxt-property-decorator'
+import AbstractFormInput from '~/components/form/AbstractFormInput.vue'
 import {
   CirclePlacementInput,
   EventDate,
   EventWithDateQuery,
-  CirclePlacement,
   CirclePlacementClassification,
   CirclePlacementClassificationsQuery,
 } from '~/apollo/graphql'
@@ -100,23 +99,15 @@ export type DraftCirclePlacementInput = Draft<CirclePlacementInput, 'number'>
     },
   },
 })
-export default class CirclePlacementFormInput extends Vue {
+export default class CirclePlacementFormInput extends AbstractFormInput<
+  DraftCirclePlacementInput,
+  CreateCircleParticipatingInEventInputValidation
+> {
   @Prop({ type: String, required: true })
   private eventId!: String
 
   @Prop({ type: String, required: true })
   private teamId!: String
-
-  @Prop({
-    type: Object as PropType<CreateCircleParticipatingInEventInputValidation>,
-  })
-  private validation!: CreateCircleParticipatingInEventInputValidation
-
-  @PropSync('input', {
-    type: Object as PropType<CirclePlacement>,
-    required: true,
-  })
-  private circlePlacementInput!: DraftCirclePlacementInput
 
   private eventDates: EventDate[] = []
 

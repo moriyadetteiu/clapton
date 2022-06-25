@@ -1,8 +1,8 @@
 <template>
   <validation-observer ref="validationObserver" tag="form">
-    <circle-form-input :input.sync="circleInput" :validation="validation" />
+    <circle-form-input v-model="circleInput" :validation="validation" />
     <circle-placement-form-input
-      :input.sync="circlePlacementInput"
+      v-model="circlePlacementInput"
       :validation="validation"
       :event-id="eventId"
       :team-id="teamId"
