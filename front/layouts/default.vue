@@ -34,6 +34,7 @@
             </v-list-item>
           </v-list>
         </v-menu>
+        <v-btn text nuxt to="/favorites">お気に入り</v-btn>
       </v-container>
       <v-spacer />
       <template v-if="user !== null">
