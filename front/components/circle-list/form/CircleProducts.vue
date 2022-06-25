@@ -10,6 +10,10 @@
       <v-btn color="register" @click="$emit('add-circle-product')">
         頒布物追加
       </v-btn>
+      <v-spacer />
+      <v-btn @click="$emit('register-new-circle')">
+        続けて別のサークルを登録
+      </v-btn>
     </v-card-actions>
   </v-container>
 </template>
