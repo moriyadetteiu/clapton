@@ -10,6 +10,7 @@ type CircleProductStateEventObservers = {
   'edit-circle-product': (circleProduct: CircleProduct) => void
   'want-me-too': (circleProduct: CircleProduct) => void
   'add-circle-product': () => void
+  'register-new-circle': () => void
 }
 
 export default class CircleProductsState extends AbstractFormState<
