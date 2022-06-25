@@ -166,7 +166,7 @@ export default class CircleListForm extends Vue {
         'edit-circle-product': this.editCircleProduct,
         'want-me-too': this.onWantMeToo,
         'add-circle-product': this.addCircleProduct,
-        'register-new-circle': () => this.$emit('register-new-circle'),
+        'register-new-circle': this.clearForm,
       }
     )
   }

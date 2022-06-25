@@ -38,7 +38,6 @@
         :join-event-id="joinEvent ? joinEvent.id : null"
         :editing-circle-id="editingCircleId"
         @saved="onSavedCircle"
-        @register-new-circle="openCircleListForm(null)"
       />
 
       <v-tabs v-model="selectedCircleListTabIndex" class="mt-5">
