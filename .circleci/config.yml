@@ -107,7 +107,7 @@ jobs:
       # note: CI上でnpm run lintで呼び出した場合（npm script内でnpm scriptを呼ぼうとすると）、243 errorが帰ってきてしまうため、別々に実行している
       - run:
           name: code style check(front - js)
-          command: docker-compose exec front npm run lint:js
+          command: docker-compose exec front npm run lint:js -- --max-warnings 0
           when: always
       - run:
           name: code style check(front - css)
