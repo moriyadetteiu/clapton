@@ -3,6 +3,7 @@ import { ApolloError } from 'apollo-client/errors/ApolloError.d'
 export interface ValidationItem {
   rules?: string
   attribute?: string
+  backendErrors?: string[]
 }
 
 interface ValidationItems {
@@ -19,6 +20,10 @@ export default class Validation {
 
   constructor(items: ValidationItems) {
     this.items = items
+
+    // HACK: 最初に{}と同期させることで、すべてのitemsにbackendErrors: []を付与している。
+    //       これを行わないとundefinedになるため、vueコンポーネントからの追跡ができなくなる
+    this.syncItemBackendErrors()
   }
 
   public merge(validation: Validation): Validation {
@@ -51,8 +56,14 @@ export default class Validation {
           ...error,
         }
       })
-
     this.backendErrors = errors
+    this.syncItemBackendErrors()
+  }
+
+  private syncItemBackendErrors() {
+    Object.keys(this.items).forEach((name: string) => {
+      this.items[name].backendErrors = this.backendErrors[name] ?? []
+    })
   }
 
   public getErrorMessages(name: string): string[] {
