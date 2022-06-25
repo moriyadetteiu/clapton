@@ -11,7 +11,7 @@
         <v-card-text>
           <v-tooltip top>
             <template #activator="{ on, attrs }">
-              <v-row v-on="on" v-bind="attrs">
+              <v-row v-bind="attrs" v-on="on">
                 <v-switch
                   v-model="isEditable"
                   label="編集"
@@ -39,8 +39,8 @@
 import { PropType } from 'vue'
 import { Vue, Component, Prop } from 'nuxt-property-decorator'
 import { DataTableHeader } from 'vuetify/types/index'
-import { Favorite } from '~/apollo/graphql'
 import FavoriteButton from './FavoriteButton.vue'
+import { Favorite } from '~/apollo/graphql'
 
 @Component({
   components: {
