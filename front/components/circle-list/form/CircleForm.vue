@@ -19,9 +19,9 @@
 <script lang="ts">
 import { Vue, Prop, Component } from 'nuxt-property-decorator'
 import { PropType } from 'vue'
-import { CirclePlacement } from '~/apollo/graphql'
 import CircleRegister from './circle-form/CircleRegister.vue'
 import CircleEditor from './circle-form/CircleEditor.vue'
+import { CirclePlacement } from '~/apollo/graphql'
 
 @Component({
   components: { CircleRegister, CircleEditor },

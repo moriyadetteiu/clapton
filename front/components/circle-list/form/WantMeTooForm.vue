@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Prop, Component, Watch } from 'nuxt-property-decorator'
+import { Prop, Component, Watch } from 'nuxt-property-decorator'
 import { PropType } from 'vue'
 import WantMeTooFormInput from './want-me-to-form/WantMeToFormInput.vue'
 import AbstractForm from '~/components/form/AbstractForm.vue'

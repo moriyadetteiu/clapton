@@ -96,7 +96,7 @@ export default class CircleEditor extends AbstractForm<CreateCircleParticipating
       })
   }
 
-  protected async afterMutate(circle: Circle) {
+  protected afterMutate(circle: Circle) {
     this.$emit('saved', { circle })
   }
 

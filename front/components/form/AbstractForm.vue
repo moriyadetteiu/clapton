@@ -1,11 +1,8 @@
 <script lang="ts">
-import { Vue, Prop, Component, Watch } from 'nuxt-property-decorator'
-import { PropType, PropOptions } from 'vue'
-import BaseValidation from '~/validation/validation'
+import { Vue, Component } from 'nuxt-property-decorator'
 import { ValidationObserver } from 'vee-validate'
 import { isApolloError } from 'apollo-client/errors/ApolloError'
-import Validation from '~/validation/validation'
-import { CreateCircleParticipatingInEventInputValidation } from '~/validation/validations'
+import BaseValidation from '~/validation/validation'
 
 // @ts-ignore
 @Component({
@@ -20,7 +17,9 @@ export default abstract class AbstractForm<
   protected abstract mutate(): Promise<any>
 
   // note: 必要に応じてオーバーライドして使う
-  protected afterMutate(data: any) {}
+  protected afterMutate(data: any) {
+    return data
+  }
 
   protected migrateModelToInput(input: any, model: any): any {
     const workInput: any = {}
