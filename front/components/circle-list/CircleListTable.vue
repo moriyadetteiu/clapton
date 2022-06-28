@@ -3,6 +3,7 @@
     :headers="headers"
     :items="filteredCircleLists"
     height="calc(100vh - 90px)"
+    :mobile-breakpoint="0"
     hide-default-footer
     disable-pagination
     fixed-header
@@ -12,7 +13,7 @@
     @current-items="onUpdateTableCurrentItems"
   >
     <template #top>
-      <v-toolbar>
+      <v-toolbar class="elevation-0">
         <export-circle-list
           :is-open.sync="isOpenExportCircleList"
           :table-state="tableState"
@@ -51,7 +52,7 @@
         </v-tooltip>
       </v-toolbar>
       <v-expand-transition>
-        <v-card v-show="isShowFilter">
+        <v-card v-show="isShowFilter" tile class="elevation-0">
           <v-card-text>
             <filter-item
               v-for="filter in filters"

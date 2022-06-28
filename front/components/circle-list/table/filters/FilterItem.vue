@@ -1,10 +1,15 @@
 <template>
   <v-row dense>
-    <v-col cols="2">
+    <v-col cols="12" sm="2" class="d-flex">
       <v-subheader>{{ filter.getLabel() }}</v-subheader>
     </v-col>
-    <v-col cols="10">
-      <v-chip-group v-model="selectedCondition" multiple active-class="primary">
+    <v-col cols="12" sm="10">
+      <v-chip-group
+        v-model="selectedCondition"
+        multiple
+        active-class="primary"
+        column
+      >
         <v-chip
           v-for="condition in filter.getConditionItems()"
           :key="condition.id"
@@ -45,3 +50,9 @@ export default class FilterItem extends Vue {
   }
 }
 </script>
+
+<style scoped>
+.v-subheader {
+  height: initial;
+}
+</style>
