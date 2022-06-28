@@ -47,33 +47,13 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue'
-import { Vue, Component, Prop, Emit } from 'nuxt-property-decorator'
-import { User, Event, Team } from '~/apollo/graphql'
-import { userStore } from '~/store'
-
-export type UnderwayEventItem = {
-  team: Team
-  event: Event
-}
+import Component from 'vue-class-component'
+import AbstractAppBar from './AbstractAppBar.vue'
 
 @Component({})
-export default class DefaultLayout extends Vue {
-  @Prop({ type: Array as PropType<UnderwayEventItem[]> })
-  protected underwayCircleListItems!: UnderwayEventItem[]
-
-  @Prop({ type: Array as PropType<UnderwayEventItem[]> })
-  protected finishedCircleListItems!: UnderwayEventItem[]
-
-  @Emit('logout')
-  private logout(): void {}
-
+export default class WideAppBar extends AbstractAppBar {
   private get headerMenuMaxHeight(): string {
     return 'calc(100vh - 100px)'
-  }
-
-  private get user(): User | null {
-    return userStore.loginUser
   }
 }
 </script>

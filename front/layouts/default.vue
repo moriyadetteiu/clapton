@@ -33,9 +33,8 @@ import {
 } from '~/apollo/graphql'
 import { userStore } from '~/store'
 import ConfirmDialog from '~/components/dialog/ConfirmDialog.vue'
-import WideAppBar, {
-  UnderwayEventItem,
-} from '~/components/app-bar/WideAppBar.vue'
+import { UnderwayEventItem } from '~/components/app-bar/AbstractAppBar.vue'
+import WideAppBar from '~/components/app-bar/WideAppBar.vue'
 
 @Component({
   components: {
