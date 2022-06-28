@@ -1,6 +1,6 @@
 <template>
-  <v-app-bar fixed app>
-    <v-container v-if="user !== null">
+  <v-container class="pl-0 pr-0">
+    <template v-if="user">
       <v-menu open-on-hover offset-y :max-height="headerMenuMaxHeight">
         <template #activator="{ on, attrs }">
           <v-btn text v-bind="attrs" v-on="on"> リスト </v-btn>
@@ -34,24 +34,23 @@
         </v-list>
       </v-menu>
       <v-btn text nuxt to="/favorites">お気に入り</v-btn>
-    </v-container>
-    <v-spacer />
-    <template v-if="user !== null">
+      <v-spacer />
       <v-btn text nuxt to="/mypage">{{ user.name }}さん</v-btn>
       <v-btn text @click.prevent="logout">ログアウト</v-btn>
     </template>
     <template v-else>
+      <v-spacer />
       <v-btn text nuxt to="/login">ログイン</v-btn>
     </template>
-  </v-app-bar>
+  </v-container>
 </template>
 
 <script lang="ts">
 import Component from 'vue-class-component'
-import AbstractAppBar from './AbstractAppBar.vue'
+import AbstractAppBarContent from './AbstractAppBarContent.vue'
 
 @Component({})
-export default class WideAppBar extends AbstractAppBar {
+export default class WideAppBarContent extends AbstractAppBarContent {
   private get headerMenuMaxHeight(): string {
     return 'calc(100vh - 100px)'
   }

@@ -1,10 +1,25 @@
 <template>
   <v-app :dark="false">
-    <wide-app-bar
+    <v-app-bar fixed app>
+      <wide-app-bar-content
+        :underway-circle-list-items="underwayCircleListItems"
+        :finished-circle-list-items="finishedCircleListItems"
+        @logout="logout"
+        class="hidden-xs-only d-sm-flex"
+      />
+      <narrow-app-bar-content
+        @open-navigation="openNavigation"
+        class="hidden-sm-and-up"
+      />
+    </v-app-bar>
+    <narrow-app-bar-navigation
+      v-model="isOpenNavigation"
       :underway-circle-list-items="underwayCircleListItems"
       :finished-circle-list-items="finishedCircleListItems"
       @logout="logout"
+      class="hidden-sm-and-up"
     />
+
     <v-main>
       <v-container fluid>
         <confirm-dialog />
@@ -33,13 +48,17 @@ import {
 } from '~/apollo/graphql'
 import { userStore } from '~/store'
 import ConfirmDialog from '~/components/dialog/ConfirmDialog.vue'
-import { UnderwayEventItem } from '~/components/app-bar/AbstractAppBar.vue'
-import WideAppBar from '~/components/app-bar/WideAppBar.vue'
+import { UnderwayEventItem } from '~/components/app-bar/AbstractAppBarContent.vue'
+import WideAppBarContent from '~/components/app-bar/WideAppBarContent.vue'
+import NarrowAppBarContent from '~/components/app-bar/NarrowAppBarContent.vue'
+import NarrowAppBarNavigation from '~/components/app-bar/NarrowAppBarNavigation.vue'
 
 @Component({
   components: {
     ConfirmDialog,
-    WideAppBar,
+    WideAppBarContent,
+    NarrowAppBarContent,
+    NarrowAppBarNavigation,
   },
   apollo: {
     underwayCircleListItems: {
@@ -93,8 +112,10 @@ import WideAppBar from '~/components/app-bar/WideAppBar.vue'
   },
 })
 export default class DefaultLayout extends Vue {
-  underwayCircleListItems: UnderwayEventItem[] = []
-  finishedCircleListItems: UnderwayEventItem[] = []
+  private underwayCircleListItems: UnderwayEventItem[] = []
+  private finishedCircleListItems: UnderwayEventItem[] = []
+  private isOpenNavigation: boolean = false
+  private windowWidth: number = window.innerWidth ?? 100
 
   private logout(): void {
     this.$apollo
@@ -130,6 +151,10 @@ export default class DefaultLayout extends Vue {
     } else {
       userStore.logout()
     }
+  }
+
+  private openNavigation(): void {
+    this.isOpenNavigation = true
   }
 }
 </script>

@@ -11,7 +11,7 @@ export type UnderwayEventItem = {
 
 // @ts-ignore
 @Component({})
-export default abstract class AbstractAppBar extends Vue {
+export default abstract class AbstractAppBarContent extends Vue {
   @Prop({ type: Array as PropType<UnderwayEventItem[]> })
   protected underwayCircleListItems!: UnderwayEventItem[]
 
