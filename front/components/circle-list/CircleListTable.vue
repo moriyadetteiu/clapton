@@ -3,6 +3,7 @@
     :headers="headers"
     :items="filteredCircleLists"
     height="calc(100vh - 90px)"
+    :mobile-breakpoint="0"
     hide-default-footer
     disable-pagination
     fixed-header

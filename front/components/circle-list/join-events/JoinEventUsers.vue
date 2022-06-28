@@ -6,6 +6,7 @@
         <v-data-table
           :headers="headers"
           :items="items"
+          :mobile-breakpoint="0"
           hide-default-footer
           disable-pagination
         >

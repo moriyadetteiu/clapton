@@ -2,6 +2,7 @@
   <v-data-table
     :headers="headers"
     :items="favorites"
+    :mobile-breakpoint="0"
     hide-default-footer
     disable-pagination
     fixed-header

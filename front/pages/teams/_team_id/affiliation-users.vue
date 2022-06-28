@@ -4,17 +4,25 @@
       <v-data-table
         :headers="headers"
         :items="items"
+        :mobile-breakpoint="0"
         hide-default-footer
         disable-pagination
       >
         <template #[`item.operations`]="{ item }">
-          <v-btn
-            color="delete"
-            @click="excludeUser(item.userAffiliationTeamId)"
-          >
-            <v-icon left>mdi-account-remove</v-icon>
-            除名
-          </v-btn>
+          <v-tooltip top>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                color="delete"
+                icon
+                @click="excludeUser(item.userAffiliationTeamId)"
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon left>mdi-account-remove</v-icon>
+              </v-btn>
+            </template>
+            <span>除名</span>
+          </v-tooltip>
         </template>
       </v-data-table>
     </v-col>

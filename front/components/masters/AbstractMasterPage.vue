@@ -11,6 +11,7 @@
       <v-data-table
         :headers="headers"
         :items="models"
+        :mobile-breakpoint="0"
         hide-default-footer
         disable-pagination
       >
