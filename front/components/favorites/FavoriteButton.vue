@@ -6,7 +6,7 @@
         color="favorite"
         v-bind="{ ...attrs, ...$attrs }"
         v-on="on"
-        @click="toggleFavorite"
+        @click.stop="toggleFavorite"
       >
         <v-icon> {{ mdiIconName }} </v-icon>
       </v-btn>
