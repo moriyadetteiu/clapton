@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="isOpenSync">
     <v-card>
-      <v-card-title>
+      <v-card-title class="pr-sm-6 pl-sm-6 pr-1 pl-1">
         <template v-if="isEditCircle">サークルリスト登録</template>
         <template v-else>
           <favorite-button v-if="circleId" :circle-id="circleId" />
@@ -12,7 +12,7 @@
           <delete-btn v-if="myCareAboutCircle" @click="dontCareCircle" />
         </template>
       </v-card-title>
-      <v-card-text>
+      <v-card-text class="pr-sm-6 pl-sm-6 pr-1 pl-1">
         <component
           :is="formState.getComponentName()"
           v-bind="formState.getAttrs()"
@@ -251,3 +251,10 @@ export default class CircleListForm extends Vue {
   }
 }
 </script>
+
+<style scoped>
+/* stylelint-disable-next-line selector-class-pattern */
+.v-card__title {
+  flex-wrap: nowrap;
+}
+</style>
