@@ -14,8 +14,8 @@
               <v-btn
                 color="delete"
                 icon
-                @click="excludeUser(item.userAffiliationTeamId)"
                 v-bind="attrs"
+                @click="excludeUser(item.userAffiliationTeamId)"
                 v-on="on"
               >
                 <v-icon left>mdi-account-remove</v-icon>
