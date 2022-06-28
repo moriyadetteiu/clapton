@@ -115,7 +115,6 @@ export default class DefaultLayout extends Vue {
   private underwayCircleListItems: UnderwayEventItem[] = []
   private finishedCircleListItems: UnderwayEventItem[] = []
   private isOpenNavigation: boolean = false
-  private windowWidth: number = window.innerWidth ?? 100
 
   private logout(): void {
     this.$apollo
