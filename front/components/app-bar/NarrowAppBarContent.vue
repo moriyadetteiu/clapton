@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar-nav-icon @click="openNavigation"></v-app-bar-nav-icon>
+  <v-app-bar-nav-icon @click="openNavigation" />
 </template>
 
 <script lang="ts">
