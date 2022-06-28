@@ -1,50 +1,25 @@
 <template>
   <v-app :dark="false">
     <v-app-bar fixed app>
-      <v-container v-if="user !== null">
-        <v-menu open-on-hover offset-y :max-height="headerMenuMaxHeight">
-          <template #activator="{ on, attrs }">
-            <v-btn text v-bind="attrs" v-on="on"> リスト </v-btn>
-          </template>
-          <v-list dense>
-            <v-list-item
-              v-for="(item, idx) in underwayCircleListItems"
-              :key="idx"
-              nuxt
-              :to="`/teams/${item.team.id}/events/${item.event.id}/circle-list`"
-            >
-              {{ item.team.name }}
-              （ {{ item.event.name }} ）
-            </v-list-item>
-          </v-list>
-        </v-menu>
-        <v-menu open-on-hover offset-y :max-height="headerMenuMaxHeight">
-          <template #activator="{ on, attrs }">
-            <v-btn text v-bind="attrs" v-on="on"> 過去リスト </v-btn>
-          </template>
-          <v-list dense>
-            <v-list-item
-              v-for="(item, idx) in finishedCircleListItems"
-              :key="idx"
-              nuxt
-              :to="`/teams/${item.team.id}/events/${item.event.id}/circle-list`"
-            >
-              {{ item.team.name }}
-              （ {{ item.event.name }} ）
-            </v-list-item>
-          </v-list>
-        </v-menu>
-        <v-btn text nuxt to="/favorites">お気に入り</v-btn>
-      </v-container>
-      <v-spacer />
-      <template v-if="user !== null">
-        <v-btn text nuxt to="/mypage">{{ user.name }}さん</v-btn>
-        <v-btn text @click.prevent="logout">ログアウト</v-btn>
-      </template>
-      <template v-else>
-        <v-btn text nuxt to="/login">ログイン</v-btn>
-      </template>
+      <wide-app-bar-content
+        :underway-circle-list-items="underwayCircleListItems"
+        :finished-circle-list-items="finishedCircleListItems"
+        class="hidden-xs-only d-sm-flex"
+        @logout="logout"
+      />
+      <narrow-app-bar-content
+        class="hidden-sm-and-up"
+        @open-navigation="openNavigation"
+      />
     </v-app-bar>
+    <narrow-app-bar-navigation
+      v-model="isOpenNavigation"
+      :underway-circle-list-items="underwayCircleListItems"
+      :finished-circle-list-items="finishedCircleListItems"
+      class="hidden-sm-and-up"
+      @logout="logout"
+    />
+
     <v-main>
       <v-container fluid>
         <confirm-dialog />
@@ -66,7 +41,6 @@ import { Vue, Component } from 'nuxt-property-decorator'
 import {
   User,
   Event,
-  Team,
   UserAffiliationTeam,
   LogoutMutation,
   UnderwayEventsForJoinedTeamsQuery,
@@ -74,15 +48,17 @@ import {
 } from '~/apollo/graphql'
 import { userStore } from '~/store'
 import ConfirmDialog from '~/components/dialog/ConfirmDialog.vue'
-
-type UnderwayEventItem = {
-  team: Team
-  event: Event
-}
+import { UnderwayEventItem } from '~/components/app-bar/AbstractAppBarContent.vue'
+import WideAppBarContent from '~/components/app-bar/WideAppBarContent.vue'
+import NarrowAppBarContent from '~/components/app-bar/NarrowAppBarContent.vue'
+import NarrowAppBarNavigation from '~/components/app-bar/NarrowAppBarNavigation.vue'
 
 @Component({
   components: {
     ConfirmDialog,
+    WideAppBarContent,
+    NarrowAppBarContent,
+    NarrowAppBarNavigation,
   },
   apollo: {
     underwayCircleListItems: {
@@ -136,8 +112,9 @@ type UnderwayEventItem = {
   },
 })
 export default class DefaultLayout extends Vue {
-  underwayCircleListItems: UnderwayEventItem[] = []
-  finishedCircleListItems: UnderwayEventItem[] = []
+  private underwayCircleListItems: UnderwayEventItem[] = []
+  private finishedCircleListItems: UnderwayEventItem[] = []
+  private isOpenNavigation: boolean = false
 
   private logout(): void {
     this.$apollo
@@ -163,10 +140,6 @@ export default class DefaultLayout extends Vue {
     }
   }
 
-  private get headerMenuMaxHeight(): string {
-    return 'calc(100vh - 100px)'
-  }
-
   private get user(): User | null {
     return userStore.loginUser
   }
@@ -177,6 +150,10 @@ export default class DefaultLayout extends Vue {
     } else {
       userStore.logout()
     }
+  }
+
+  private openNavigation(): void {
+    this.isOpenNavigation = true
   }
 }
 </script>
