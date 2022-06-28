@@ -4,20 +4,20 @@
       <wide-app-bar-content
         :underway-circle-list-items="underwayCircleListItems"
         :finished-circle-list-items="finishedCircleListItems"
-        @logout="logout"
         class="hidden-xs-only d-sm-flex"
+        @logout="logout"
       />
       <narrow-app-bar-content
-        @open-navigation="openNavigation"
         class="hidden-sm-and-up"
+        @open-navigation="openNavigation"
       />
     </v-app-bar>
     <narrow-app-bar-navigation
       v-model="isOpenNavigation"
       :underway-circle-list-items="underwayCircleListItems"
       :finished-circle-list-items="finishedCircleListItems"
-      @logout="logout"
       class="hidden-sm-and-up"
+      @logout="logout"
     />
 
     <v-main>
