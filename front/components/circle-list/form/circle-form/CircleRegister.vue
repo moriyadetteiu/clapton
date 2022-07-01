@@ -59,7 +59,7 @@ export default class CircleRegister extends AbstractForm<CreateCircleParticipati
   @Prop({ type: String, required: true })
   private teamId!: String
 
-  @Prop({ type: String })
+  @Prop({ type: String, required: true })
   private joinEventId!: string
 
   protected validation: CreateCircleParticipatingInEventInputValidation =
