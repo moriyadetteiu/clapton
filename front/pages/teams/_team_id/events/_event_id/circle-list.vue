@@ -36,7 +36,7 @@
         :event-id="$route.params.event_id"
         :team-id="$route.params.team_id"
         :join-event-id="joinEvent ? joinEvent.id : null"
-        :editing-circle-id="editingCircleId"
+        :editing-circle-id.sync="editingCircleId"
         @saved="onSavedCircle"
       />
 

@@ -76,6 +76,9 @@ export default class CircleListForm extends Vue {
   @PropSync('isOpen', { type: Boolean, required: true })
   private isOpenSync!: Boolean
 
+  @PropSync('editingCircleId', { type: String, default: null })
+  private circleId!: String | null
+
   @Prop({ type: String, required: true })
   private eventId!: String
 
@@ -85,12 +88,7 @@ export default class CircleListForm extends Vue {
   @Prop({ type: String })
   private joinEventId!: String | null
 
-  @Prop({ type: String, default: null })
-  private editingCircleId!: String | null
-
   private isEditCircle: boolean = true
-
-  private circleId: String | null = null
 
   private circlePlacement: CirclePlacement | null = null
 
@@ -171,9 +169,8 @@ export default class CircleListForm extends Vue {
     )
   }
 
-  @Watch('editingCircleId')
-  private onUpdateEditingCircleId(editingCircleId: string | null): void {
-    this.circleId = editingCircleId
+  @Watch('circleId')
+  private onUpdateCircleId(): void {
     this.cancelEdit()
   }
 
@@ -184,13 +181,7 @@ export default class CircleListForm extends Vue {
     this.wantMeToCircleProduct = null
   }
 
-  private initializeDisplayCircle(editingCircleId: string): void {
-    this.isEditCircle = false
-    this.circleId = editingCircleId
-  }
-
   private editCircle(): void {
-    this.cancelEdit()
     this.isEditCircle = true
   }
 
