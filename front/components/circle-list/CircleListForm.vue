@@ -228,10 +228,13 @@ export default class CircleListForm extends Vue {
     }
   }
 
-  private onSaved(payload?: any): void {
+  private async onSaved(payload?: any): Promise<any> {
     if (payload?.circle?.id) {
       this.circleId = payload.circle.id
+      // HACK: nextTickがないと、PropSyncでemitしたcircleIdが本コンポーネントのpropに伝達する前にほかの処理に行くため、必要
+      await this.$nextTick()
     }
+
     this.$apollo.queries.circlePlacement.refetch()
     this.cancelEdit()
     this.$emit('saved')
