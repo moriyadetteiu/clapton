@@ -86,7 +86,7 @@ export default class CircleListForm extends Vue {
   private teamId!: String
 
   @Prop({ type: String })
-  private joinEventId!: String | null
+  private joinEventId!: String
 
   private isEditCircle: boolean = true
 
@@ -136,7 +136,7 @@ export default class CircleListForm extends Vue {
         {
           eventId: this.eventId,
           teamId: this.teamId,
-          joinEventId: this.joinEventId as String,
+          joinEventId: this.joinEventId,
           circlePlacement: this.circlePlacement,
         },
         {}
@@ -149,7 +149,7 @@ export default class CircleListForm extends Vue {
           teamId: this.teamId,
           circlePlacementId: this.circlePlacement!.id,
           circleProduct: this.editingCircleProduct,
-          joinEventId: this.joinEventId!,
+          joinEventId: this.joinEventId,
         },
         {}
       )

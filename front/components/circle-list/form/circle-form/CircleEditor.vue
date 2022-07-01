@@ -51,7 +51,7 @@ export default class CircleEditor extends AbstractForm<CreateCircleParticipating
   @Prop({ type: String, required: true })
   private teamId!: String
 
-  @Prop({ type: String })
+  @Prop({ type: String, required: true })
   private joinEventId!: string
 
   @Prop({ type: Object as PropType<CirclePlacement>, required: true })
