@@ -76,6 +76,9 @@ export default class CircleListForm extends Vue {
   @PropSync('isOpen', { type: Boolean, required: true })
   private isOpenSync!: Boolean
 
+  @PropSync('editingCircleId', { type: String, default: null })
+  private circleId!: String | null
+
   @Prop({ type: String, required: true })
   private eventId!: String
 
@@ -83,14 +86,9 @@ export default class CircleListForm extends Vue {
   private teamId!: String
 
   @Prop({ type: String })
-  private joinEventId!: String | null
-
-  @Prop({ type: String, default: null })
-  private editingCircleId!: String | null
+  private joinEventId!: String
 
   private isEditCircle: boolean = true
-
-  private circleId: String | null = null
 
   private circlePlacement: CirclePlacement | null = null
 
@@ -138,7 +136,7 @@ export default class CircleListForm extends Vue {
         {
           eventId: this.eventId,
           teamId: this.teamId,
-          joinEventId: this.joinEventId as String,
+          joinEventId: this.joinEventId,
           circlePlacement: this.circlePlacement,
         },
         {}
@@ -151,7 +149,7 @@ export default class CircleListForm extends Vue {
           teamId: this.teamId,
           circlePlacementId: this.circlePlacement!.id,
           circleProduct: this.editingCircleProduct,
-          joinEventId: this.joinEventId!,
+          joinEventId: this.joinEventId,
         },
         {}
       )
@@ -171,9 +169,8 @@ export default class CircleListForm extends Vue {
     )
   }
 
-  @Watch('editingCircleId')
-  private onUpdateEditingCircleId(editingCircleId: string | null): void {
-    this.circleId = editingCircleId
+  @Watch('circleId')
+  private onUpdateCircleId(): void {
     this.cancelEdit()
   }
 
@@ -184,13 +181,7 @@ export default class CircleListForm extends Vue {
     this.wantMeToCircleProduct = null
   }
 
-  private initializeDisplayCircle(editingCircleId: string): void {
-    this.isEditCircle = false
-    this.circleId = editingCircleId
-  }
-
   private editCircle(): void {
-    this.cancelEdit()
     this.isEditCircle = true
   }
 
@@ -237,10 +228,13 @@ export default class CircleListForm extends Vue {
     }
   }
 
-  private onSaved(payload?: any): void {
+  private async onSaved(payload?: any): Promise<any> {
     if (payload?.circle?.id) {
       this.circleId = payload.circle.id
+      // HACK: nextTickがないと、PropSyncでemitしたcircleIdが本コンポーネントのpropに伝達する前にほかの処理に行くため、必要
+      await this.$nextTick()
     }
+
     this.$apollo.queries.circlePlacement.refetch()
     this.cancelEdit()
     this.$emit('saved')
