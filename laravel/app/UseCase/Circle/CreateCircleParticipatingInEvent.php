@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Circle;
 use App\Models\CirclePlacement;
 use App\Models\EventDate;
+use App\Models\NotParticipationCircle;
 use App\UseCase\UseCase;
 
 class CreateCircleParticipatingInEvent extends UseCase
@@ -41,6 +42,13 @@ class CreateCircleParticipatingInEvent extends UseCase
     private function cancelNotParticipateCircleInEvent(CreateCircleParticipatingInEventInput $input, string $circleId)
     {
         $eventId = EventDate::findOrFail($input->getPlacementData()['event_date_id'])->event_id;
+        $isExistsNotParticipationCircle = NotParticipationCircle::where('circle_id', $circleId)
+            ->where('event_id', $eventId)
+            ->exists();
+        if (!$isExistsNotParticipationCircle) {
+            return;
+        }
+
         $cancelInput = new CancelNotParticipateCircleInEventInput([
             'event_id' => $eventId,
             'circle_id' => $circleId,
