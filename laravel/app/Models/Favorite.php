@@ -23,4 +23,15 @@ class Favorite extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function participateInEventState(string $eventId): string
+    {
+        $eventDates = Event::findOrFail($eventId)->eventDates()->pluck('id');
+        $circlePlacement = $this->circle->circlePlacements()->whereIn('event_date_id', $eventDates)->first();
+        if ($circlePlacement && $circlePlacement->careAboutCircles()->whereHasUser($this->user_id)->exists()) {
+            return 'チェック済';
+        }
+
+        return $this->circle->participateInEventState($eventId);
+    }
 }

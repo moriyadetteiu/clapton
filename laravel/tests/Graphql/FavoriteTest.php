@@ -4,7 +4,7 @@ namespace Tests\Graphql;
 
 use Illuminate\Foundation\Testing\WithFaker;
 
-use App\Models\Circle;
+use App\Models\Event;
 use App\Models\Favorite;
 use App\Models\User;
 
@@ -79,5 +79,49 @@ class FavoriteTest extends TestCase
         $this->assertCount(3, $responseData);
         $expectedFavoriteIds = $user->favorites()->pluck('id');
         $this->assertEquals($expectedFavoriteIds, collect($responseData)->pluck('id'));
+    }
+
+    public function testMyFavoriteCircleLists()
+    {
+        $user = User::factory()
+            ->hasFavorites(1)
+            ->create();
+        $favorite = $user->favorites()->first();
+        $event = Event::factory()->create();
+
+        $response = $this
+            ->actingAsUser($user)
+            ->graphQL('
+                query myFavoritesInEvent($eventId: ID!) {
+                    myFavoritesInEvent(event_id: $eventId) {
+                        favorite {
+                            id
+                            circle {
+                                id
+                            }
+                        }
+                        state
+                    }
+                }
+            ', [
+                'eventId' => $event->id,
+            ]);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'data' => [
+                'myFavoritesInEvent' => [
+                    [
+                        'favorite' => [
+                            'id' => $favorite->id,
+                            'circle' => [
+                                'id' => $favorite->circle_id,
+                            ]
+                        ],
+                        'state' => '未確認',
+                    ]
+                ]
+            ]
+        ]);
     }
 }
