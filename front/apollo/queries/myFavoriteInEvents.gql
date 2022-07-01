@@ -1,0 +1,12 @@
+query MyFavoritesInEventsQuery($eventId: ID!) {
+  myFavoritesInEvent(event_id: $eventId) {
+    favorite {
+      id
+      circle {
+        id
+        name
+      }
+    }
+    state
+  }
+}

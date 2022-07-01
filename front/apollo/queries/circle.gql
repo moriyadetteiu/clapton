@@ -1,0 +1,7 @@
+query CircleQuery($id: ID!) {
+  circle(id: $id) {
+    id
+    name
+    kana
+  }
+}

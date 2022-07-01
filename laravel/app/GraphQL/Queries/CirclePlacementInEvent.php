@@ -17,6 +17,6 @@ class CirclePlacementInEvent
 
         return CirclePlacement::inEvent($eventId)
             ->where('circle_id', $circleId)
-            ->firstOrFail();
+            ->first();
     }
 }

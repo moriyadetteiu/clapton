@@ -30,13 +30,13 @@ class Circle extends Model
     {
         // FIXME: ステータスを文字列で返しているのは微妙なので、ステータスを表すクラスなり、定数なりを用意する
         //        できればフロントエンドにも共有できる仕組みがあるとよい
-        if ($this->notParticipationCircles()->where('event_id', $eventId)->exists()) {
-            return '不参加';
-        }
-
         $eventDates = Event::findOrFail($eventId)->eventDates()->pluck('id');
         if ($this->circlePlacements()->whereIn('event_date_id', $eventDates)->exists()) {
             return '参加';
+        }
+
+        if ($this->notParticipationCircles()->where('event_id', $eventId)->exists()) {
+            return '不参加';
         }
 
         return '未確認';

@@ -1,6 +1,10 @@
 <template>
   <validation-observer ref="validationObserver" tag="form">
-    <circle-form-input v-model="circleInput" :validation="validation" />
+    <circle-form-input
+      v-model="circleInput"
+      :validation="validation"
+      :disabled="disabledCircleForm"
+    />
     <circle-placement-form-input
       v-model="circlePlacementInput"
       :validation="validation"
@@ -18,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { Prop, Component } from 'nuxt-property-decorator'
+import { Prop, Component, Watch } from 'nuxt-property-decorator'
 import CircleFormInput from './CircleFormInput.vue'
 import CirclePlacementFormInput, {
   DraftCirclePlacementInput,
@@ -31,6 +35,8 @@ import {
   CirclePlacementInput,
   CareAboutCircleInput,
   CirclePlacement,
+  CircleQuery,
+  Circle,
 } from '~/apollo/graphql'
 import { CreateCircleParticipatingInEventInputValidation } from '~/validation/validations'
 import AbstractForm from '~/components/form/AbstractForm.vue'
@@ -51,6 +57,30 @@ export const initialCircleInput: CircleInput = {
 
 @Component({
   components: { CircleFormInput, CirclePlacementFormInput },
+  apollo: {
+    circle: {
+      query: CircleQuery,
+      variables() {
+        const id = this.circleId
+        return { id }
+      },
+      result(result: any) {
+        const circle: Circle | null = result?.data?.circle
+        if (!circle) {
+          return
+        }
+
+        this.circleInput = {
+          id: circle.id,
+          name: circle.name,
+          kana: circle.kana,
+        }
+      },
+      skip(): boolean {
+        return !this.circleId
+      },
+    },
+  },
 })
 export default class CircleRegister extends AbstractForm<CreateCircleParticipatingInEventInputValidation> {
   @Prop({ type: String, required: true })
@@ -62,6 +92,9 @@ export default class CircleRegister extends AbstractForm<CreateCircleParticipati
   @Prop({ type: String, required: true })
   private joinEventId!: string
 
+  @Prop({ type: String })
+  private circleId!: string | null
+
   protected validation: CreateCircleParticipatingInEventInputValidation =
     new CreateCircleParticipatingInEventInputValidation()
 
@@ -69,6 +102,17 @@ export default class CircleRegister extends AbstractForm<CreateCircleParticipati
 
   private circlePlacementInput: DraftCirclePlacementInput = {
     ...initialCirclePlacementInput,
+  }
+
+  private get disabledCircleForm(): boolean {
+    return !!this.circleId
+  }
+
+  @Watch('circleId')
+  private onUpdateCircleId(): void {
+    if (!this.circleId) {
+      this.circleInput = { ...initialCircleInput }
+    }
   }
 
   protected async mutate(): Promise<any> {

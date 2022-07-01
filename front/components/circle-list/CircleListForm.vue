@@ -138,6 +138,7 @@ export default class CircleListForm extends Vue {
           teamId: this.teamId,
           joinEventId: this.joinEventId,
           circlePlacement: this.circlePlacement,
+          circleId: this.circleId,
         },
         {}
       )
@@ -164,19 +165,30 @@ export default class CircleListForm extends Vue {
         'edit-circle-product': this.editCircleProduct,
         'want-me-too': this.onWantMeToo,
         'add-circle-product': this.addCircleProduct,
-        'register-new-circle': this.clearForm,
+        'register-new-circle': this.initializeForm,
       }
     )
   }
 
   @Watch('circleId')
   private onUpdateCircleId(): void {
+    if (!this.circleId) {
+      this.circlePlacement = null
+    }
+  }
+
+  @Watch('circlePlacement')
+  private onUpdateCirclePlacement(): void {
     this.cancelEdit()
+  }
+
+  private initializeForm(): void {
+    this.circleId = null
+    this.clearForm()
   }
 
   private clearForm(): void {
     this.isEditCircle = true
-    this.circleId = null
     this.circlePlacement = null
     this.wantMeToCircleProduct = null
   }
@@ -223,7 +235,7 @@ export default class CircleListForm extends Vue {
     this.editingCircleProduct = null
     this.wantMeToCircleProduct = null
 
-    if (!this.circleId) {
+    if (!this.circlePlacement) {
       this.clearForm()
     }
   }

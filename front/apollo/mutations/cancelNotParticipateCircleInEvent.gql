@@ -1,0 +1,5 @@
+mutation CancelNotParticipateCircleInEventMutation($circleId: ID!, $eventId: ID!) {
+  cancelNotParticipateCircleInEvent(circle_id: $circleId, event_id: $eventId) {
+    id
+  }
+}
