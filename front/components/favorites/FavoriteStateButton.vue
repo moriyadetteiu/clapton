@@ -1,5 +1,5 @@
 <template>
-  <v-menu offset-y v-model="isOpenMenu">
+  <v-menu v-model="isOpenMenu" offset-y>
     <template #activator="menuSlot">
       <v-tooltip top>
         <template #activator="{ on, attrs }">
