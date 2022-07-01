@@ -76,6 +76,7 @@ export default class FavoriteButton extends Vue {
         variables: {
           input,
         },
+        refetchQueries: ['MyFavoritesInEventsQuery'],
       })
       .then(() => {
         this.$toast.success('お気に入りに追加しました')
@@ -91,6 +92,7 @@ export default class FavoriteButton extends Vue {
       .mutate({
         mutation: DeleteFavoriteMutation,
         variables,
+        refetchQueries: ['MyFavoritesInEventsQuery'],
       })
       .then(() => {
         this.$toast.success('お気に入りの登録を解除しました')

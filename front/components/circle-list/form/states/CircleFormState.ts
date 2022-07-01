@@ -6,6 +6,7 @@ type CircleFormStateProps = {
   teamId: String
   joinEventId: String
   circlePlacement?: CirclePlacement | null
+  circleId: String | null
 }
 
 type CircleFormStateEventObservers = {}

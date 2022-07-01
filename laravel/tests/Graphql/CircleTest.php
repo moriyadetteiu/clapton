@@ -17,6 +17,7 @@ use App\Models\EventAffiliationTeam;
 use App\Models\UserAffiliationTeam;
 use App\Models\JoinEvent;
 use App\Models\JoinEventDate;
+use App\Models\NotParticipationCircle;
 use Database\DatasetFactories\CircleDatasetFactory;
 
 class CircleTest extends TestCase
@@ -241,5 +242,68 @@ class CircleTest extends TestCase
 
         $errors = $response->json('errors');
         $this->assertEquals($errors[0]['extensions']['category'], 'updateDenied');
+    }
+
+    public function testNotParticipateCircleInEvent()
+    {
+        $dataset = (new CircleDatasetFactory())
+            ->one()
+            ->create();
+        $circle = $dataset['circle'];
+        $event = $dataset['event'];
+        $input = [
+            'circleId' => $circle->id,
+            'eventId' => $event->id,
+        ];
+
+        $response = $this
+            ->actingAsUser($dataset['user'])
+            ->graphQL('
+                mutation notParticipateCircleInEvent($circleId: ID!, $eventId: ID!) {
+                    notParticipateCircleInEvent(circle_id: $circleId, event_id: $eventId) {
+                        id
+                    }
+                }
+            ', $input)
+            ->assertStatus(200);
+
+        $this->assertDatabaseHas('not_participation_circles', [
+            'circle_id' => $circle->id,
+            'event_id' => $event->id,
+        ]);
+    }
+
+    public function testCancelNotParticipateCircleInEvent()
+    {
+        $dataset = (new CircleDatasetFactory())
+            ->one()
+            ->create();
+        $circle = $dataset['circle'];
+        $event = $dataset['event'];
+        $input = [
+            'circleId' => $circle->id,
+            'eventId' => $event->id,
+        ];
+
+        NotParticipationCircle::factory([
+            'circle_id' => $circle->id,
+            'event_id' => $event->id,
+        ])->create();
+
+        $response = $this
+            ->actingAsUser($dataset['user'])
+            ->graphQL('
+                mutation cancelNotParticipateCircleInEvent($circleId: ID!, $eventId: ID!) {
+                    cancelNotParticipateCircleInEvent(circle_id: $circleId, event_id: $eventId) {
+                        id
+                    }
+                }
+            ', $input)
+            ->assertStatus(200);
+
+        $this->assertDatabaseMissing('not_participation_circles', [
+            'circle_id' => $circle->id,
+            'event_id' => $event->id,
+        ]);
     }
 }

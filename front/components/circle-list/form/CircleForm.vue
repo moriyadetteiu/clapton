@@ -4,6 +4,7 @@
     :event-id="eventId"
     :join-event-id="joinEventId"
     :team-id="teamId"
+    :circle-id="circleId"
     v-on="$listeners"
   />
   <circle-editor
@@ -38,5 +39,8 @@ export default class CircleForm extends Vue {
 
   @Prop({ type: Object as PropType<CirclePlacement> })
   private circlePlacement!: CirclePlacement | null
+
+  @Prop({ type: String })
+  private circleId!: string | null
 }
 </script>
