@@ -9,17 +9,17 @@ use App\Models\CirclePlacement;
 use App\Models\EventDate;
 use App\Models\NotParticipationCircle;
 use App\UseCase\UseCase;
+use App\UseCase\ConflictCircleException;
 
 class CreateCircleParticipatingInEvent extends UseCase
 {
     public function execute(CreateCircleParticipatingInEventInput $input)
     {
         $circle = DB::transaction(function () use ($input) {
-            $circle = $this->findOrCreate($input);
-            $placementData = $input->getPlacementData();
-            $placementData['circle_id'] = $circle->id;
-            $circlePlacement = CirclePlacement::create($placementData);
+            $this->validateConflictCircles($input);
+            $circle = $this->findOrCreateCircle($input);
 
+            $circlePlacement = $this->findOrCreateCirclePlacement($input, $circle);
             $this->cancelNotParticipateCircleInEvent($input, $circle->id);
 
             $circle->refresh();
@@ -30,13 +30,64 @@ class CreateCircleParticipatingInEvent extends UseCase
         return $circle;
     }
 
-    private function findOrCreate(CreateCircleParticipatingInEventInput $input)
+    private function findOrCreateCircle(CreateCircleParticipatingInEventInput $input): Circle
     {
         $circleData = $input->getCircleData();
         if ($circleData['id'] ?? false) {
             return Circle::findOrFail($circleData['id']);
         }
+
+        $alreadyExistsCircle = optional($this->findSamePlacementConsiderCircleName($input))->circle;
+        if ($alreadyExistsCircle) {
+            return $alreadyExistsCircle;
+        }
+
         return Circle::create($circleData);
+    }
+
+    private function findOrCreateCirclePlacement(CreateCircleParticipatingInEventInput $input, Circle $circle): CirclePlacement
+    {
+        $placementData = $input->getPlacementData();
+        $alreadyExistsCirclePlacement = $this->findSamePlacementConsiderCircleName($input);
+
+        if ($alreadyExistsCirclePlacement) {
+            return $alreadyExistsCirclePlacement;
+        }
+
+        $placementData['circle_id'] = $circle->id;
+        return CirclePlacement::create($placementData);
+    }
+
+    private function findSamePlacementConsiderCircleName(CreateCircleParticipatingInEventInput $input): ?CirclePlacement
+    {
+        $circleData = $input->getCircleData();
+        $placementData = $input->getPlacementData();
+        return (new CirclePlacement())
+            ->fill($placementData)
+            ->findSamePlacements()
+            ->first(fn ($circlePlacement) => $circlePlacement->circle->name === $circleData['name']);
+    }
+
+    private function validateConflictCircles(CreateCircleParticipatingInEventInput $input)
+    {
+        $samePlacementConsiderCircleName = $this->findSamePlacementConsiderCircleName($input);
+
+        $circleName = $input->getCircleData()['name'];
+        $conflictCirclePlacements = (new CirclePlacement())
+            ->fill($input->getPlacementData())
+            ->findSamePlacements()
+            ->reject(fn ($circlePlacement) => $circlePlacement->id === optional($samePlacementConsiderCircleName)->id);
+
+        $eventId = EventDate::findOrFail($input->getPlacementData()['event_date_id'])->event_id;
+        $conflictCircles = Circle::where('name', $circleName)
+            ->get()
+            ->reject(fn ($circle) => $circle->id === optional(optional($samePlacementConsiderCircleName)->circle)->id)
+            ->filter(fn ($circle) => $circle->circlePlacements()->inEvent($eventId)->exists());
+
+        // TODO: force的なoptionをつける
+        if ($conflictCirclePlacements->isNotEmpty() || $conflictCircles->isNotEmpty()) {
+            throw new ConflictCircleException($conflictCircles, $conflictCirclePlacements, '登録済みのリストと競合しています');
+        }
     }
 
     private function cancelNotParticipateCircleInEvent(CreateCircleParticipatingInEventInput $input, string $circleId)
