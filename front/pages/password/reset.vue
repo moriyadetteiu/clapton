@@ -55,6 +55,7 @@ import { ResetPasswordInputValidation } from '~/validation/validations'
 export default class ResetPasswordPage extends Vue {
   private validation: ResetPasswordInputValidation =
     new ResetPasswordInputValidation()
+
   private password: string = ''
   private confirmationPassword: string = ''
 
