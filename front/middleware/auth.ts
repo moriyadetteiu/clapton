@@ -3,7 +3,12 @@ import { MeQuery } from '~/apollo/graphql'
 import { userStore } from '~/store'
 
 // 未ログインでもアクセスできるルート
-const CAN_ACCESS_GUEST_ROUTE_NAMES = ['login', 'users-create']
+const CAN_ACCESS_GUEST_ROUTE_NAMES = [
+  'login',
+  'users-create',
+  'password-forget',
+  'password-reset',
+]
 
 const canAccessGuest = (routeName: string): boolean => {
   return CAN_ACCESS_GUEST_ROUTE_NAMES.includes(routeName)

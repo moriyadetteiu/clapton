@@ -25,9 +25,11 @@
             dense
           />
         </v-col>
-        <v-col cols="12">
+        <v-col cols="12" class="d-flex">
           <v-btn color="success" @click="login">ログイン</v-btn>
           <v-btn color="primary" nuxt to="/users/create">ユーザ登録</v-btn>
+          <v-spacer />
+          <v-btn nuxt to="/password/forget"> パスワードを忘れた方 </v-btn>
         </v-col>
       </v-row>
     </v-container>
