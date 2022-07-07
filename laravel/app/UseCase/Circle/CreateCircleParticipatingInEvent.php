@@ -83,13 +83,16 @@ class CreateCircleParticipatingInEvent extends UseCase
             ->reject(fn ($circlePlacement) => $circlePlacement->id === optional($samePlacementConsiderCircleName)->id);
 
         $eventId = EventDate::findOrFail($input->getPlacementData()['event_date_id'])->event_id;
-        $conflictCircles = Circle::where('name', $circleName)
+        $conflictCirclePlacementsFromCircle = Circle::where('name', $circleName)
             ->get()
             ->reject(fn ($circle) => $circle->id === optional(optional($samePlacementConsiderCircleName)->circle)->id)
-            ->filter(fn ($circle) => $circle->circlePlacements()->inEvent($eventId)->exists());
+            ->map(fn ($circle) => $circle->circlePlacements()->inEvent($eventId)->first())
+            ->filter();
 
-        if ($conflictCirclePlacements->isNotEmpty() || $conflictCircles->isNotEmpty()) {
-            throw new ConflictCircleException($conflictCircles, $conflictCirclePlacements, '登録済みのリストと競合しています');
+        $mergedConflictCirclePlacements = $conflictCirclePlacements->concat($conflictCirclePlacementsFromCircle);
+
+        if ($mergedConflictCirclePlacements->isNotEmpty()) {
+            throw new ConflictCircleException($mergedConflictCirclePlacements, '登録済みのリストと競合しています');
         }
     }
 

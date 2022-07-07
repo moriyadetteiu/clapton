@@ -142,8 +142,7 @@ class CircleTest extends TestCase
             ]);
         $error = $response->json('errors.0.extensions');
         $this->assertEquals('conflictCircle', $error['category']);
-        $this->assertEquals($circle->id, $error['conflicts']['circles'][0]['id']);
-        $this->assertCount(0, $error['conflicts']['circlePlacements']);
+        $this->assertEquals($circle->id, $error['conflicts'][0]['circle']['id']);
 
         // 同一配置、別サークルパターン
         $input = $baseInput;
@@ -164,8 +163,7 @@ class CircleTest extends TestCase
             ]);
         $error = $response->json('errors.0.extensions');
         $this->assertEquals('conflictCircle', $error['category']);
-        $this->assertCount(0, $error['conflicts']['circles']);
-        $this->assertEquals($circlePlacement->id, $error['conflicts']['circlePlacements'][0]['id']);
+        $this->assertEquals($circlePlacement->id, $error['conflicts'][0]['id']);
 
         // 同一配置、同一サークルパターン
         // note: この場合はエラーにならずに、登録済みのものが返ってくるのが正常系

@@ -163,8 +163,18 @@ export default class CircleRegister extends AbstractForm<CreateCircleParticipati
   private async confirmForceCreate(
     graphQLError: GraphQLError
   ): Promise<Boolean> {
+    const conflictCirclesMessage: string = graphQLError.extensions.conflicts
+      .map(
+        (circlePlacement: any) =>
+          `${circlePlacement.circle.name}（${circlePlacement.formatted_placement}）`
+      )
+      .join(`\n`)
+
     return await this.$confirmDialog.confirm(
-      'サークル、配置が競合しています。再度確認してください。（はいを選ぶと強制的に登録します。）'
+      `以下のサークルと競合しています。再度確認してください。（実行を選ぶと登録します。）
+
+      ${conflictCirclesMessage}
+      `
     )
   }
 
