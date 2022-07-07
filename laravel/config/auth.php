@@ -113,4 +113,6 @@ return [
 
     'password_timeout' => 10800,
 
+    'password_reset_url' => env('PASSWORD_RESET_URL', 'http://localhost:3000/password-reset'),
+
 ];

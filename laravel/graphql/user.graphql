@@ -33,6 +33,21 @@ input LoginInput {
     remember_me: Boolean
 }
 
+type ForgetPasswordData {
+    error: String
+}
+
+input ResetPasswordInput {
+    email: String!
+    password: String!
+    password_confirmation: String!
+    token: String!
+}
+
+type ResetPasswordData {
+    error: String
+}
+
 extend type Query @guard {
     users: [User!]! @paginate(defaultCount: 10)
     user(id: ID @eq): User @find
@@ -45,4 +60,8 @@ extend type Mutation {
     login(input: LoginInput! @spread): LoginData
     logout: LogoutData @guard
         @field(resolver: "App\\GraphQL\\Mutations\\Logout")
+    forgetPassword(email: String!): ForgetPasswordData!
+        @field(resolver: "App\\GraphQL\\Mutations\\ForgetPassword")
+    resetPassword(input: ResetPasswordInput! @spread): ResetPasswordData!
+        @field(resolver: "App\\GraphQL\\Mutations\\ResetPassword")
 }
