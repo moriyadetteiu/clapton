@@ -68,8 +68,12 @@ class CreateCircleParticipatingInEvent extends UseCase
             ->first(fn ($circlePlacement) => $circlePlacement->circle->name === $circleData['name']);
     }
 
-    private function validateConflictCircles(CreateCircleParticipatingInEventInput $input)
+    private function validateConflictCircles(CreateCircleParticipatingInEventInput $input): void
     {
+        if ($input->get('force', false)) {
+            return;
+        }
+
         $samePlacementConsiderCircleName = $this->findSamePlacementConsiderCircleName($input);
 
         $circleName = $input->getCircleData()['name'];
@@ -84,13 +88,12 @@ class CreateCircleParticipatingInEvent extends UseCase
             ->reject(fn ($circle) => $circle->id === optional(optional($samePlacementConsiderCircleName)->circle)->id)
             ->filter(fn ($circle) => $circle->circlePlacements()->inEvent($eventId)->exists());
 
-        // TODO: force的なoptionをつける
         if ($conflictCirclePlacements->isNotEmpty() || $conflictCircles->isNotEmpty()) {
             throw new ConflictCircleException($conflictCircles, $conflictCirclePlacements, '登録済みのリストと競合しています');
         }
     }
 
-    private function cancelNotParticipateCircleInEvent(CreateCircleParticipatingInEventInput $input, string $circleId)
+    private function cancelNotParticipateCircleInEvent(CreateCircleParticipatingInEventInput $input, string $circleId): void
     {
         $eventId = EventDate::findOrFail($input->getPlacementData()['event_date_id'])->event_id;
         $isExistsNotParticipationCircle = NotParticipationCircle::where('circle_id', $circleId)

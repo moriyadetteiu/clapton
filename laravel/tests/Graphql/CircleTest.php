@@ -192,6 +192,34 @@ class CircleTest extends TestCase
         $responseData = $response->json('data.createCircleParticipatingInEvent');
         $this->assertEquals($circlePlacement->id, $responseData['id']);
         $this->assertEquals($circle->id, $responseData['circle']['id']);
+
+        // 同一配置、別サークルパターン、forceオプションあり
+        // forceオプションがある場合はバリデーションを無視して登録する
+        $input = $baseInput;
+        $input['placement'] = collect($circlePlacement->toArray())
+            ->only('event_date_id', 'hole', 'line', 'number', 'a_or_b', 'circle_placement_classification_id')
+            ->toArray();
+
+        $response = $this
+            ->actingAsUser($user)
+            ->graphQL('
+                mutation createCircleParticipatingInEvent($input: CreateCircleParticipatingInEventInput!, $force: Boolean) {
+                    createCircleParticipatingInEvent(input: $input, force: $force) {
+                        id
+                        circle {
+                            id
+                        }
+                    }
+                }
+            ', [
+                'input' => $input,
+                'force' => true,
+            ]);
+        $responseData = $response->json('data.createCircleParticipatingInEvent');
+        $this->assertNotEquals($circlePlacement->id, $responseData['id']);
+        $this->assertNotEquals($circle->id, $responseData['circle']['id']);
+        $this->assertDatabaseHas('circle_placements', ['id' => $responseData['id']]);
+        $this->assertDatabaseHas('circles', ['id' => $responseData['circle']['id']]);
     }
 
     public function testUpdateCircleParticipatingInEvent()
