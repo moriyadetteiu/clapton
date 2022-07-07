@@ -23,6 +23,9 @@
 
 <script lang="ts">
 import { Prop, Component, Watch } from 'nuxt-property-decorator'
+import { ApolloError } from 'apollo-client/errors/ApolloError'
+import { GraphQLError } from 'graphql'
+
 import CircleFormInput from './CircleFormInput.vue'
 import CirclePlacementFormInput, {
   DraftCirclePlacementInput,
@@ -104,6 +107,8 @@ export default class CircleRegister extends AbstractForm<CreateCircleParticipati
     ...initialCirclePlacementInput,
   }
 
+  private force: boolean = false
+
   private get disabledCircleForm(): boolean {
     return !!this.circleId
   }
@@ -120,11 +125,12 @@ export default class CircleRegister extends AbstractForm<CreateCircleParticipati
       circle: this.circleInput,
       placement: this.circlePlacementInput as CirclePlacementInput,
     }
+    const force = this.force
 
     return await this.$apollo
       .mutate({
         mutation: CreateCircleParticipatingInEventMutation,
-        variables: { input },
+        variables: { input, force },
       })
       .then((res) => res.data.createCircleParticipatingInEvent)
   }
@@ -133,6 +139,43 @@ export default class CircleRegister extends AbstractForm<CreateCircleParticipati
     await this.createCareAboutCircle(circlePlacement)
     const circle = circlePlacement.circle
     this.$emit('saved', { circle })
+  }
+
+  protected async handleGraphQLError(
+    graphQLError: GraphQLError,
+    apolloError: ApolloError
+  ) {
+    if (graphQLError.extensions.category === 'validation') {
+      this.handleValidationError(apolloError)
+    }
+    if (graphQLError.extensions.category === 'conflictCircle') {
+      if (await this.confirmForceCreate(graphQLError)) {
+        this.force = true
+        try {
+          await this.submit()
+        } finally {
+          this.force = false
+        }
+      }
+    }
+  }
+
+  private async confirmForceCreate(
+    graphQLError: GraphQLError
+  ): Promise<Boolean> {
+    const conflictCirclesMessage: string = graphQLError.extensions.conflicts
+      .map(
+        (circlePlacement: any) =>
+          `${circlePlacement.circle.name}（${circlePlacement.formatted_placement}）`
+      )
+      .join(`\n`)
+
+    return await this.$confirmDialog.confirm(
+      `以下のサークルと競合しています。再度確認してください。（実行を選ぶと登録します。）
+
+      ${conflictCirclesMessage}
+      `
+    )
   }
 
   private async createCareAboutCircle(circlePlacement: CirclePlacement) {

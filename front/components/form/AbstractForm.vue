@@ -1,7 +1,8 @@
 <script lang="ts">
 import { Vue, Component } from 'nuxt-property-decorator'
 import { ValidationObserver } from 'vee-validate'
-import { isApolloError } from 'apollo-client/errors/ApolloError'
+import { isApolloError, ApolloError } from 'apollo-client/errors/ApolloError'
+import { GraphQLError } from 'graphql'
 import BaseValidation from '~/validation/validation'
 
 // @ts-ignore
@@ -51,10 +52,25 @@ export default abstract class AbstractForm<
 
   protected handleError(error: any): void {
     if (isApolloError(error)) {
-      this.$toasted.global.validationError()
-      if (this.validation) {
-        this.validation.setBackendErrorsFromAppolo(error)
-      }
+      error.graphQLErrors.forEach((graphQLError: GraphQLError) => {
+        this.handleGraphQLError(graphQLError, error)
+      })
+    }
+  }
+
+  protected handleGraphQLError(
+    graphQLError: GraphQLError,
+    apolloError: ApolloError
+  ) {
+    if (graphQLError.extensions.category === 'validation') {
+      this.handleValidationError(apolloError)
+    }
+  }
+
+  protected handleValidationError(error: ApolloError) {
+    this.$toasted.global.validationError()
+    if (this.validation) {
+      this.validation.setBackendErrorsFromAppolo(error)
     }
   }
 }

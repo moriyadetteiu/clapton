@@ -106,6 +106,120 @@ class CircleTest extends TestCase
         $this->assertEquals($expectedPlacement, $assertionPlacement);
     }
 
+    public function testCreateCircleParticipatingInEventWhenConflict()
+    {
+        $dataset = (new CircleDatasetFactory())->one()->create();
+        $user = $dataset['user'];
+        $circlePlacement = $dataset['circlePlacements']->first();
+        $circle = $circlePlacement->circle;
+        $eventDate = $circlePlacement->eventDate;
+
+        $baseInput = [
+            'circle' => collect(Circle::factory()->definition())
+                ->only('name', 'kana', 'memo')
+                ->toArray(),
+            'placement' => collect(CirclePlacement::factory()->definition())
+                ->only('event_date_id', 'hole', 'line', 'number', 'a_or_b')
+                ->put('circle_placement_classification_id', $circlePlacement->circle_placement_classification_id)
+                ->toArray(),
+        ];
+
+        // 同一サークル名、別配置パターン
+        $input = $baseInput;
+        $input['circle']['name'] = $circle->name;
+        $input['placement']['event_date_id'] = $eventDate->id;
+
+        $response = $this
+            ->actingAsUser($user)
+            ->graphQL('
+                mutation createCircleParticipatingInEvent($input: CreateCircleParticipatingInEventInput!) {
+                    createCircleParticipatingInEvent(input: $input) {
+                        id
+                    }
+                }
+            ', [
+                'input' => $input
+            ]);
+        $error = $response->json('errors.0.extensions');
+        $this->assertEquals('conflictCircle', $error['category']);
+        $this->assertEquals($circle->id, $error['conflicts'][0]['circle']['id']);
+
+        // 同一配置、別サークルパターン
+        $input = $baseInput;
+        $input['placement'] = collect($circlePlacement->toArray())
+            ->only('event_date_id', 'hole', 'line', 'number', 'a_or_b', 'circle_placement_classification_id')
+            ->toArray();
+
+        $response = $this
+            ->actingAsUser($user)
+            ->graphQL('
+                mutation createCircleParticipatingInEvent($input: CreateCircleParticipatingInEventInput!) {
+                    createCircleParticipatingInEvent(input: $input) {
+                        id
+                    }
+                }
+            ', [
+                'input' => $input
+            ]);
+        $error = $response->json('errors.0.extensions');
+        $this->assertEquals('conflictCircle', $error['category']);
+        $this->assertEquals($circlePlacement->id, $error['conflicts'][0]['id']);
+
+        // 同一配置、同一サークルパターン
+        // note: この場合はエラーにならずに、登録済みのものが返ってくるのが正常系
+        $input = $baseInput;
+        $input['circle']['name'] = $circle->name;
+        $input['placement'] = collect($circlePlacement->toArray())
+            ->only('event_date_id', 'hole', 'line', 'number', 'a_or_b', 'circle_placement_classification_id')
+            ->toArray();
+
+        $response = $this
+            ->actingAsUser($user)
+            ->graphQL('
+                mutation createCircleParticipatingInEvent($input: CreateCircleParticipatingInEventInput!) {
+                    createCircleParticipatingInEvent(input: $input) {
+                        id
+                        circle {
+                            id
+                        }
+                    }
+                }
+            ', [
+                'input' => $input
+            ]);
+        $responseData = $response->json('data.createCircleParticipatingInEvent');
+        $this->assertEquals($circlePlacement->id, $responseData['id']);
+        $this->assertEquals($circle->id, $responseData['circle']['id']);
+
+        // 同一配置、別サークルパターン、forceオプションあり
+        // forceオプションがある場合はバリデーションを無視して登録する
+        $input = $baseInput;
+        $input['placement'] = collect($circlePlacement->toArray())
+            ->only('event_date_id', 'hole', 'line', 'number', 'a_or_b', 'circle_placement_classification_id')
+            ->toArray();
+
+        $response = $this
+            ->actingAsUser($user)
+            ->graphQL('
+                mutation createCircleParticipatingInEvent($input: CreateCircleParticipatingInEventInput!, $force: Boolean) {
+                    createCircleParticipatingInEvent(input: $input, force: $force) {
+                        id
+                        circle {
+                            id
+                        }
+                    }
+                }
+            ', [
+                'input' => $input,
+                'force' => true,
+            ]);
+        $responseData = $response->json('data.createCircleParticipatingInEvent');
+        $this->assertNotEquals($circlePlacement->id, $responseData['id']);
+        $this->assertNotEquals($circle->id, $responseData['circle']['id']);
+        $this->assertDatabaseHas('circle_placements', ['id' => $responseData['id']]);
+        $this->assertDatabaseHas('circles', ['id' => $responseData['circle']['id']]);
+    }
+
     public function testUpdateCircleParticipatingInEvent()
     {
         $dataset = (new CircleDatasetFactory())

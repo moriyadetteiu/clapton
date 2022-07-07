@@ -15,6 +15,7 @@ class CreateCircleParticipatingInEvent
     public function __invoke($_, array $args)
     {
         $data = Arr::except($args, ['directive']);
+        $data['force'] = $args['force'] ?? false;
         $input = new CreateCircleParticipatingInEventInput($data);
         return (new CreateCircleParticipatingInEventUseCase())->execute($input);
     }
