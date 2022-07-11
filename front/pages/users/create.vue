@@ -9,6 +9,11 @@ import { UserInput, CreateUserMutation } from '~/apollo/graphql'
 import UserForm from '~/components/users/UserForm.vue'
 
 @Component({
+  head() {
+    return {
+      title: 'ユーザ登録',
+    }
+  },
   components: {
     UserForm,
   },

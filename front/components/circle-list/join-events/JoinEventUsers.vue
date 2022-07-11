@@ -6,10 +6,11 @@
         <v-data-table
           :headers="headers"
           :items="items"
+          :mobile-breakpoint="0"
           hide-default-footer
           disable-pagination
         >
-          <template v-slot:body.append>
+          <template #[`body.append`]>
             <tr>
               <td>参加人数</td>
               <td v-for="eventDate in eventDates" :key="eventDate.id">

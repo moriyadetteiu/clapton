@@ -11,6 +11,11 @@ import {
 import AbstractMasterPage from '~/components/masters/AbstractMasterPage.vue'
 
 @Component({
+  head() {
+    return {
+      title: '頒布物分類マスタ',
+    }
+  },
   components: { CircleProductClassificationForm, ConfirmDialog },
   apollo: {
     models: {
@@ -25,9 +30,7 @@ import AbstractMasterPage from '~/components/masters/AbstractMasterPage.vue'
     },
   },
 })
-export default class CircleProductClassificationPage extends AbstractMasterPage<
-  CircleProductClassification
-> {
+export default class CircleProductClassificationPage extends AbstractMasterPage<CircleProductClassification> {
   protected readonly headers: DataTableHeader[] = [
     { text: '頒布物分類名', value: 'name' },
     { text: '操作', value: 'actions', sortable: false },

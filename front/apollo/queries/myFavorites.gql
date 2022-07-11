@@ -3,5 +3,9 @@ query MyFavoritesQuery {
     id
     circle_id
     user_id
+    circle {
+      id
+      name
+    }
   }
 }

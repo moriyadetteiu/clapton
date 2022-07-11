@@ -1,5 +1,5 @@
 <template>
-  <validation-observer ref="validationObserver" tag="v-form">
+  <validation-observer ref="validationObserver" tag="form">
     <v-container>
       <v-row dense>
         <v-col cols="12">
@@ -25,9 +25,11 @@
             dense
           />
         </v-col>
-        <v-col cols="12">
+        <v-col cols="12" class="d-flex">
           <v-btn color="success" @click="login">ログイン</v-btn>
           <v-btn color="primary" nuxt to="/users/create">ユーザ登録</v-btn>
+          <v-spacer />
+          <v-btn nuxt to="/password/forget"> パスワードを忘れた方 </v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -41,7 +43,13 @@ import { LoginMutation, LoginInput, LoginData, MeQuery } from '~/apollo/graphql'
 import { LoginValidation } from '~/validation/loginValidation'
 import { userStore } from '~/utils/store-accessor'
 
-@Component({})
+@Component({
+  head() {
+    return {
+      title: 'ログイン',
+    }
+  },
+})
 export default class Login extends Vue {
   private validation: LoginValidation = new LoginValidation()
 

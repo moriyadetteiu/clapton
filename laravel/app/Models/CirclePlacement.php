@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\{
     BelongsTo,
@@ -60,5 +61,15 @@ class CirclePlacement extends Model
     {
         $eventDate = $this->eventDate;
         return "{$eventDate->name} {$this->hole} {$this->line}-{$this->formatted_number}{$this->a_or_b}";
+    }
+
+    public function findSamePlacements(): Collection
+    {
+        return CirclePlacement::where('event_date_id', $this->event_date_id)
+            ->where('hole', $this->hole)
+            ->where('line', $this->line)
+            ->where('number', $this->number)
+            ->where('a_or_b', $this->a_or_b)
+            ->get();
     }
 }

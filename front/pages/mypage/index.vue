@@ -20,7 +20,11 @@
       </v-card-text>
     </v-card>
     <v-card class="mt-3">
-      <v-card-title>所属チーム</v-card-title>
+      <v-card-title>
+        所属チーム
+        <v-spacer />
+        <register-btn nuxt to="teams/create" />
+      </v-card-title>
       <v-card-text>
         <v-container>
           <v-row
@@ -44,7 +48,13 @@ import { Vue, Component } from 'nuxt-property-decorator'
 import { User } from '~/apollo/graphql'
 import { userStore } from '~/store'
 
-@Component({})
+@Component({
+  head() {
+    return {
+      title: 'マイページ',
+    }
+  },
+})
 export default class MyPage extends Vue {
   private get user(): User {
     return userStore.loginUserOrEmptyUser

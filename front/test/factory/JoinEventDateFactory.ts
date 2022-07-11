@@ -12,9 +12,9 @@ export default class JoinEventDateFactory extends Factory<JoinEventDate> {
     const eventDate = eventDateFactory.make()
 
     return {
-      id: this.faker.random.uuid(),
-      is_join: this.faker.random.boolean(),
-      number_of_tickets: this.faker.random.number(10),
+      id: this.faker.datatype.uuid(),
+      is_join: this.faker.datatype.boolean(),
+      number_of_tickets: this.faker.datatype.number(10),
       joinEvent: joinEventFactory.make(),
       eventDate: eventDate,
       event_date_id: eventDate.id,

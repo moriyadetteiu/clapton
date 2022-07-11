@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
 use App\Models\Traits\PrimaryKeyUuidUsable;
+use App\Notifications\Passwords\ResetPasswordNotification;
 
 class User extends Authenticatable
 {
@@ -65,5 +66,10 @@ class User extends Authenticatable
     public function favorites(): HasMany
     {
         return $this->hasMany(Favorite::class);
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 }

@@ -6,9 +6,9 @@ export default class CirclePlacementClassificationFactory extends Factory<
 > {
   protected provide(): CirclePlacementClassification {
     return {
-      id: this.faker.random.uuid(),
+      id: this.faker.datatype.uuid(),
       name: this.faker.name.title(),
-      cost: this.faker.random.number(10),
+      cost: this.faker.datatype.number(10),
     }
   }
 }

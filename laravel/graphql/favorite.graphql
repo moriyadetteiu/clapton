@@ -9,6 +9,11 @@ type Favorite {
     updated_at: DateTime
 }
 
+type FavoriteWithState {
+    favorite: Favorite!
+    state: String!
+}
+
 input FavoriteInput {
     circle_id: ID!
     user_id: ID!
@@ -20,6 +25,9 @@ extend type Query @guard {
         @find
     myFavorites: [Favorite]! @field(
             resolver: "App\\GraphQL\\Queries\\MyFavorites"
+        )
+    myFavoritesInEvent(event_id: ID!): [FavoriteWithState]!  @field(
+            resolver: "App\\GraphQL\\Queries\\MyFavoriteCircleLists"
         )
 }
 

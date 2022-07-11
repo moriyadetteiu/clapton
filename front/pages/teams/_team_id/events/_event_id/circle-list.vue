@@ -14,7 +14,7 @@
       :join-events="joinEventUsers"
       :event-dates="event.eventDates"
     />
-    <v-expansion-panels accordion>
+    <v-expansion-panels v-model="joinEventExpansionPanelOpenIndex" accordion>
       <v-expansion-panel>
         <v-expansion-panel-header>参加情報 </v-expansion-panel-header>
         <v-expansion-panel-content>
@@ -30,26 +30,40 @@
       </v-expansion-panel>
     </v-expansion-panels>
 
-    <circle-list-form
-      :is-open.sync="isOpenCircleListForm"
-      :event-id="$route.params.event_id"
-      :team-id="$route.params.team_id"
-      :join-event-id="joinEvent ? joinEvent.id : null"
-      :editing-circle-id="editingCircleId"
-      @saved="onSavedCircle"
-    />
+    <template v-if="joinEvent">
+      <circle-list-form
+        :is-open.sync="isOpenCircleListForm"
+        :event-id="$route.params.event_id"
+        :team-id="$route.params.team_id"
+        :join-event-id="joinEvent.id"
+        :editing-circle-id.sync="editingCircleId"
+        @saved="onSavedCircle"
+      />
 
-    <v-tabs v-model="selectedCircleListTabIndex" class="mt-5">
-      <v-tab v-for="circleListTab in circleListTabs" :key="circleListTab.key">
-        {{ circleListTab.label }}
-      </v-tab>
-    </v-tabs>
-    <circle-list-table
-      :circle-lists="circleLists"
-      :table-state="circleListState"
-      :filter-condition-items="circleListTableFilterConditionItems"
-      @open-circle-list-form="openCircleListForm"
-    />
+      <v-tabs v-model="selectedCircleListTabIndex" class="mt-5">
+        <v-tab v-for="circleListTab in circleListTabs" :key="circleListTab.key">
+          {{ circleListTab.label }}
+        </v-tab>
+      </v-tabs>
+      <circle-list-table
+        v-if="circleListState"
+        :circle-lists="circleLists"
+        :table-state="circleListState"
+        :filter-condition-items="circleListTableFilterConditionItems"
+        @open-circle-list-form="openCircleListForm"
+      />
+      <favorite-circle-list-table
+        v-if="isSelectedFavoriteListTab"
+        :favorites-with-state="myFavoritesInEvent"
+        :event-id="$route.params.event_id"
+        @open-circle-list-form="openCircleListForm"
+      />
+    </template>
+    <v-card v-else-if="!$apollo.queries.joinEvent.loading" class="mt-4">
+      <v-card-text>
+        参加情報を登録すると、サークルリストが表示されます。
+      </v-card-text>
+    </v-card>
   </v-container>
 </template>
 
@@ -66,6 +80,8 @@ import {
   JoinEventUsersQuery,
   EventWithDateQuery,
   FindJoinEventWithDateQuery,
+  FavoriteWithState,
+  MyFavoritesInEventsQuery,
   User,
   WantPrioritiesQuery,
   CirclePlacementClassificationsQuery,
@@ -78,6 +94,7 @@ import JoinEventForm from '~/components/join-event/JoinEventForm.vue'
 import JoinEventUsers from '~/components/circle-list/join-events/JoinEventUsers.vue'
 import CircleListForm from '~/components/circle-list/CircleListForm.vue'
 import CircleListTable from '~/components/circle-list/CircleListTable.vue'
+import FavoriteCircleListTable from '~/components/circle-list/FavoriteCircleListTable.vue'
 import { FilterConditionItems } from '~/components/circle-list/table/filters/filterInterfaces'
 import TableStateInterface from '~/components/circle-list/table/TableStateInterface'
 import MyCircleListTableState from '~/components/circle-list/table/MyCircleListTableState'
@@ -90,11 +107,17 @@ type CircleListTab = {
 }
 
 @Component({
+  head() {
+    return {
+      title: 'サークルリスト',
+    }
+  },
   components: {
     JoinEventForm,
     CircleListForm,
     CircleListTable,
     JoinEventUsers,
+    FavoriteCircleListTable,
   },
   apollo: {
     event: {
@@ -124,6 +147,11 @@ type CircleListTab = {
       update(data) {
         return data.findJoinEvent
       },
+      result(data) {
+        this.joinEventExpansionPanelOpenIndex = data.data?.findJoinEvent
+          ? null
+          : 0
+      },
     },
     joinEventUsers: {
       query: JoinEventUsersQuery,
@@ -150,23 +178,18 @@ type CircleListTab = {
         return data.joinEventCircleLists
       },
       skip(): boolean {
-        return (
-          this.selectedCircleListTab.key !== 'myList' ||
-          (this.joinEvent?.id || null) === null
-        )
+        return (this.joinEvent?.id || null) === null
       },
     },
     teamCircleLists: {
       query: TeamCircleListsQuery,
       variables() {
         const teamId = this.$route.params.team_id
-        return { teamId }
+        const eventId = this.$route.params.event_id
+        return { teamId, eventId }
       },
       update(data): CircleList[] {
         return data.teamCircleLists
-      },
-      skip(): boolean {
-        return this.selectedCircleListTab.key !== 'teamList'
       },
     },
     wantPriorities: {
@@ -199,6 +222,13 @@ type CircleListTab = {
         return data.circleProductClassifications
       },
     },
+    myFavoritesInEvent: {
+      query: MyFavoritesInEventsQuery,
+      variables() {
+        const eventId = this.$route.params.event_id
+        return { eventId }
+      },
+    },
   },
 })
 export default class CircleListPage extends Vue {
@@ -224,22 +254,30 @@ export default class CircleListPage extends Vue {
 
   private joinEventUsers: JoinEvent[] = []
 
+  private myFavoritesInEvent: FavoriteWithState[] = []
+
+  private joinEventExpansionPanelOpenIndex: number | null = null
+
   private isOpenCircleListForm: boolean = false
 
   private isOpenJoinEventUsers: boolean = false
 
   private editingCircleId: String | null = null
 
-  private selectedCircleListTabIndex: number = 0
+  private selectedCircleListTabIndex: number = 1
 
   private readonly circleListTabs: CircleListTab[] = [
+    {
+      key: 'favoriteList',
+      label: 'お気に入り',
+    },
     {
       key: 'myList',
       label: 'マイリスト',
     },
     {
       key: 'teamList',
-      label: '全体リスト',
+      label: 'チームリスト',
     },
   ]
 
@@ -247,13 +285,13 @@ export default class CircleListPage extends Vue {
     return userStore.loginUserOrEmptyUser
   }
 
-  private get circleListState(): TableStateInterface {
+  private get circleListState(): TableStateInterface | null {
     const circleListStateMap: { [key: string]: TableStateInterface } = {
       myList: new MyCircleListTableState(),
       teamList: new TeamCircleListTableState(),
     }
 
-    return circleListStateMap[this.selectedCircleListTab.key]
+    return circleListStateMap[this.selectedCircleListTab.key] ?? null
   }
 
   private get selectedCircleListTab(): CircleListTab {
@@ -266,7 +304,7 @@ export default class CircleListPage extends Vue {
       teamList: this.teamCircleLists,
     }
 
-    return circleListMap[this.selectedCircleListTab.key]
+    return circleListMap[this.selectedCircleListTab.key] ?? []
   }
 
   private get circleListTableFilterConditionItems(): FilterConditionItems {
@@ -276,6 +314,10 @@ export default class CircleListPage extends Vue {
       wantPriorities: this.wantPriorities,
       circleProductClassifications: this.circleProductClassifications,
     }
+  }
+
+  private get isSelectedFavoriteListTab(): boolean {
+    return this.selectedCircleListTab.key === 'favoriteList'
   }
 
   private isJoin(eventDate: EventDate): boolean {
@@ -302,7 +344,7 @@ export default class CircleListPage extends Vue {
     this.$apollo.queries.joinEventUsers.refetch()
   }
 
-  private openCircleListForm(circleList: CircleList | null): void {
+  private openCircleListForm(circleList: { circle_id: string } | null): void {
     this.editingCircleId = circleList?.circle_id ?? null // eslint-disable-line camelcase
     this.isOpenCircleListForm = true
   }
@@ -310,6 +352,7 @@ export default class CircleListPage extends Vue {
   private onSavedCircle(): void {
     this.$apollo.queries.myCircleLists.refetch()
     this.$apollo.queries.teamCircleLists.refetch()
+    this.$apollo.queries.myFavoritesInEvent.refetch()
   }
 
   private openJoinEventUsers(): void {

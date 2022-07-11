@@ -17,16 +17,18 @@ class EventDatasetFactory
         $teamDataset = (new TeamDatasetFactory())->create();
         $user = $teamDataset['user'];
         $team = $teamDataset['team'];
+
         $event = Event::factory()->has(
             EventDate::factory()
                 ->count(3)
                 ->sequence(
-                    ['name' => '1日目'],
-                    ['name' => '2日目'],
-                    ['name' => '3日目']
+                    ['name' => '1日目', 'date' => now()->addMonth()],
+                    ['name' => '2日目',  'date' => now()->addMonth()->addDay()],
+                    ['name' => '3日目',  'date' => now()->addMonth()->addDay(2)]
                 )
                 ->state(['is_production_day' => true])
         )->create();
+        $eventDates = $event->eventDates;
         EventAffiliationTeam::factory()
             ->create([
                 'event_id' => $event->id,
@@ -45,6 +47,6 @@ class EventDatasetFactory
                     'join_event_id' => $joinEvent->id,
                 ]);
         });
-        return array_merge($teamDataset, compact('event', 'joinEvent'));
+        return array_merge($teamDataset, compact('event', 'eventDates', 'joinEvent'));
     }
 }

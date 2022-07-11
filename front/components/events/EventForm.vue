@@ -1,5 +1,5 @@
 <template>
-  <validation-observer ref="validationObserver" tag="v-form">
+  <validation-observer ref="validationObserver" tag="form">
     <v-container>
       <v-row dense>
         <v-col cols="12">

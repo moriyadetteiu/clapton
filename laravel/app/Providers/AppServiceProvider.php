@@ -15,6 +15,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(\App\Support\Graphql\InputDefinitionExtractorInterface::class, \App\Support\Graphql\InputDefinitionExtractor::class);
         $this->app->singleton(\App\Support\Validation\ValidationExtractorInterface::class, \App\Support\Validation\UseCaseInputValidationExtractor::class);
+        $this->app->singleton(\App\Exports\ExportFileManagerInterface::class, \App\Exports\FileManager::class);
     }
 
     /**

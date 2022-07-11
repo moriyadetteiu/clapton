@@ -15,9 +15,11 @@
         "laravel/framework": "^8.0",
         "laravel/sanctum": "^2.15",
         "laravel/tinker": "^2.0",
+        "maatwebsite/excel": "^3.1",
         "nuwave/lighthouse": "^4.17"
     },
     "require-dev": {
+        "barryvdh/laravel-ide-helper": "^2.12",
         "facade/ignition": "^2.3.6",
         "fzaninotto/faker": "^1.9.1",
         "haydenpierce/class-finder": "^0.4.2",

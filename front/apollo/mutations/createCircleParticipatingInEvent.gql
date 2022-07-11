@@ -1,7 +1,8 @@
 mutation CreateCircleParticipatingInEventMutation(
   $input: CreateCircleParticipatingInEventInput!
+  $force: Boolean
 ) {
-  createCircleParticipatingInEvent(input: $input) {
+  createCircleParticipatingInEvent(input: $input, force: $force) {
     id
     circle {
       id

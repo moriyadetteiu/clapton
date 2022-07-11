@@ -9,6 +9,7 @@ type CirclePlacement {
     circle_placement_classification_id: ID
     circle: Circle @belongsTo
     circleProducts: [CircleProduct!] @hasMany
+    careAboutCircles: [CareAboutCircle!] @hasMany
     created_at: DateTime
     updated_at: DateTime
 }
@@ -23,5 +24,5 @@ input CirclePlacementInput {
 }
 
 extend type Query @guard {
-    circlePlacementInEvent(circle_id: ID!, event_id: ID!): CirclePlacement!
+    circlePlacementInEvent(circle_id: ID!, event_id: ID!): CirclePlacement
 }

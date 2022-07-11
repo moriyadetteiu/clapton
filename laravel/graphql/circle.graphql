@@ -8,6 +8,7 @@ type Circle {
 }
 
 input CircleInput {
+    id: String
     name: String!
     kana: String
     memo: String
@@ -30,7 +31,8 @@ extend type Mutation @guard {
             resolver: "App\\GraphQL\\Mutations\\CreateCircle"
         )
     createCircleParticipatingInEvent(
-        input: CreateCircleParticipatingInEventInput! @spread
+        input: CreateCircleParticipatingInEventInput! @spread,
+        force: Boolean,
     ): CirclePlacement!
         @field(
             resolver: "App\\GraphQL\\Mutations\\CreateCircleParticipatingInEvent"
@@ -41,5 +43,17 @@ extend type Mutation @guard {
     ): CirclePlacement!
         @field(
             resolver: "App\\GraphQL\\Mutations\\UpdateCircleParticipatingInEvent"
+        )
+    notParticipateCircleInEvent(
+        circle_id: ID!,
+        event_id: ID!,
+    ): Circle! @field(
+            resolver: "App\\GraphQL\\Mutations\\NotParticipateCircleInEvent"
+        )
+    cancelNotParticipateCircleInEvent(
+        circle_id: ID!,
+        event_id: ID!,
+    ): Circle! @field(
+            resolver: "App\\GraphQL\\Mutations\\CancelNotParticipateCircleInEvent"
         )
 }

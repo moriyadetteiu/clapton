@@ -13,6 +13,8 @@ const makeWrapper = () => {
       'nuxt-link',
       'v-app',
       'v-app-bar',
+      'v-app-bar-nav-icon',
+      'narrow-app-bar-navigation',
       'v-main',
       'v-menu',
       'v-footer',
@@ -47,10 +49,13 @@ describe('default layout', () => {
       },
     ]
 
+    const finishedCircleListItems = underwayCircleListItems
+
     const wrapper = makeWrapper()
     wrapper.setData({
       user,
       underwayCircleListItems,
+      finishedCircleListItems,
     })
 
     await flushPromises()

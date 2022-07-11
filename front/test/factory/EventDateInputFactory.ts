@@ -9,7 +9,7 @@ export default class EventDateInputFactory extends Factory<EventDateInput> {
       date: moment(this.faker.date.between('2000-01-01', '2020-01-01')).format(
         'Y-m-d'
       ),
-      is_production_day: this.faker.random.boolean(),
+      is_production_day: this.faker.datatype.boolean(),
     }
   }
 }

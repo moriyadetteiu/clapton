@@ -8,27 +8,44 @@ use App\Models\{
     WantCircleProduct,
 };
 use App\UseCase\UseCase;
+use App\UseCase\CareAboutCircle\CreateCareAboutCircle;
+use App\UseCase\CareAboutCircle\CreateCareAboutCircleInput;
 
 class CreateWantCircleProduct extends UseCase
 {
     public function execute(CreateWantCircleProductInput $input)
     {
         $wantCircleProductData = $input->toArray();
-        $careAboutCircle = $this->findCareAboutCircle($input);
+        $careAboutCircle = $this->findOrCreateCareAboutCircle($input);
         $wantCircleProductData['care_about_circle_id'] = $careAboutCircle->id;
 
         $wantCircleProduct = WantCircleProduct::create($wantCircleProductData);
         return $wantCircleProduct;
     }
 
-    private function findCareAboutCircle(CreateWantCircleProductInput $input)
+    private function findOrCreateCareAboutCircle(CreateWantCircleProductInput $input): CareAboutCircle
     {
         $circlePlacementId = CircleProduct::findOrFail($input->toArray()['circle_product_id'])
             ->circlePlacement
             ->id;
 
-        return CareAboutCircle::where('circle_placement_id', $circlePlacementId)
+        $careAboutCircle = CareAboutCircle::where('circle_placement_id', $circlePlacementId)
             ->where('join_event_id', $input->toArray()['join_event_id'])
-            ->firstOrFail();
+            ->first();
+
+        if ($careAboutCircle) {
+            return $careAboutCircle;
+        }
+
+        return $this->createCareAboutCircle($circlePlacementId, $input);
+    }
+
+    private function createCareAboutCircle(string $circlePlacementId, CreateWantCircleProductInput $input)
+    {
+        $input = new CreateCareAboutCircleInput([
+            'circle_placement_id' => $circlePlacementId,
+            'join_event_id' => $input->toArray()['join_event_id'],
+        ]);
+        return (new CreateCareAboutCircle())->execute($input);
     }
 }

@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+    laravel:
+        build: ./docker/laravel
+        container_name: laravel
+        tty: true
+    front:
+        build: ./docker/front
+        container_name: front
+        tty: true
+    nginx:
+        build: ./docker/nginx
+        container_name: nginx
+        tty: true
+        volumes:
+            - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+            - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf

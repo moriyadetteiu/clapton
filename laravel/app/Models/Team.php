@@ -45,6 +45,11 @@ class Team extends Model
 
     public function underwayEvents(): BelongsToMany
     {
-        return $this->belongsToMany(Event::class, 'event_affiliation_teams');
+        return $this->belongsToMany(Event::class, 'event_affiliation_teams')->filterUnderwayEvents();
+    }
+
+    public function finishedEvents(): BelongsToMany
+    {
+        return $this->belongsToMany(Event::class, 'event_affiliation_teams')->filterFinishedEvents();
     }
 }

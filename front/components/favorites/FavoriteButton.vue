@@ -1,7 +1,18 @@
 <template>
-  <v-btn icon color="favorite" v-bind="$attrs" @click="toggleFavorite">
-    <v-icon> {{ mdiIconName }} </v-icon>
-  </v-btn>
+  <v-tooltip top>
+    <template #activator="{ on, attrs }">
+      <v-btn
+        icon
+        color="favorite"
+        v-bind="{ ...attrs, ...$attrs }"
+        v-on="on"
+        @click.stop="toggleFavorite"
+      >
+        <v-icon> {{ mdiIconName }} </v-icon>
+      </v-btn>
+    </template>
+    <span>{{ tooltipMessage }}</span>
+  </v-tooltip>
 </template>
 
 <script lang="ts">
@@ -40,6 +51,10 @@ export default class FavoriteButton extends Vue {
     return this.isFavorite ? 'mdi-star' : 'mdi-star-outline'
   }
 
+  private get tooltipMessage(): string {
+    return this.isFavorite ? 'お気に入りを解除' : 'お気に入りに追加'
+  }
+
   private async toggleFavorite() {
     try {
       await (this.isFavorite ? this.deleteFavorite() : this.createFavorite())
@@ -61,6 +76,7 @@ export default class FavoriteButton extends Vue {
         variables: {
           input,
         },
+        refetchQueries: ['MyFavoritesInEventsQuery'],
       })
       .then(() => {
         this.$toast.success('お気に入りに追加しました')
@@ -76,6 +92,7 @@ export default class FavoriteButton extends Vue {
       .mutate({
         mutation: DeleteFavoriteMutation,
         variables,
+        refetchQueries: ['MyFavoritesInEventsQuery'],
       })
       .then(() => {
         this.$toast.success('お気に入りの登録を解除しました')

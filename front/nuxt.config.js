@@ -3,8 +3,8 @@ import colors from 'vuetify/es5/util/colors'
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    titleTemplate: '%s - app',
-    title: 'app',
+    titleTemplate: '%s - clapton',
+    title: 'clapton',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -14,7 +14,9 @@ export default {
   },
 
   // Global CSS (https://go.nuxtjs.dev/config-css)
-  css: [],
+  css: [
+    '~/assets/themeAssistance.scss',
+  ],
 
   // 環境変数の設定 .envファイルが参照される(https://nuxtjs.org/guide/runtime-config)
   // .envが自動でboolean値として解釈してくれないので、基本的に文字列として扱う・・・
@@ -26,6 +28,7 @@ export default {
     MOCK_BROWSER_HTTP_ENDPOINT:
       process.env.MOCK_BROWSER_HTTP_ENDPOINT ?? 'http://localhost:4000',
     MOCK_HTTP_ENDPOINT: process.env.MOCK_HTTP_ENDPOINT ?? 'MOCK_HTTP_ENDPOINT',
+    BROWSER_HTTP_AXIOS_ENDPOINT: process.env.BROWSER_HTTP_AXIOS_ENDPOINT ?? 'http://localhost:20080',
     BASE_URL: process.env.BASE_URL ?? 'http://localhost:3000',
   },
 
@@ -36,6 +39,8 @@ export default {
     '~/plugins/vee-validate',
     '~/plugins/apollo/inject-default-apollo-client',
     '~/plugins/confirm-dialog',
+    '~/plugins/file-downloader',
+    '~/plugins/register-btn-components',
   ],
 
   router: {

@@ -79,3 +79,9 @@ export default class ConfirmDialog extends Vue {
   }
 }
 </script>
+
+<style scoped>
+.headline {
+  white-space: pre-line;
+}
+</style>

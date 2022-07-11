@@ -3,25 +3,56 @@
     :headers="headers"
     :items="filteredCircleLists"
     height="calc(100vh - 90px)"
+    :mobile-breakpoint="0"
     hide-default-footer
     disable-pagination
     fixed-header
     multi-sort
-    @dblclick:row="openCircleListForm"
+    @click:row="onRowClicked"
+    @dblclick:row="onRowDblClicked"
+    @current-items="onUpdateTableCurrentItems"
   >
-    <template v-slot:top>
-      <v-toolbar>
+    <template #top>
+      <v-toolbar class="elevation-0">
+        <export-circle-list
+          :is-open.sync="isOpenExportCircleList"
+          :table-state="tableState"
+          :circle-list-ids="shownTableCircleListItemIds"
+        />
+        <circle-list-table-setting
+          v-model="settings"
+          :is-open.sync="isOpenSetting"
+        />
         <v-toolbar-title>サークルリスト</v-toolbar-title>
         <v-spacer />
-        <v-btn icon @click="toggleShowFilter"
-          ><v-icon>mdi-filter-variant</v-icon></v-btn
-        >
-        <v-btn color="register" icon @click="openCircleListForm">
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
+        <register-btn @click="openCircleListForm" />
+        <v-tooltip top>
+          <template #activator="{ on, attrs }">
+            <v-btn icon v-bind="attrs" @click="toggleShowFilter" v-on="on">
+              <v-icon>mdi-filter-variant</v-icon>
+            </v-btn>
+          </template>
+          <span>フィルター</span>
+        </v-tooltip>
+        <v-tooltip top>
+          <template #activator="{ on, attrs }">
+            <v-btn icon v-bind="attrs" @click="openExportCircleList" v-on="on">
+              <v-icon>mdi-file-download</v-icon>
+            </v-btn>
+          </template>
+          <span>Excelダウンロード</span>
+        </v-tooltip>
+        <v-tooltip top>
+          <template #activator="{ on, attrs }">
+            <v-btn icon v-bind="attrs" @click="openSetting" v-on="on">
+              <v-icon>mdi-cog</v-icon>
+            </v-btn>
+          </template>
+          <span>設定</span>
+        </v-tooltip>
       </v-toolbar>
       <v-expand-transition>
-        <v-card v-show="isShowFilter">
+        <v-card v-show="isShowFilter" tile class="elevation-0">
           <v-card-text>
             <filter-item
               v-for="filter in filters"
@@ -34,16 +65,16 @@
         </v-card>
       </v-expand-transition>
     </template>
-    <template v-slot:item.circle_name="{ item }">
+    <template #[`item.circle_name`]="{ item }">
       <favorite-button :circle-id="item.circle_id" />
       {{ item.circle_name }}
     </template>
-    <template v-slot:item.circle_product_price="{ item }">
+    <template #[`item.circle_product_price`]="{ item }">
       <template v-if="item.circle_product_price"
         >{{ item.circle_product_price }}円
       </template>
     </template>
-    <template v-slot:item.want_circle_product_quantity="{ item }">
+    <template #[`item.want_circle_product_quantity`]="{ item }">
       <template v-if="item.want_circle_product_quantity"
         >{{ item.want_circle_product_quantity }}個
       </template>
@@ -65,7 +96,11 @@ import {
   FilterConditions,
   Filter,
 } from './table/filters/filterInterfaces'
+import ExportCircleList from './table/ExportCircleList.vue'
 import FilterItem from './table/filters/FilterItem.vue'
+import CircleListTableSetting, {
+  CircleListTableSettings,
+} from './table/CircleListTableSetting.vue'
 import { CircleList } from '~/apollo/graphql'
 import FavoriteButton from '~/components/favorites/FavoriteButton.vue'
 
@@ -73,6 +108,8 @@ import FavoriteButton from '~/components/favorites/FavoriteButton.vue'
   components: {
     FilterItem,
     FavoriteButton,
+    ExportCircleList,
+    CircleListTableSetting,
   },
 })
 export default class CircleListTable extends Vue {
@@ -96,7 +133,19 @@ export default class CircleListTable extends Vue {
 
   private isShowFilter: boolean = false
 
+  private isOpenExportCircleList: boolean = false
+
+  private isOpenSetting: boolean = false
+
+  // HACK: 初期値を指定しているが、子コンポーネントのmountedのタイミングで保存済みの値があれば、v-modelのイベント経由で変更される。
+  //       ちょっと複雑な動作をしているため、シンプルな実装にできるのであれば、変更も考えたい
+  private settings: CircleListTableSettings = {
+    howOpenCircleListForm: 'click',
+  }
+
   private filterConditions: FilterConditions = {}
+
+  private shownTableCircleListItemIds: string[] = []
 
   private get headers(): DataTableHeader[] {
     return this.tableState.getTableHeaders()
@@ -134,11 +183,35 @@ export default class CircleListTable extends Vue {
     this.isShowFilter = !this.isShowFilter
   }
 
+  private openExportCircleList(): void {
+    this.isOpenExportCircleList = true
+  }
+
+  private openSetting(): void {
+    this.isOpenSetting = true
+  }
+
+  private onRowClicked(e: any, row: { item: CircleList }) {
+    if (this.settings.howOpenCircleListForm === 'click') {
+      this.openCircleListForm(e, row)
+    }
+  }
+
+  private onRowDblClicked(e: any, row: { item: CircleList }) {
+    if (this.settings.howOpenCircleListForm === 'dblclick') {
+      this.openCircleListForm(e, row)
+    }
+  }
+
   private onChangedFilterItem(e: string[], filter: Filter) {
     this.filterConditions = {
       ...this.filterConditions,
       [filter.getKey()]: e,
     }
+  }
+
+  private onUpdateTableCurrentItems(items: CircleList[]): void {
+    this.shownTableCircleListItemIds = items.map((item) => item.id)
   }
 
   public created() {

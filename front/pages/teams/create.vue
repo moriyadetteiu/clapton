@@ -11,6 +11,11 @@ import { TeamInput, CreateTeamMutation } from '~/apollo/graphql'
 import TeamForm from '~/components/teams/TeamForm.vue'
 
 @Component({
+  head() {
+    return {
+      title: 'チーム追加',
+    }
+  },
   components: {
     TeamForm,
   },
@@ -29,8 +34,9 @@ export default class CreateTeam extends Vue {
     })
 
     res
-      .then(() => {
-        // TODO: リダイレクト処理をかける
+      .then((result) => {
+        this.$toast.success('チームを登録しました。')
+        this.$router.push(`/teams/${result.data.createTeam.id}`)
       })
       .catch(() => {
         // TODO: バリデーション失敗時にはエラーが出るようにする

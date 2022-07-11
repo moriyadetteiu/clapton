@@ -15,6 +15,11 @@ import {
 import EventForm from '~/components/events/EventForm.vue'
 
 @Component({
+  head() {
+    return {
+      title: 'イベント追加',
+    }
+  },
   components: {
     EventForm,
   },
@@ -42,7 +47,12 @@ export default class CreateEvent extends Vue {
       variables: {
         input: this.event,
       },
+      refetchQueries: [
+        'UnderwayEventsForJoinedTeamsQuery',
+        'FinishedEventsForJoinedTeamsQuery',
+      ],
     })
+
     res
       .then(() => {
         this.$toast.success('登録しました')

@@ -1,15 +1,28 @@
 <template>
   <v-row>
     <v-col>
-      <v-data-table :headers="headers" :items="items" hide-default-footer>
-        <template v-slot:item.operations="{ item }">
-          <v-btn
-            color="delete"
-            @click="excludeUser(item.userAffiliationTeamId)"
-          >
-            <v-icon left>mdi-account-remove</v-icon>
-            除名
-          </v-btn>
+      <v-data-table
+        :headers="headers"
+        :items="items"
+        :mobile-breakpoint="0"
+        hide-default-footer
+        disable-pagination
+      >
+        <template #[`item.operations`]="{ item }">
+          <v-tooltip top>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                color="delete"
+                icon
+                v-bind="attrs"
+                @click="excludeUser(item.userAffiliationTeamId)"
+                v-on="on"
+              >
+                <v-icon left>mdi-account-remove</v-icon>
+              </v-btn>
+            </template>
+            <span>除名</span>
+          </v-tooltip>
         </template>
       </v-data-table>
     </v-col>
@@ -32,6 +45,11 @@ interface AffiliationUserDataTableItems {
 }
 
 @Component({
+  head() {
+    return {
+      title: '所属者一覧',
+    }
+  },
   apollo: {
     teamWithAffiliationUsers: {
       query: TeamWithAffiliationUsersQuery,
@@ -65,15 +83,15 @@ export default class AffiliationUsersPage extends Vue {
   ]
 
   private get items(): AffiliationUserDataTableItems[] {
-    return this.teamWithAffiliationUsers.userAffiliationTeams.map<
-      AffiliationUserDataTableItems
-    >((userAffiliationTeam: UserAffiliationTeam) => {
-      const user = userAffiliationTeam.user
-      return {
-        userName: user.name,
-        userAffiliationTeamId: userAffiliationTeam.id,
+    return this.teamWithAffiliationUsers.userAffiliationTeams.map<AffiliationUserDataTableItems>(
+      (userAffiliationTeam: UserAffiliationTeam) => {
+        const user = userAffiliationTeam.user
+        return {
+          userName: user.name,
+          userAffiliationTeamId: userAffiliationTeam.id,
+        }
       }
-    })
+    )
   }
 
   private async excludeUser(userAffiliationTeamId: string) {
