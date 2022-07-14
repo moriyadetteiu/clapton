@@ -23,6 +23,10 @@
           v-model="settings"
           :is-open.sync="isOpenSetting"
         />
+        <price-breakdown
+          :circle-lists="filteredCircleLists"
+          :is-open.sync="isOpenPriceBreakdown"
+        />
         <v-toolbar-title>サークルリスト</v-toolbar-title>
         <v-spacer />
         <register-btn @click="openCircleListForm" />
@@ -70,7 +74,7 @@
       {{ item.circle_name }}
     </template>
     <template #[`item.circle_product_price`]="{ item }">
-      <template v-if="item.circle_product_price"
+      <template v-if="item.circle_product_price !== null"
         >{{ item.circle_product_price }}円
       </template>
     </template>
@@ -78,6 +82,22 @@
       <template v-if="item.want_circle_product_quantity"
         >{{ item.want_circle_product_quantity }}個
       </template>
+    </template>
+    <template #[`body.append`]>
+      <tr>
+        <td :colspan="headers.length">
+          合計金額: {{ totalPrice }}円
+
+          <v-tooltip top>
+            <template #activator="{ on, attrs }">
+              <v-btn icon v-bind="attrs" v-on="on" @click="openPriceBreakdown">
+                <v-icon> mdi-text-box-search-outline </v-icon>
+              </v-btn>
+            </template>
+            <span> 内訳をみる </span>
+          </v-tooltip>
+        </td>
+      </tr>
     </template>
   </v-data-table>
 </template>
@@ -101,6 +121,7 @@ import FilterItem from './table/filters/FilterItem.vue'
 import CircleListTableSetting, {
   CircleListTableSettings,
 } from './table/CircleListTableSetting.vue'
+import PriceBreakdown from './table/PriceBreakdown.vue'
 import { CircleList } from '~/apollo/graphql'
 import FavoriteButton from '~/components/favorites/FavoriteButton.vue'
 
@@ -110,6 +131,7 @@ import FavoriteButton from '~/components/favorites/FavoriteButton.vue'
     FavoriteButton,
     ExportCircleList,
     CircleListTableSetting,
+    PriceBreakdown,
   },
 })
 export default class CircleListTable extends Vue {
@@ -136,6 +158,8 @@ export default class CircleListTable extends Vue {
   private isOpenExportCircleList: boolean = false
 
   private isOpenSetting: boolean = false
+
+  private isOpenPriceBreakdown: boolean = false
 
   // HACK: 初期値を指定しているが、子コンポーネントのmountedのタイミングで保存済みの値があれば、v-modelのイベント経由で変更される。
   //       ちょっと複雑な動作をしているため、シンプルな実装にできるのであれば、変更も考えたい
@@ -173,6 +197,16 @@ export default class CircleListTable extends Vue {
     })
   }
 
+  private get totalPrice(): number {
+    return this.filteredCircleLists.reduce((prev, current) => {
+      const currentPerPrice = Number(current.circle_product_price ?? 0)
+      const currentQuantity = Number(current.want_circle_product_quantity ?? 0)
+      const currentPrice = currentPerPrice * currentQuantity
+
+      return prev + currentPrice
+    }, 0)
+  }
+
   @Emit()
   private openCircleListForm(_: any, row?: { item: CircleList }) {
     const circleList = row?.item || null
@@ -189,6 +223,10 @@ export default class CircleListTable extends Vue {
 
   private openSetting(): void {
     this.isOpenSetting = true
+  }
+
+  private openPriceBreakdown(): void {
+    this.isOpenPriceBreakdown = true
   }
 
   private onRowClicked(e: any, row: { item: CircleList }) {
