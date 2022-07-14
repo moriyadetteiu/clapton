@@ -23,7 +23,7 @@ class CircleListsExportSheet implements FromView, ShouldAutoSize, WithStyles, Wi
         'want_circle_product_quantity' => '個数',
         'want_priority_name' => '優先度',
         'user_name' => '購入者名',
-        'circle_memo' => '備考',
+        'memo' => '備考',
     ];
 
     private Collection $circleLists;

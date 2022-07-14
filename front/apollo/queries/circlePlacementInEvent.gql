@@ -16,6 +16,7 @@ query CirclePlacementInEventQuery($circleId: ID!, $eventId: ID!) {
     careAboutCircles {
       id
       join_event_id
+      memo
     }
     circleProducts {
       id
@@ -30,6 +31,7 @@ query CirclePlacementInEventQuery($circleId: ID!, $eventId: ID!) {
         id
         want_priority_id
         quantity
+        memo
         careAboutCircle {
           id
           join_event_id

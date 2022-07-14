@@ -1,6 +1,6 @@
 mutation UpdateCircleParticipatingInEventMutation(
   $id: ID!
-  $input: CreateCircleParticipatingInEventInput!
+  $input: UpdateCircleParticipatingInEventInput!
 ) {
   updateCircleParticipatingInEvent(id: $id, input: $input) {
     id

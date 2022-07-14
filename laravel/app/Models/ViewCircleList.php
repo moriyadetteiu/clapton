@@ -100,4 +100,19 @@ class ViewCircleList extends Model
     {
         return "{$this->placement_hole}{$this->placement_line}-{$this->placement_number}{$this->placement_a_or_b}";
     }
+
+    public function getMemoAttribute(): string
+    {
+        $memos = [];
+
+        if ($this->care_about_circle_memo) {
+            $memos[] = $this->care_about_circle_memo;
+        }
+
+        if ($this->want_circle_product_memo) {
+            $memos[] = $this->want_circle_product_memo;
+        }
+
+        return implode("\n", $memos);
+    }
 }

@@ -13,6 +13,7 @@
     :join-event-id="joinEventId"
     :team-id="teamId"
     :circle-placement="circlePlacement"
+    :care-about-circle="careAboutCircle"
     v-on="$listeners"
   />
 </template>
@@ -22,7 +23,7 @@ import { Vue, Prop, Component } from 'nuxt-property-decorator'
 import { PropType } from 'vue'
 import CircleRegister from './circle-form/CircleRegister.vue'
 import CircleEditor from './circle-form/CircleEditor.vue'
-import { CirclePlacement } from '~/apollo/graphql'
+import { CareAboutCircle, CirclePlacement } from '~/apollo/graphql'
 
 @Component({
   components: { CircleRegister, CircleEditor },
@@ -39,6 +40,9 @@ export default class CircleForm extends Vue {
 
   @Prop({ type: Object as PropType<CirclePlacement> })
   private circlePlacement!: CirclePlacement | null
+
+  @Prop({ type: Object as PropType<CareAboutCircle>, default: null })
+  private careAboutCircle!: CareAboutCircle | null
 
   @Prop({ type: String })
   private circleId!: string | null

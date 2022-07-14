@@ -15,6 +15,7 @@ class WantCircleProduct extends Model
         'want_priority_id',
         'care_about_circle_id',
         'circle_product_id',
+        'memo',
     ];
 
     public function careAboutCircle(): BelongsTo

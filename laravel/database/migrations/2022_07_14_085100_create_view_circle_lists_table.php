@@ -44,7 +44,9 @@ class CreateViewCircleListsTable extends Migration
                 want_circle_products.quantity as `want_circle_product_quantity`,
                 want_priorities.name as `want_priority_name`,
                 circles.memo as `circle_memo`,
-                users.name as `user_name`
+                users.name as `user_name`,
+                care_about_circles.memo as `care_about_circle_memo`,
+                want_circle_products.memo as `want_circle_product_memo`
             FROM
                 care_about_circles
             INNER JOIN

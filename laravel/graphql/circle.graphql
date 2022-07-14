@@ -19,6 +19,12 @@ input CreateCircleParticipatingInEventInput {
     placement: CirclePlacementInput!
 }
 
+input UpdateCircleParticipatingInEventInput {
+    circle: CircleInput!
+    placement: CirclePlacementInput!
+    memo: String
+}
+
 extend type Query @guard {
     circle(id: ID @eq): Circle @find
 }
@@ -39,7 +45,7 @@ extend type Mutation @guard {
         )
     updateCircleParticipatingInEvent(
         id: ID!,
-        input: CreateCircleParticipatingInEventInput! @spread
+        input: UpdateCircleParticipatingInEventInput! @spread
     ): CirclePlacement!
         @field(
             resolver: "App\\GraphQL\\Mutations\\UpdateCircleParticipatingInEvent"
