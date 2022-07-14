@@ -108,6 +108,7 @@ const initialCircleProductInput: CircleProductInput = {
 const initialWantCircleProductInput: WantCircleProductInput = {
   quantity: 1,
   want_priority_id: '',
+  memo: '',
 }
 
 @Component({
