@@ -1,4 +1,4 @@
-import { Circle, CirclePlacement } from '~/apollo/graphql'
+import { Circle, CirclePlacement, CareAboutCircle } from '~/apollo/graphql'
 import AbstractFormState from './AbstractFormState'
 
 type CircleFormStateProps = {
@@ -7,6 +7,7 @@ type CircleFormStateProps = {
   joinEventId: String
   circlePlacement?: CirclePlacement | null
   circleId: String | null
+  careAboutCircle: CareAboutCircle | null
 }
 
 type CircleFormStateEventObservers = {}

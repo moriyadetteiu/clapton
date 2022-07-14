@@ -139,6 +139,7 @@ export default class CircleListForm extends Vue {
           joinEventId: this.joinEventId,
           circlePlacement: this.circlePlacement,
           circleId: this.circleId,
+          careAboutCircle: this.myCareAboutCircle,
         },
         {}
       )

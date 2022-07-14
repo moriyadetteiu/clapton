@@ -1,11 +1,20 @@
 <template>
   <validation-observer ref="validationObserver" tag="form">
-    <circle-form-input v-model="circleInput" :validation="validation" />
+    <circle-form-input
+      v-model="circleInput"
+      :validation="validation"
+      class="pb-0"
+    />
     <circle-placement-form-input
       v-model="circlePlacementInput"
       :validation="validation"
       :event-id="eventId"
       :team-id="teamId"
+      class="pt-0 pb-0"
+    />
+    <care-about-circle-form-input
+      v-model="careAboutCircleMemoInput"
+      class="pt-0"
     />
     <v-container>
       <v-row dense>
@@ -26,23 +35,32 @@ import CircleFormInput from './CircleFormInput.vue'
 import CirclePlacementFormInput, {
   DraftCirclePlacementInput,
 } from './CirclePlacementFormInput.vue'
+import CareAboutCircleFormInput, {
+  CareAboutCircleMemoInput,
+} from './CareAboutCircleFormInput.vue'
 import {
   initialCirclePlacementInput,
   initialCircleInput,
+  initialCareAboutCircleMemoInput,
 } from './CircleRegister.vue'
 import {
-  CreateCircleParticipatingInEventInput,
+  UpdateCircleParticipatingInEventInput,
   UpdateCircleParticipatingInEventMutation,
   Circle,
   CircleInput,
   CirclePlacementInput,
   CirclePlacement,
+  CareAboutCircle,
 } from '~/apollo/graphql'
 import { CreateCircleParticipatingInEventInputValidation } from '~/validation/validations'
 import AbstractForm from '~/components/form/AbstractForm.vue'
 
 @Component({
-  components: { CircleFormInput, CirclePlacementFormInput },
+  components: {
+    CircleFormInput,
+    CirclePlacementFormInput,
+    CareAboutCircleFormInput,
+  },
 })
 export default class CircleEditor extends AbstractForm<CreateCircleParticipatingInEventInputValidation> {
   @Prop({ type: String, required: true })
@@ -57,6 +75,9 @@ export default class CircleEditor extends AbstractForm<CreateCircleParticipating
   @Prop({ type: Object as PropType<CirclePlacement>, required: true })
   private circlePlacement!: CirclePlacement
 
+  @Prop({ type: Object as PropType<CareAboutCircle>, required: true })
+  private careAboutCircle!: CareAboutCircle
+
   protected validation: CreateCircleParticipatingInEventInputValidation =
     new CreateCircleParticipatingInEventInputValidation()
 
@@ -64,6 +85,10 @@ export default class CircleEditor extends AbstractForm<CreateCircleParticipating
 
   private circlePlacementInput: DraftCirclePlacementInput = {
     ...initialCirclePlacementInput,
+  }
+
+  private careAboutCircleMemoInput: CareAboutCircleMemoInput = {
+    ...initialCareAboutCircleMemoInput,
   }
 
   @Watch('circlePlacement', { immediate: true })
@@ -78,10 +103,16 @@ export default class CircleEditor extends AbstractForm<CreateCircleParticipating
     )
   }
 
+  @Watch('careAboutCircle', { immediate: true })
+  private onUpdateCareAboutCircle(): void {
+    this.careAboutCircleMemoInput.memo = this.careAboutCircle?.memo ?? ''
+  }
+
   protected async mutate(): Promise<any> {
-    const input: CreateCircleParticipatingInEventInput = {
+    const input: UpdateCircleParticipatingInEventInput = {
       circle: this.circleInput,
       placement: this.circlePlacementInput as CirclePlacementInput,
+      memo: this.careAboutCircleMemoInput.memo,
     }
 
     const id = this.circlePlacement.circle!.id

@@ -11,7 +11,7 @@ export default class MyCircleListTableState extends AbstractTableState {
     'circle_product_price',
     'want_circle_product_quantity',
     'want_priority_name',
-    'circle_memo',
+    'memo',
   ]
 
   protected exportGroupingColumnKeys: string[] = ['event_date_name']

@@ -27,6 +27,7 @@ class CareAboutCircleFactory extends Factory
         return [
             'circle_placement_id' => CirclePlacement::factory(),
             'join_event_id' => JoinEvent::factory(),
+            'memo' => $this->faker->text,
         ];
     }
 }
