@@ -40,6 +40,7 @@ class WantCircleProductTest extends TestCase
                     createWantCircleProduct(input: $input) {
                         id
                         quantity
+                        memo
                         circleProduct {
                             id
                         }
@@ -99,6 +100,7 @@ class WantCircleProductTest extends TestCase
                     updateWantCircleProduct(id: $id, input: $input) {
                         id
                         quantity
+                        memo
                         circleProduct {
                             id
                         }
