@@ -22,6 +22,9 @@
                 <template #[`item.value`]="{ item }">
                   {{ item.value }}円
                 </template>
+                <template #[`item.quantity`]="{ item }">
+                  {{ item.quantity }}個
+                </template>
               </v-data-table>
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -47,6 +50,7 @@ type GroupPriceItem = {
   id: string
   text: string
   value: number
+  quantity: number
 }
 
 @Component({})
@@ -65,6 +69,10 @@ export default class PriceBreakdown extends Vue {
     {
       text: '金額',
       value: 'value',
+    },
+    {
+      text: '数量',
+      value: 'quantity',
     },
   ]
 
@@ -106,6 +114,7 @@ export default class PriceBreakdown extends Vue {
               id: currentValue,
               text: current[groupHeader.text] as string,
               value: 0,
+              quantity: 0,
             })
             priceIndex = prices.length - 1
           }
@@ -113,6 +122,7 @@ export default class PriceBreakdown extends Vue {
           prices[priceIndex].value +=
             (current['circle_product_price'] ?? 0) *
             (current['want_circle_product_quantity'] ?? 0)
+          prices[priceIndex].quantity++
 
           return prices
         },
