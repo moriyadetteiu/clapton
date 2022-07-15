@@ -120,8 +120,8 @@ export default class PriceBreakdown extends Vue {
           }
 
           prices[priceIndex].value +=
-            (current['circle_product_price'] ?? 0) *
-            (current['want_circle_product_quantity'] ?? 0)
+            (current.circle_product_price ?? 0) *
+            (current.want_circle_product_quantity ?? 0)
           prices[priceIndex].quantity++
 
           return prices
