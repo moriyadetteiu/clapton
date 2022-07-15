@@ -8,9 +8,11 @@
     disable-pagination
     fixed-header
     multi-sort
+    :show-select="isEnablePriceSimulation"
     @click:row="onRowClicked"
     @dblclick:row="onRowDblClicked"
     @current-items="onUpdateTableCurrentItems"
+    @input="onItemSelected"
   >
     <template #top>
       <v-toolbar class="elevation-0">
@@ -24,7 +26,7 @@
           :is-open.sync="isOpenSetting"
         />
         <price-breakdown
-          :circle-lists="filteredCircleLists"
+          :circle-lists="calculateTargetCircleLists"
           :is-open.sync="isOpenPriceBreakdown"
         />
         <v-toolbar-title>サークルリスト</v-toolbar-title>
@@ -96,6 +98,26 @@
             </template>
             <span> 内訳をみる </span>
           </v-tooltip>
+          <v-tooltip top>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                icon
+                v-bind="attrs"
+                v-on="on"
+                @click="togglePriceSimulation"
+              >
+                <v-icon> mdi-text-box-check-outline </v-icon>
+              </v-btn>
+            </template>
+            <span>
+              <template v-if="isEnablePriceSimulation">
+                金額シミュレーションをやめる
+              </template>
+              <template v-else> 金額シミュレーションする </template>
+              <br />
+              チェックがついたもののみ計算対象になります
+            </span>
+          </v-tooltip>
         </td>
       </tr>
     </template>
@@ -161,6 +183,10 @@ export default class CircleListTable extends Vue {
 
   private isOpenPriceBreakdown: boolean = false
 
+  private isEnablePriceSimulation: boolean = false
+
+  private selectedItems: CircleList[] = []
+
   // HACK: 初期値を指定しているが、子コンポーネントのmountedのタイミングで保存済みの値があれば、v-modelのイベント経由で変更される。
   //       ちょっと複雑な動作をしているため、シンプルな実装にできるのであれば、変更も考えたい
   private settings: CircleListTableSettings = {
@@ -197,8 +223,14 @@ export default class CircleListTable extends Vue {
     })
   }
 
+  private get calculateTargetCircleLists(): CircleList[] {
+    return this.isEnablePriceSimulation
+      ? this.selectedItems
+      : this.filteredCircleLists
+  }
+
   private get totalPrice(): number {
-    return this.filteredCircleLists.reduce((prev, current) => {
+    return this.calculateTargetCircleLists.reduce((prev, current) => {
       const currentPerPrice = Number(current.circle_product_price ?? 0)
       const currentQuantity = Number(current.want_circle_product_quantity ?? 0)
       const currentPrice = currentPerPrice * currentQuantity
@@ -229,6 +261,10 @@ export default class CircleListTable extends Vue {
     this.isOpenPriceBreakdown = true
   }
 
+  private togglePriceSimulation(): void {
+    this.isEnablePriceSimulation = !this.isEnablePriceSimulation
+  }
+
   private onRowClicked(e: any, row: { item: CircleList }) {
     if (this.settings.howOpenCircleListForm === 'click') {
       this.openCircleListForm(e, row)
@@ -250,6 +286,10 @@ export default class CircleListTable extends Vue {
 
   private onUpdateTableCurrentItems(items: CircleList[]): void {
     this.shownTableCircleListItemIds = items.map((item) => item.id)
+  }
+
+  private onItemSelected(selectedItems: CircleList[]): void {
+    this.selectedItems = selectedItems
   }
 
   public created() {
