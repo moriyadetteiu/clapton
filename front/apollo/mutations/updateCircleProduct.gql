@@ -2,8 +2,6 @@ mutation updateCircleProductMutation($id: ID!, $input: CircleProductInput!) {
   updateCircleProduct(id: $id, input: $input) {
     circleProduct {
       id
-      name
-      price
     }
     updatedWantCircleProduct {
       id
