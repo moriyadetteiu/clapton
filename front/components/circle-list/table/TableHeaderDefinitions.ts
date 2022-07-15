@@ -54,7 +54,7 @@ const headers: DataTableHeader[] = [
   },
   {
     text: '備考',
-    value: 'circle_memo',
+    value: 'memo',
     width: '300px',
   },
 ]

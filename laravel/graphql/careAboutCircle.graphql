@@ -1,6 +1,7 @@
 type CareAboutCircle {
     id: ID!
     join_event_id: ID!
+    memo: String
     joinEvent: JoinEvent @belongsTo
     circlePlacement: CirclePlacement @belongsTo
     created_at: DateTime
@@ -10,6 +11,7 @@ type CareAboutCircle {
 input CareAboutCircleInput {
     join_event_id: ID!
     circle_placement_id: ID!
+    memo: String
 }
 
 extend type Mutation @guard {

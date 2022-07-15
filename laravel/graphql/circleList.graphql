@@ -41,6 +41,9 @@ type CircleList {
     want_priority_name: String
     circle_memo: String
     user_name: String!
+    care_about_circle_memo: String
+    want_circle_product_memo: String
+    memo: String
 }
 
 type MadeExcel {

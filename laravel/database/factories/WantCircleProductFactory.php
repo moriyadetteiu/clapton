@@ -32,6 +32,7 @@ class WantCircleProductFactory extends Factory
             'want_priority_id' => WantPriority::factory(),
             'care_about_circle_id' => CareAboutCircle::factory(),
             'circle_product_id' => CircleProduct::factory(),
+            'memo' => $this->faker->text,
         ];
     }
 }

@@ -85,6 +85,9 @@
         >{{ item.want_circle_product_quantity }}個
       </template>
     </template>
+    <template #[`item.memo`]="{ item }">
+      <div class="memo">{{ item.memo }}</div>
+    </template>
     <template #[`body.append`]>
       <tr>
         <td :colspan="headers.length">
@@ -304,3 +307,9 @@ export default class CircleListTable extends Vue {
   }
 }
 </script>
+
+<style scoped>
+.memo {
+  white-space: pre-line;
+}
+</style>

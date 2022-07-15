@@ -2,6 +2,7 @@ type WantCircleProduct {
     id: ID!
     quantity: Int!
     want_priority_id: ID!
+    memo: String
     wantPriority: WantPriority! @belongsTo
     careAboutCircle: CareAboutCircle! @belongsTo
     circleProduct: CircleProduct! @belongsTo
@@ -14,6 +15,7 @@ input WantCircleProductInput {
     want_priority_id: ID!
     join_event_id: ID
     circle_product_id: ID
+    memo: String
 }
 
 extend type Query @guard {

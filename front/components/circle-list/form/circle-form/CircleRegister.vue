@@ -4,12 +4,18 @@
       v-model="circleInput"
       :validation="validation"
       :disabled="disabledCircleForm"
+      class="pb-0"
     />
     <circle-placement-form-input
       v-model="circlePlacementInput"
       :validation="validation"
       :event-id="eventId"
       :team-id="teamId"
+      class="pt-0 pb-0"
+    />
+    <care-about-circle-form-input
+      v-model="careAboutCircleMemoInput"
+      class="pt-0 pb-0"
     />
     <v-container>
       <v-row dense>
@@ -25,11 +31,13 @@
 import { Prop, Component, Watch } from 'nuxt-property-decorator'
 import { ApolloError } from 'apollo-client/errors/ApolloError'
 import { GraphQLError } from 'graphql'
-
 import CircleFormInput from './CircleFormInput.vue'
 import CirclePlacementFormInput, {
   DraftCirclePlacementInput,
 } from './CirclePlacementFormInput.vue'
+import CareAboutCircleFormInput, {
+  CareAboutCircleMemoInput,
+} from './CareAboutCircleFormInput.vue'
 import {
   CreateCircleParticipatingInEventInput,
   CreateCircleParticipatingInEventMutation,
@@ -58,8 +66,16 @@ export const initialCircleInput: CircleInput = {
   kana: '',
 }
 
+export const initialCareAboutCircleMemoInput: CareAboutCircleMemoInput = {
+  memo: '',
+}
+
 @Component({
-  components: { CircleFormInput, CirclePlacementFormInput },
+  components: {
+    CircleFormInput,
+    CirclePlacementFormInput,
+    CareAboutCircleFormInput,
+  },
   apollo: {
     circle: {
       query: CircleQuery,
@@ -105,6 +121,10 @@ export default class CircleRegister extends AbstractForm<CreateCircleParticipati
 
   private circlePlacementInput: DraftCirclePlacementInput = {
     ...initialCirclePlacementInput,
+  }
+
+  private careAboutCircleMemoInput: CareAboutCircleMemoInput = {
+    ...initialCareAboutCircleMemoInput,
   }
 
   private force: boolean = false
@@ -182,6 +202,7 @@ export default class CircleRegister extends AbstractForm<CreateCircleParticipati
     const careAboutCircleInput: CareAboutCircleInput = {
       join_event_id: this.joinEventId,
       circle_placement_id: circlePlacement.id,
+      memo: this.careAboutCircleMemoInput.memo,
     }
     await this.$apollo
       .mutate({

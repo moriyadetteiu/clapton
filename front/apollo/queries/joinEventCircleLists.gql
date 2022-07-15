@@ -25,5 +25,6 @@ query joinEventCircleListsQuery($joinEventId: ID!) {
     want_priority_name
     circle_memo
     user_name
+    memo
   }
 }
