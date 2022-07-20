@@ -12,7 +12,7 @@ export default class TeamCircleListTableState extends AbstractTableState {
     'want_circle_product_quantity',
     'want_priority_name',
     'user_name',
-    'circle_memo',
+    'memo',
   ]
 
   protected exportGroupingColumnKeys: string[] = [

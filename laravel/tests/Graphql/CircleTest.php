@@ -227,6 +227,7 @@ class CircleTest extends TestCase
             ->create();
         $user = $dataset['user'];
         $team = $dataset['team'];
+        $memo = $this->faker->text;
 
         $placementValues = collect(CirclePlacement::factory()->definition())
             ->except('circle_id', 'event_date_id', 'circle_placement_classification_id')
@@ -237,12 +238,13 @@ class CircleTest extends TestCase
         $updateCircleParticipatingInEventInput = [
             'circle' => Circle::factory()->definition(),
             'placement' => $placementValues,
+            'memo' => $memo,
         ];
 
         $response = $this
             ->actingAsUser($user)
             ->graphQL('
-                mutation updateCircleParticipatingInEvent($id: ID!, $input: CreateCircleParticipatingInEventInput!) {
+                mutation updateCircleParticipatingInEvent($id: ID!, $input: UpdateCircleParticipatingInEventInput!) {
                     updateCircleParticipatingInEvent(id: $id, input: $input) {
                         id
                         circle {
@@ -266,6 +268,11 @@ class CircleTest extends TestCase
         $expectedPlacement['circle_id'] = $circle->id;
         $assertionPlacement = Arr::except($placement->toArray(), ['id', 'created_at', 'updated_at']);
         $this->assertEquals($expectedPlacement, $assertionPlacement);
+        $this->assertDatabaseHas('care_about_circles', [
+            'join_event_id' => $dataset['joinEvent']->id,
+            'circle_placement_id' => $placement->id,
+            'memo' => $memo,
+        ]);
     }
 
     public function testUpdateCircleParticipatingInEventWhenHasOtherUserCareAboutCircle()
@@ -293,7 +300,7 @@ class CircleTest extends TestCase
         $response = $this
             ->actingAsUser($user)
             ->graphQL('
-                mutation updateCircleParticipatingInEvent($id: ID!, $input: CreateCircleParticipatingInEventInput!) {
+                mutation updateCircleParticipatingInEvent($id: ID!, $input: UpdateCircleParticipatingInEventInput!) {
                     updateCircleParticipatingInEvent(id: $id, input: $input) {
                         id
                         circle {
@@ -338,7 +345,7 @@ class CircleTest extends TestCase
         $response = $this
             ->actingAsUser($user)
             ->graphQL('
-                mutation updateCircleParticipatingInEvent($id: ID!, $input: CreateCircleParticipatingInEventInput!) {
+                mutation updateCircleParticipatingInEvent($id: ID!, $input: UpdateCircleParticipatingInEventInput!) {
                     updateCircleParticipatingInEvent(id: $id, input: $input) {
                         id
                         circle {
@@ -351,7 +358,7 @@ class CircleTest extends TestCase
                 }
             ', [
                 'id' => $dataset['circle']->id,
-                'input' => $updateCircleParticipatingInEventInput
+                'input' => $updateCircleParticipatingInEventInput,
             ]);
 
         $errors = $response->json('errors');

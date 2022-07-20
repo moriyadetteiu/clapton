@@ -56,6 +56,12 @@
 
       <v-row dense>
         <v-col cols="12">
+          <v-textarea v-model="wantInput.memo" placeholder="メモ" />
+        </v-col>
+      </v-row>
+
+      <v-row dense>
+        <v-col cols="12">
           <v-btn color="success" @click="submit">登録</v-btn>
           <v-btn @click="$emit('canceled')">キャンセル</v-btn>
         </v-col>
@@ -102,6 +108,7 @@ const initialCircleProductInput: CircleProductInput = {
 const initialWantCircleProductInput: WantCircleProductInput = {
   quantity: 1,
   want_priority_id: '',
+  memo: '',
 }
 
 @Component({
@@ -176,6 +183,65 @@ export default class CircleProductForm extends Vue {
     this.wantInput = wantInput as WantCircleProductInput
   }
 
+  private get isCreate(): boolean {
+    return !this.circleProduct?.id
+  }
+
+  private get mutateOption(): MutationOptions {
+    const input = {
+      ...this.input,
+      circle_placement_id: this.circlePlacementId,
+    }
+    if (this.isCreate) {
+      return {
+        mutation: CreateCircleProductMutation,
+        variables: { input },
+      }
+    }
+    return {
+      mutation: UpdateCircleProductMutation,
+      variables: {
+        id: this.circleProduct!.id,
+        input,
+      },
+    }
+  }
+
+  private get wantMutateOption(): MutationOptions {
+    const input = {
+      ...this.wantInput,
+    }
+    if (this.isCreate) {
+      input.join_event_id = this.joinEventId
+      return {
+        mutation: CreateWantCircleProductMutation,
+        variables: { input },
+      }
+    }
+    return {
+      mutation: UpdateWantCircleProductMutation,
+      variables: {
+        id: this.wantCircleProduct!.id,
+        input,
+      },
+    }
+  }
+
+  private get wantCircleProduct(): WantCircleProduct | null {
+    if (!this.circleProduct || !this.circleProduct.wantCircleProducts) {
+      return null
+    }
+    const targetWantCircleProduct =
+      this.circleProduct!.wantCircleProducts!.find(
+        (wantCircleProduct) =>
+          wantCircleProduct!.careAboutCircle.join_event_id === this.joinEventId
+      )
+    if (!targetWantCircleProduct) {
+      return null
+    }
+    return targetWantCircleProduct
+  }
+
   private async submit() {
     const observer = this.$refs.validationObserver
     const isValid = await observer.validate()
@@ -234,65 +300,6 @@ export default class CircleProductForm extends Vue {
           this.validation.setBackendErrorsFromAppolo(error)
         }
       })
-  }
-
-  private get isCreate(): boolean {
-    return !this.circleProduct?.id
-  }
-
-  private get mutateOption(): MutationOptions {
-    const input = {
-      ...this.input,
-      circle_placement_id: this.circlePlacementId,
-    }
-    if (this.isCreate) {
-      return {
-        mutation: CreateCircleProductMutation,
-        variables: { input },
-      }
-    }
-    return {
-      mutation: UpdateCircleProductMutation,
-      variables: {
-        id: this.circleProduct!.id,
-        input,
-      },
-    }
-  }
-
-  private get wantMutateOption(): MutationOptions {
-    const input = {
-      ...this.wantInput,
-    }
-    if (this.isCreate) {
-      input.join_event_id = this.joinEventId
-      return {
-        mutation: CreateWantCircleProductMutation,
-        variables: { input },
-      }
-    }
-    return {
-      mutation: UpdateWantCircleProductMutation,
-      variables: {
-        id: this.wantCircleProduct!.id,
-        input,
-      },
-    }
-  }
-
-  private get wantCircleProduct(): WantCircleProduct | null {
-    if (!this.circleProduct || !this.circleProduct.wantCircleProducts) {
-      return null
-    }
-    const targetWantCircleProduct =
-      this.circleProduct!.wantCircleProducts!.find(
-        (wantCircleProduct) =>
-          wantCircleProduct!.careAboutCircle.join_event_id === this.joinEventId
-      )
-    if (!targetWantCircleProduct) {
-      return null
-    }
-    return targetWantCircleProduct
   }
 }
 </script>

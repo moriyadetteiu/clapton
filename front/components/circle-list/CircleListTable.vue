@@ -8,9 +8,11 @@
     disable-pagination
     fixed-header
     multi-sort
+    :show-select="isEnablePriceSimulation"
     @click:row="onRowClicked"
     @dblclick:row="onRowDblClicked"
     @current-items="onUpdateTableCurrentItems"
+    @input="onItemSelected"
   >
     <template #top>
       <v-toolbar class="elevation-0">
@@ -22,6 +24,10 @@
         <circle-list-table-setting
           v-model="settings"
           :is-open.sync="isOpenSetting"
+        />
+        <price-breakdown
+          :circle-lists="calculateTargetCircleLists"
+          :is-open.sync="isOpenPriceBreakdown"
         />
         <v-toolbar-title>サークルリスト</v-toolbar-title>
         <v-spacer />
@@ -70,7 +76,7 @@
       {{ item.circle_name }}
     </template>
     <template #[`item.circle_product_price`]="{ item }">
-      <template v-if="item.circle_product_price"
+      <template v-if="item.circle_product_price !== null"
         >{{ item.circle_product_price }}円
       </template>
     </template>
@@ -78,6 +84,45 @@
       <template v-if="item.want_circle_product_quantity"
         >{{ item.want_circle_product_quantity }}個
       </template>
+    </template>
+    <template #[`item.memo`]="{ item }">
+      <div class="memo">{{ item.memo }}</div>
+    </template>
+    <template #[`body.append`]>
+      <tr>
+        <td :colspan="headers.length">
+          合計金額: {{ totalPrice }}円
+
+          <v-tooltip top>
+            <template #activator="{ on, attrs }">
+              <v-btn icon v-bind="attrs" v-on="on" @click="openPriceBreakdown">
+                <v-icon> mdi-text-box-search-outline </v-icon>
+              </v-btn>
+            </template>
+            <span> 内訳をみる </span>
+          </v-tooltip>
+          <v-tooltip top>
+            <template #activator="{ on, attrs }">
+              <v-btn
+                icon
+                v-bind="attrs"
+                v-on="on"
+                @click="togglePriceSimulation"
+              >
+                <v-icon> mdi-text-box-check-outline </v-icon>
+              </v-btn>
+            </template>
+            <span>
+              <template v-if="isEnablePriceSimulation">
+                金額シミュレーションをやめる
+              </template>
+              <template v-else> 金額シミュレーションする </template>
+              <br />
+              チェックがついたもののみ計算対象になります
+            </span>
+          </v-tooltip>
+        </td>
+      </tr>
     </template>
   </v-data-table>
 </template>
@@ -101,6 +146,7 @@ import FilterItem from './table/filters/FilterItem.vue'
 import CircleListTableSetting, {
   CircleListTableSettings,
 } from './table/CircleListTableSetting.vue'
+import PriceBreakdown from './table/PriceBreakdown.vue'
 import { CircleList } from '~/apollo/graphql'
 import FavoriteButton from '~/components/favorites/FavoriteButton.vue'
 
@@ -110,6 +156,7 @@ import FavoriteButton from '~/components/favorites/FavoriteButton.vue'
     FavoriteButton,
     ExportCircleList,
     CircleListTableSetting,
+    PriceBreakdown,
   },
 })
 export default class CircleListTable extends Vue {
@@ -136,6 +183,12 @@ export default class CircleListTable extends Vue {
   private isOpenExportCircleList: boolean = false
 
   private isOpenSetting: boolean = false
+
+  private isOpenPriceBreakdown: boolean = false
+
+  private isEnablePriceSimulation: boolean = false
+
+  private selectedItems: CircleList[] = []
 
   // HACK: 初期値を指定しているが、子コンポーネントのmountedのタイミングで保存済みの値があれば、v-modelのイベント経由で変更される。
   //       ちょっと複雑な動作をしているため、シンプルな実装にできるのであれば、変更も考えたい
@@ -173,6 +226,22 @@ export default class CircleListTable extends Vue {
     })
   }
 
+  private get calculateTargetCircleLists(): CircleList[] {
+    return this.isEnablePriceSimulation
+      ? this.selectedItems
+      : this.filteredCircleLists
+  }
+
+  private get totalPrice(): number {
+    return this.calculateTargetCircleLists.reduce((prev, current) => {
+      const currentPerPrice = Number(current.circle_product_price ?? 0)
+      const currentQuantity = Number(current.want_circle_product_quantity ?? 0)
+      const currentPrice = currentPerPrice * currentQuantity
+
+      return prev + currentPrice
+    }, 0)
+  }
+
   @Emit()
   private openCircleListForm(_: any, row?: { item: CircleList }) {
     const circleList = row?.item || null
@@ -189,6 +258,14 @@ export default class CircleListTable extends Vue {
 
   private openSetting(): void {
     this.isOpenSetting = true
+  }
+
+  private openPriceBreakdown(): void {
+    this.isOpenPriceBreakdown = true
+  }
+
+  private togglePriceSimulation(): void {
+    this.isEnablePriceSimulation = !this.isEnablePriceSimulation
   }
 
   private onRowClicked(e: any, row: { item: CircleList }) {
@@ -214,6 +291,10 @@ export default class CircleListTable extends Vue {
     this.shownTableCircleListItemIds = items.map((item) => item.id)
   }
 
+  private onItemSelected(selectedItems: CircleList[]): void {
+    this.selectedItems = selectedItems
+  }
+
   public created() {
     let filterConditions = {}
     this.filters.forEach((filter) => {
@@ -226,3 +307,9 @@ export default class CircleListTable extends Vue {
   }
 }
 </script>
+
+<style scoped>
+.memo {
+  white-space: pre-line;
+}
+</style>

@@ -2,6 +2,7 @@
 
 namespace App\UseCase\Circle;
 
+use App\Models\CareAboutCircle;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Circle;
@@ -33,6 +34,7 @@ class UpdateCircleParticipatingInEvent extends UseCase
 
             $circle->update($circleData);
             $circlePlacement->update($placementData);
+            $this->updateCareAboutCircleMemo($circlePlacement, $input);
 
             $circle->refresh();
             $circlePlacement->refresh();
@@ -51,5 +53,19 @@ class UpdateCircleParticipatingInEvent extends UseCase
     private function isExistsFavoriteWhereHasOtherUser(string $operationUserId, Circle $circle): bool
     {
         return $circle->favorites()->where('user_id', '!=', $operationUserId)->exists();
+    }
+
+    private function updateCareAboutCircleMemo(CirclePlacement $circlePlacement, UpdateCircleParticipatingInEventInput $input): CareAboutCircle
+    {
+        $careAboutCircle = $circlePlacement
+            ->careAboutCircles()
+            ->whereHasUser($input->get('operation_user_id'))
+            ->firstOrFail();
+
+        $careAboutCircle->update([
+            'memo' => $input->get('memo'),
+        ]);
+        $careAboutCircle->refresh();
+        return $careAboutCircle;
     }
 }

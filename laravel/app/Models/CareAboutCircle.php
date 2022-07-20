@@ -10,7 +10,7 @@ class CareAboutCircle extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['circle_placement_id', 'join_event_id'];
+    protected $fillable = ['circle_placement_id', 'join_event_id', 'memo'];
 
     public function circlePlacement(): BelongsTo
     {
