@@ -2,13 +2,13 @@
   <v-data-table
     :headers="headers"
     :items="filteredCircleLists"
-    height="calc(100vh - 90px)"
+    height="calc(100vh - 160px)"
     :mobile-breakpoint="0"
-    hide-default-footer
-    disable-pagination
     fixed-header
     multi-sort
     :show-select="isEnablePriceSimulation"
+    :footer-props="footerProps"
+    :items-per-page.sync="itemsPerPage"
     @click:row="onRowClicked"
     @dblclick:row="onRowDblClicked"
     @current-items="onUpdateTableCurrentItems"
@@ -19,7 +19,7 @@
         <export-circle-list
           :is-open.sync="isOpenExportCircleList"
           :table-state="tableState"
-          :circle-list-ids="shownTableCircleListItemIds"
+          :circle-list-ids="exportCircleListIds"
         />
         <circle-list-table-setting
           v-model="settings"
@@ -88,41 +88,32 @@
     <template #[`item.memo`]="{ item }">
       <div class="memo">{{ item.memo }}</div>
     </template>
-    <template #[`body.append`]>
-      <tr>
-        <td :colspan="headers.length">
-          合計金額: {{ totalPrice }}円
+    <template #[`footer.prepend`]>
+      合計金額: {{ totalPrice }}円
 
-          <v-tooltip top>
-            <template #activator="{ on, attrs }">
-              <v-btn icon v-bind="attrs" v-on="on" @click="openPriceBreakdown">
-                <v-icon> mdi-text-box-search-outline </v-icon>
-              </v-btn>
-            </template>
-            <span> 内訳をみる </span>
-          </v-tooltip>
-          <v-tooltip top>
-            <template #activator="{ on, attrs }">
-              <v-btn
-                icon
-                v-bind="attrs"
-                v-on="on"
-                @click="togglePriceSimulation"
-              >
-                <v-icon> mdi-text-box-check-outline </v-icon>
-              </v-btn>
-            </template>
-            <span>
-              <template v-if="isEnablePriceSimulation">
-                金額シミュレーションをやめる
-              </template>
-              <template v-else> 金額シミュレーションする </template>
-              <br />
-              チェックがついたもののみ計算対象になります
-            </span>
-          </v-tooltip>
-        </td>
-      </tr>
+      <v-tooltip top>
+        <template #activator="{ on, attrs }">
+          <v-btn icon v-bind="attrs" v-on="on" @click="openPriceBreakdown">
+            <v-icon> mdi-text-box-search-outline </v-icon>
+          </v-btn>
+        </template>
+        <span> 内訳をみる </span>
+      </v-tooltip>
+      <v-tooltip top>
+        <template #activator="{ on, attrs }">
+          <v-btn icon v-bind="attrs" v-on="on" @click="togglePriceSimulation">
+            <v-icon> mdi-text-box-check-outline </v-icon>
+          </v-btn>
+        </template>
+        <span>
+          <template v-if="isEnablePriceSimulation">
+            金額シミュレーションをやめる
+          </template>
+          <template v-else> 金額シミュレーションする </template>
+          <br />
+          チェックがついたもののみ計算対象になります
+        </span>
+      </v-tooltip>
     </template>
   </v-data-table>
 </template>
@@ -200,6 +191,12 @@ export default class CircleListTable extends Vue {
 
   private shownTableCircleListItemIds: string[] = []
 
+  private itemsPerPage: number = 50
+
+  private readonly footerProps: any = {
+    'items-per-page-options': [30, 50, 100, -1],
+  }
+
   private get headers(): DataTableHeader[] {
     return this.tableState.getTableHeaders()
   }
@@ -240,6 +237,12 @@ export default class CircleListTable extends Vue {
 
       return prev + currentPrice
     }, 0)
+  }
+
+  private get exportCircleListIds(): string[] {
+    return this.itemsPerPage === -1
+      ? this.shownTableCircleListItemIds
+      : this.filteredCircleLists.map((item) => item.id)
   }
 
   @Emit()

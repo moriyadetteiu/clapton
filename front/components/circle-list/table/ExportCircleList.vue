@@ -43,6 +43,14 @@
                   </v-chip-group>
                 </v-col>
               </v-row>
+              <v-row>
+                <v-col cols="12">
+                  <v-subheader>
+                    ※
+                    リスト画面で全件表示中のみ、ソートが適用されたものが出力されます。
+                  </v-subheader>
+                </v-col>
+              </v-row>
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
