@@ -12,6 +12,7 @@ use Database\Seeders\MigrationFromComicMarketTool\IdMapper;
 class Check extends Model
 {
     protected array $columnMapping = [
+        'memo' => 'memo',
         'created_at' => 'created_at',
         'updated_at' => 'updated_at',
     ];
