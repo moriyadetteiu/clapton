@@ -27,11 +27,20 @@
       </v-container>
     </v-main>
     <v-footer absolute app padless>
-      <span>clapton</span>
-      <v-spacer />
-      <div>
-        <v-switch v-model="isDark" label="ダークモード" dense flat></v-switch>
-      </div>
+      <v-container>
+        <v-row align="center">
+          <div>clapton</div>
+          <v-spacer />
+          <div>
+            <v-switch
+              v-model="isDark"
+              label="ダークモード"
+              dense
+              flat
+            ></v-switch>
+          </div>
+        </v-row>
+      </v-container>
     </v-footer>
   </v-app>
 </template>
