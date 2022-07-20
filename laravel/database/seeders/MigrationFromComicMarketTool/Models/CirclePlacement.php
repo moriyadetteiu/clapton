@@ -54,6 +54,13 @@ class CirclePlacement extends Model
         $teamId = $idMapper->getModelId(Team::class, $this->event->group_id);
         $placeClassificationMaster = $this->placeClassificationMaster;
         if (is_null($placeClassificationMaster)) {
+            // note: 企業の場合は元々nullが入る仕様だったため、適当に島を入れるようにする
+            if ($this->place_date === '企業') {
+                return CirclePlacementClassification::where('name', '島')
+                    ->where('team_id', $teamId)
+                    ->firstOrFail();
+            }
+
             // note: 不正データは消したいので、ログで分かるようにしてデバッグしやすくしている
             throw new ModelNotFoundException("invalid data! place_classification_master_id is null");
         }
