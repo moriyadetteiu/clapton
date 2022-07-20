@@ -3,11 +3,14 @@
 namespace Database\Seeders\MigrationFromComicMarketTool\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Model as BaseModel;
 
 use App\Models\CirclePlacementClassification;
 use App\Models\Event;
 use App\Models\EventDate;
 use App\Models\Team;
+use App\Models\Circle;
+use App\Models\CirclePlacement as ModelCirclePlacement;
 use Database\Seeders\MigrationFromComicMarketTool\IdMapper;
 use Database\Seeders\MigrationFromComicMarketTool\Models\Event as FromEvent;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -68,5 +71,21 @@ class CirclePlacement extends Model
     public function placeClassificationMaster(): BelongsTo
     {
         return $this->belongsTo(PlaceClassificationMaster::class);
+    }
+
+    // note: 登録しようとしているレコードがすでにあるか調べ、あったら該当Modelを返す
+    public function findAlreadyCreatedRecord(IdMapper $idMapper): ?BaseModel
+    {
+        $attributes = $this->appendAttributes($idMapper);
+        $circleId = $idMapper->getModelId(Circle::class, $this->circle_id);
+
+        return ModelCirclePlacement::where('circle_id', $circleId)
+            ->where('event_date_id', $attributes['event_date_id'])
+            ->where('hole', $this->place_hole)
+            ->where('line', $this->place_alpha)
+            ->where('number', $attributes['number'])
+            ->where('a_or_b', $this->place_a_b)
+            ->where('circle_placement_classification_id', $attributes['circle_placement_classification_id'])
+            ->first();
     }
 }
