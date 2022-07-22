@@ -46,7 +46,7 @@ describe('event from', () => {
     await flushPromises()
     expect(wrapper.text()).toContain('イベント当日')
 
-    wrapper.find('.v-btn.success').trigger('click')
+    wrapper.find('.v-btn.success').trigger('submit')
     await flushPromises()
 
     expect(wrapper.emitted().submit).toBeTruthy()

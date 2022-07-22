@@ -56,7 +56,7 @@ describe('login page', () => {
       credential,
     })
 
-    wrapper.find('.v-btn.success').trigger('click')
+    wrapper.find('.v-btn.success').trigger('submit')
     await flushPromises()
 
     expect(mutate).toBeCalled()
