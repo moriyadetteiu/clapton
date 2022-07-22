@@ -1,5 +1,9 @@
 <template>
-  <validation-observer ref="validationObserver" tag="form">
+  <validation-observer
+    ref="validationObserver"
+    tag="form"
+    @submit.prevent="submit"
+  >
     <circle-form-input
       v-model="circleInput"
       :validation="validation"
@@ -20,7 +24,7 @@
     <v-container>
       <v-row dense>
         <v-col cols="12">
-          <v-btn color="success" @click="submit">登録</v-btn>
+          <submit-btn>登録</submit-btn>
         </v-col>
       </v-row>
     </v-container>

@@ -1,5 +1,9 @@
 <template>
-  <validation-observer ref="validationObserver" tag="form">
+  <validation-observer
+    ref="validationObserver"
+    tag="form"
+    @submit.prevent="submit"
+  >
     <v-container>
       <v-row dense>
         <v-col cols="12">
@@ -64,7 +68,7 @@
           />
         </v-col>
         <v-col cols="12">
-          <v-btn color="success" @click="submit">登録</v-btn>
+          <submit-btn>登録</submit-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -81,16 +85,17 @@ import { CreateUserInputValidation } from '~/validation/validations'
 
 @Component
 export default class UserForm extends Vue {
-  @PropSync('user', { type: Object as PropType<UserInput> } as PropOptions<
-    UserInput
-  >)
+  @PropSync('user', {
+    type: Object as PropType<UserInput>,
+  } as PropOptions<UserInput>)
   private syncedUser!: UserInput
 
   @Prop({ required: true, type: Function as PropType<() => Promise<void>> })
   private onSubmit!: () => Promise<void>
 
   private confirmationPassword: string = ''
-  private validation: CreateUserInputValidation = new CreateUserInputValidation()
+  private validation: CreateUserInputValidation =
+    new CreateUserInputValidation()
 
   $refs!: {
     validationObserver: InstanceType<typeof ValidationObserver>

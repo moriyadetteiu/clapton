@@ -1,5 +1,9 @@
 <template>
-  <validation-observer ref="validationObserver" tag="form">
+  <validation-observer
+    ref="validationObserver"
+    tag="form"
+    @submit.prevent="submit"
+  >
     <v-container>
       <v-row dense>
         <v-col cols="12"> パスワードリセットメール送信 </v-col>
@@ -14,7 +18,7 @@
       </v-row>
       <v-row dense>
         <v-col cols="12">
-          <v-btn @click="submit"> 送信 </v-btn>
+          <submit-btn> 送信 </submit-btn>
         </v-col>
       </v-row>
     </v-container>
