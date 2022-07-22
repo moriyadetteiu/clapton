@@ -16,7 +16,7 @@ class ConflictCircleException extends Exception implements RendersErrorsExtensio
         $circlePlacements->loadMissing('circle');
         $circlePlacements->append('formatted_placement');
 
-        $this->circlePlacements = $circlePlacements;
+        $this->circlePlacements = $circlePlacements->values();
 
         parent::__construct($message);
     }
