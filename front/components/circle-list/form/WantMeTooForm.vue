@@ -1,5 +1,9 @@
 <template>
-  <validation-observer ref="validationObserver" tag="form">
+  <validation-observer
+    ref="validationObserver"
+    tag="form"
+    @submit.prevent="submit"
+  >
     <want-me-too-form-input
       v-model="input"
       :validation="validation"
@@ -9,7 +13,7 @@
 
     <v-row dense>
       <v-col cols="12">
-        <v-btn color="success" @click="submit">登録</v-btn>
+        <submit-btn>登録</submit-btn>
         <v-btn @click="$emit('canceled')">キャンセル</v-btn>
       </v-col>
     </v-row>

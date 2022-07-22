@@ -1,5 +1,9 @@
 <template>
-  <validation-observer ref="validationObserver" tag="form">
+  <validation-observer
+    ref="validationObserver"
+    tag="form"
+    @submit.prevent="submit"
+  >
     <v-container>
       <v-row dense>
         <v-col cols="12">
@@ -38,7 +42,7 @@
       <v-row dense>
         <v-col cols="12">
           <slot />
-          <v-btn color="success" @click="submit">登録</v-btn>
+          <submit-btn>登録</submit-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -57,9 +61,9 @@ import ValidateDatePicker from '~/components/common/ValidateDatePicker.vue'
   },
 })
 export default class EventForm extends Vue {
-  @PropSync('event', { type: Object as PropType<EventInput> } as PropOptions<
-    EventInput
-  >)
+  @PropSync('event', {
+    type: Object as PropType<EventInput>,
+  } as PropOptions<EventInput>)
   private syncedEvent!: EventInput
 
   @PropSync('eventDates', {

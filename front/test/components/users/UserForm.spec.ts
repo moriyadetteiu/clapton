@@ -40,7 +40,7 @@ describe('UserForm test', () => {
       const userInput: UserInput = new UserInputFactory().make({ [name]: '' })
       const { wrapper, onSubmit } = makeWrapper(userInput)
 
-      wrapper.find('.v-btn.success').trigger('click')
+      wrapper.find('.v-btn.success').trigger('submit')
       await flushPromises()
 
       expect(onSubmit.mock.calls.length).toBe(0)
@@ -57,7 +57,7 @@ describe('UserForm test', () => {
 
     const { wrapper, onSubmit } = makeWrapper(userInput)
 
-    wrapper.find('.v-btn.success').trigger('click')
+    wrapper.find('.v-btn.success').trigger('submit')
     await flushPromises()
 
     expect(onSubmit.mock.calls.length).toBe(0)
@@ -76,7 +76,7 @@ describe('UserForm test', () => {
     })
     await flushPromises()
 
-    wrapper.find('.v-btn.success').trigger('click')
+    wrapper.find('.v-btn.success').trigger('submit')
     await flushPromises()
 
     expect(onSubmit.mock.calls.length).toBe(0)
@@ -94,7 +94,7 @@ describe('UserForm test', () => {
     })
     await flushPromises()
 
-    wrapper.find('.v-btn.success').trigger('click')
+    wrapper.find('.v-btn.success').trigger('submit')
     await flushPromises()
 
     expect(onSubmit).toBeCalled()
