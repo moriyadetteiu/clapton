@@ -32,12 +32,7 @@
           <app-logo-full />
           <v-spacer />
           <div>
-            <v-switch
-              v-model="isDark"
-              label="ダークモード"
-              dense
-              flat
-            ></v-switch>
+            <dark-mode-switch class="hidden-xs-only d-sm-flex" />
           </div>
         </v-row>
       </v-container>
@@ -62,6 +57,7 @@ import WideAppBarContent from '~/components/app-bar/WideAppBarContent.vue'
 import NarrowAppBarContent from '~/components/app-bar/NarrowAppBarContent.vue'
 import NarrowAppBarNavigation from '~/components/app-bar/NarrowAppBarNavigation.vue'
 import AppLogoFull from '~/components/logo/AppLogoFull.vue'
+import DarkModeSwitch from '~/components/switch/DarkModeSwitch.vue'
 
 @Component({
   components: {
@@ -70,6 +66,7 @@ import AppLogoFull from '~/components/logo/AppLogoFull.vue'
     NarrowAppBarContent,
     NarrowAppBarNavigation,
     AppLogoFull,
+    DarkModeSwitch,
   },
   apollo: {
     underwayCircleListItems: {
@@ -138,17 +135,6 @@ export default class DefaultLayout extends Vue {
         this.$toast.success('ログアウトしました。')
         this.$router.push('/login')
       })
-  }
-
-  // TODO: テストを実行できるように?.にしているのを、テスト側で対応するようにする
-  get isDark(): boolean {
-    return this?.$vuetify?.theme?.dark || false
-  }
-
-  set isDark(dark) {
-    if (this?.$vuetify?.theme?.dark !== undefined) {
-      this.$vuetify.theme.dark = dark
-    }
   }
 
   private get user(): User | null {
