@@ -33,7 +33,7 @@ describe('default layout', () => {
     const wrapper = makeWrapper()
 
     await flushPromises()
-    expect(wrapper.text()).toContain('clapton')
+    expect(wrapper.text()).toContain('ログイン')
     expect(wrapper.text()).not.toContain('ログアウト')
   })
 
@@ -59,9 +59,7 @@ describe('default layout', () => {
     })
 
     await flushPromises()
-    expect(wrapper.text()).toContain('clapton')
     expect(wrapper.text()).toContain('ログアウト')
-    expect(wrapper.text()).toContain(user.name)
     expect(wrapper.text()).toContain(event.name)
     expect(wrapper.text()).toContain(team.name)
   })
