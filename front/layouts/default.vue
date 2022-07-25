@@ -8,7 +8,7 @@
         @logout="logout"
       />
       <narrow-app-bar-content
-        class="hidden-sm-and-up"
+        class="d-flex d-sm-none"
         @open-navigation="openNavigation"
       />
     </v-app-bar>
@@ -29,7 +29,7 @@
     <v-footer absolute app padless>
       <v-container>
         <v-row align="center">
-          <div>clapton</div>
+          <app-logo-full />
           <v-spacer />
           <div>
             <v-switch
@@ -61,6 +61,7 @@ import { UnderwayEventItem } from '~/components/app-bar/AbstractAppBarContent.vu
 import WideAppBarContent from '~/components/app-bar/WideAppBarContent.vue'
 import NarrowAppBarContent from '~/components/app-bar/NarrowAppBarContent.vue'
 import NarrowAppBarNavigation from '~/components/app-bar/NarrowAppBarNavigation.vue'
+import AppLogoFull from '~/components/logo/AppLogoFull.vue'
 
 @Component({
   components: {
@@ -68,6 +69,7 @@ import NarrowAppBarNavigation from '~/components/app-bar/NarrowAppBarNavigation.
     WideAppBarContent,
     NarrowAppBarContent,
     NarrowAppBarNavigation,
+    AppLogoFull,
   },
   apollo: {
     underwayCircleListItems: {

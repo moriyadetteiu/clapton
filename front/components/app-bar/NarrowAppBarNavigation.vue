@@ -6,6 +6,7 @@
     temporary
     v-on="$listeners"
   >
+    <app-logo-full />
     <template v-if="user !== null">
       <v-expansion-panels flat>
         <v-expansion-panel>
@@ -62,8 +63,13 @@
 import Component from 'vue-class-component'
 import { Model } from 'vue-property-decorator'
 import AbstractAppBarContent from './AbstractAppBarContent.vue'
+import AppLogoFull from '~/components/logo/AppLogoFull.vue'
 
-@Component({})
+@Component({
+  components: {
+    AppLogoFull,
+  },
+})
 export default class NarrowAppBarNavigation extends AbstractAppBarContent {
   @Model('input', { required: true, type: Boolean })
   private value!: boolean
