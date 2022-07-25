@@ -145,4 +145,8 @@ export default {
   },
 
   ssr: false,
+
+  pwa: {
+    icon: false
+  },
 }
