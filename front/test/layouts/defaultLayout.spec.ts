@@ -60,7 +60,6 @@ describe('default layout', () => {
 
     await flushPromises()
     expect(wrapper.text()).toContain('ログアウト')
-    expect(wrapper.text()).toContain(user.name)
     expect(wrapper.text()).toContain(event.name)
     expect(wrapper.text()).toContain(team.name)
   })
