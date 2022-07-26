@@ -58,6 +58,20 @@ services:
             - api
         environment:
             - CHOKIDAR_USEPOLLING=true
+    hp_front:
+        build: ./docker/homepage_front
+        volumes:
+            - ./homepage_front:/usr/src/app
+
+            # # note: container内で書き込みをよく行うディレクトリはマウントの同期を弱くすることでnpmの各種コマンドのパフォーマンスを改善している
+            # # docs: https://docs.docker.jp/docker-for-mac/osxfs-caching.html
+            # - ./front/.nuxt:/usr/src/app/.nuxt:delegated
+            # - ./front/dist:/usr/src/app/dist:delegated
+            # - ./front/node_modules:/usr/src/app/node_modules:delegated
+            # - ./front/coverage:/usr/src/app/coverage:delegated
+        tty: true
+        ports:
+            - 5000:3000
     mock:
         build: ./docker/mock
         volumes:

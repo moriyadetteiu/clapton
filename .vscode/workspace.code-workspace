@@ -13,6 +13,10 @@
 			"path": "..\\mock"
 		},
 		{
+			"name": "hp_front",
+			"path": "..\\homepage_front"
+		},
+		{
 			"name": "clapton",
 			"path": ".."
 		}
