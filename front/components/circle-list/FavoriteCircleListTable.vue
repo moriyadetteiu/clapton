@@ -70,6 +70,7 @@ export default class CircleListTable extends Vue {
   //       ちょっと複雑な動作をしているため、シンプルな実装にできるのであれば、変更も考えたい
   private settings: CircleListTableSettings = {
     howOpenCircleListForm: 'click',
+    isEnableFavoriteButton: true,
   }
 
   private readonly headers: DataTableHeader[] = [
