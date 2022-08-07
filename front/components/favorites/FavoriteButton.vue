@@ -83,7 +83,17 @@ export default class FavoriteButton extends Vue {
       })
   }
 
-  private deleteFavorite(): Promise<any> {
+  private async deleteFavorite(): Promise<any> {
+    const circleName = this.favorite?.circle?.name
+    const messagePrefix = circleName ? `${circleName}の` : ''
+    if (
+      !(await this.$confirmDialog.confirm(
+        `${messagePrefix}お気に入りを解除します。よろしいですか？`
+      ))
+    ) {
+      return false
+    }
+
     const variables = {
       id: this.favorite!.id,
     }

@@ -72,7 +72,10 @@
       </v-expand-transition>
     </template>
     <template #[`item.circle_name`]="{ item }">
-      <favorite-button :circle-id="item.circle_id" />
+      <favorite-button
+        :circle-id="item.circle_id"
+        :disabled="!settings.isEnableFavoriteButton"
+      />
       {{ item.circle_name }}
     </template>
     <template #[`item.circle_product_price`]="{ item }">
@@ -185,6 +188,7 @@ export default class CircleListTable extends Vue {
   //       ちょっと複雑な動作をしているため、シンプルな実装にできるのであれば、変更も考えたい
   private settings: CircleListTableSettings = {
     howOpenCircleListForm: 'click',
+    isEnableFavoriteButton: true,
   }
 
   private filterConditions: FilterConditions = {}

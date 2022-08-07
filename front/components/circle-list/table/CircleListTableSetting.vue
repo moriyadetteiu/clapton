@@ -17,6 +17,19 @@
             />
           </v-col>
         </v-row>
+        <v-row>
+          <v-col cols="12">
+            <v-select
+              v-model="settings.isEnableFavoriteButton"
+              :items="isEnableFavoriteButtonOptions"
+              item-text="text"
+              item-value="value"
+              label="リスト上のお気に入りボタンのクリック"
+              :persistent-hint="true"
+              hint="お気に入りボタンクリックの誤爆が気になる場合、無効にするとボタンの表示のみになり、クリックに反応しなくなります。"
+            />
+          </v-col>
+        </v-row>
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -31,8 +44,13 @@ type HowOpenCircleListOption = {
   value: HowOpenCircleListValue
   text: string
 }
+type IsEnableFavoriteButtonOption = {
+  value: boolean
+  text: string
+}
 export type CircleListTableSettings = {
   howOpenCircleListForm: HowOpenCircleListValue
+  isEnableFavoriteButton: boolean
 }
 
 @Component({})
@@ -71,6 +89,17 @@ export default class CircleListTableSetting extends Vue {
     {
       value: 'dblclick',
       text: 'ダブルクリック',
+    },
+  ]
+
+  private isEnableFavoriteButtonOptions: IsEnableFavoriteButtonOption[] = [
+    {
+      value: false,
+      text: '無効',
+    },
+    {
+      value: true,
+      text: '有効',
     },
   ]
 
