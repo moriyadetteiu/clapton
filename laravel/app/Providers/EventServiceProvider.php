@@ -6,8 +6,10 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
+use App\Models\CirclePlacement;
 use App\Models\EventDate;
 use App\Models\Team;
+use App\Observers\CirclePlacementObserver;
 use App\Observers\EventDateObserver;
 use App\Observers\TeamObserver;
 
@@ -31,6 +33,7 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        CirclePlacement::observe(CirclePlacementObserver::class);
         Team::observe(TeamObserver::class);
         EventDate::observe(EventDateObserver::class);
     }

@@ -36,4 +36,59 @@ class CirclePlacementTest extends TestCase
             $this->assertEquals($circlePlacement->id, $foundCirclePlacement->id);
         });
     }
+
+    /**
+     * @dataProvider savingObserverProvider
+     */
+    public function testSavingObserver($expectedLine, $circlePlacementsAttributes)
+    {
+        collect($circlePlacementsAttributes)
+            ->map(fn ($attributes) => CirclePlacement::factory($attributes)->create())
+            ->each(function ($circlePlacement) use ($expectedLine) {
+                $this->assertEquals($expectedLine, $circlePlacement->line);
+                $this->assertDatabaseHas('circle_placements', [
+                    'id' => $circlePlacement->id,
+                    'line' => $expectedLine,
+                ]);
+            });
+    }
+
+    public function savingObserverProvider()
+    {
+        return [
+            'full width alphabet to half width' => [
+                'A',
+                [
+                    [
+                        'line' => 'Ａ',
+                    ],
+                    [
+                        'line' => 'A',
+                    ],
+                ],
+            ],
+            'half width katakana to full width' => [
+                'ア',
+                [
+                    [
+                        'line' => 'ア',
+                    ],
+                    [
+                        'line' => 'ｱ',
+                    ],
+                ]
+            ],
+            'full width number to half width' => [
+                '1',
+                [
+                    [
+                        'line' => '１',
+                    ],
+                    [
+                        'line' => '1',
+                    ]
+                ],
+            ],
+        ];
+    }
 }
