@@ -13,6 +13,7 @@
         </template>
       </v-card-title>
       <v-card-text class="pr-sm-6 pl-sm-6 pr-1 pl-1">
+        <app-loading :is-loading="isLoading" />
         <component
           :is="formState.getComponentName()"
           v-bind="formState.getAttrs()"
@@ -36,6 +37,7 @@ import CircleFormState from './form/states/CircleFormState'
 import CircleProductFormState from './form/states/CircleProductFormState'
 import CircleProductsState from './form/states/CircleProductsState'
 import WantMeTooFormState from './form/states/WantMeTooFormState'
+import AppLoading from '~/components/loading/AppLoading.vue'
 import FavoriteButton from '~/components/favorites/FavoriteButton.vue'
 import {
   Circle,
@@ -48,6 +50,7 @@ import {
 
 @Component({
   components: {
+    AppLoading,
     CircleForm,
     CircleProductForm,
     CircleProducts,
@@ -169,6 +172,10 @@ export default class CircleListForm extends Vue {
         'register-new-circle': this.initializeForm,
       }
     )
+  }
+
+  private get isLoading(): boolean {
+    return this.$apollo.queries?.circlePlacement?.loading ?? false
   }
 
   @Watch('circleId')
