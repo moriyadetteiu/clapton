@@ -37,6 +37,7 @@ papertrail
 phpredis
 prerendered
 prioritys
+sasl
 semibold
 sslmode
 tcpdf
