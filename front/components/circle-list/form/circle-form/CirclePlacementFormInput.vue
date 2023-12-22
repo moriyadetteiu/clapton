@@ -114,6 +114,7 @@ export default class CirclePlacementFormInput extends AbstractFormInput<
   // TODO: イベントごとにホールのマスタを変更できるようにする？
   private holes: { name: string }[] = [
     { name: '東' },
+    { name: '東7' },
     { name: '西' },
     { name: '南' },
   ]
