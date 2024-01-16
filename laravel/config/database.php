@@ -69,6 +69,10 @@ return [
             'database' => env('DB_TESTING_DATABASE', 'clapton')
         ]),
 
+        'mysql_comic_market_tool' => array_merge($mysqlConnection, [
+            'database' => 'comic_market_tool'
+        ]),
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),
