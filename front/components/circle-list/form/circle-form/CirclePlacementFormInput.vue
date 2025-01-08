@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { Prop, Component } from 'nuxt-property-decorator'
+import { Prop, Component, Watch } from 'nuxt-property-decorator'
 import AbstractFormInput from '~/components/form/AbstractFormInput.vue'
 import {
   CirclePlacementInput,
@@ -122,5 +122,12 @@ export default class CirclePlacementFormInput extends AbstractFormInput<
   private aOrB: { name: string }[] = [{ name: 'a' }, { name: 'b' }]
 
   private circlePlacementClassifications: CirclePlacementClassification[] = []
+
+  @Watch('eventDates', { immediate: true })
+  private onUpdateEventDates() {
+    if (this.eventDates && this.eventDates.length === 1) {
+      this.input.event_date_id = this.eventDates[0].id
+    }
+  }
 }
 </script>
