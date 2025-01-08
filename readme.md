@@ -7,4 +7,7 @@
 
 デプロイ先: https://clapton.newstep-info.com/mypage
 
-WIP: 概要とかを書く
+## 環境構築
+[[docs/環境構築.md]]
+
+## WIP: 概要とかを書く

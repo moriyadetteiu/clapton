@@ -6,7 +6,7 @@ services:
             - ./laravel:/var/www/html
         tty: true
         ports:
-            - 11080:8000
+            - ${LARAVEL_PORT:-11080}:8000
         networks:
             - backend
     nginx:
@@ -18,7 +18,7 @@ services:
             - ./laravel/public:/var/www/html/public
             - ./nginx/logs:/var/log/nginx
         ports:
-            - 20080:80
+            - ${NGINX_PORT:-20080}:80
         networks:
             - backend
             - api
@@ -29,7 +29,7 @@ services:
             - ./mysql/data:/var/lib/mysql
         tty: true
         ports:
-            - 13306:3306
+            - ${MYSQL_PORT:-13306}:3306
         networks:
             - backend
     redis_session:
@@ -52,7 +52,7 @@ services:
             - ./front/coverage:/usr/src/app/coverage:delegated
         tty: true
         ports:
-            - 3000:3000
+            - ${FRONT_PORT:-3000}:3000
         networks:
             - frontend
             - api
@@ -64,7 +64,7 @@ services:
             - ./mock:/usr/src/app
         tty: true
         ports:
-            - 4000:4000
+            - ${MOCK_PORT:-4000}:4000
         networks:
             - frontend
             - api
