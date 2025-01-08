@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 
 use App\Models\Event;
 use App\Models\EventDate;
+use Str;
 use Tests\TestCase;
 
 class EventDateTest extends TestCase
@@ -34,5 +35,11 @@ class EventDateTest extends TestCase
         ]);
         $event->refresh();
         $this->assertTrue($event->is_progress);
+    }
+
+    public function testAttributes()
+    {
+        $eventDate = EventDate::factory()->create();
+        $this->assertTrue(Str::startsWith($eventDate->full_format_date, $eventDate->name));
     }
 }

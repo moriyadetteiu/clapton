@@ -17,4 +17,11 @@ class EventDate extends Model
     {
         return $this->belongsTo(Event::class);
     }
+
+    public function getFullFormatDateAttribute(): string
+    {
+        $day = $this->date->getTranslatedDayName();
+        $dateString = $this->date->format('Y/m/d');
+        return "{$this->name}（{$dateString} {$day}）";
+    }
 }

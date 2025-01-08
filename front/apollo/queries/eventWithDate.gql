@@ -6,6 +6,7 @@ query EventWithDateQuery($id: ID!) {
       id
       name
       date
+      full_format_date
     }
   }
 }
