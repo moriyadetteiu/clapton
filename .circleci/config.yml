@@ -61,7 +61,7 @@ commands:
 executors:
   test-executer:
     machine:
-      image: ubuntu-2204:2022.04.1
+      image: ubuntu-2204:2024.08.1
 
 jobs:
   test:
