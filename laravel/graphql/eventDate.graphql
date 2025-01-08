@@ -3,6 +3,7 @@ type EventDate {
     event: Event @belongsTo
     name: String!
     date: Date!
+    full_format_date: String!
     is_production_day: Boolean!
     created_at: DateTime
     updated_at: DateTime

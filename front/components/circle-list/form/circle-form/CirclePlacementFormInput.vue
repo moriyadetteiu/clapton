@@ -5,7 +5,7 @@
         <v-validate-select
           v-model="input.event_date_id"
           :items="eventDates"
-          item-text="name"
+          item-text="full_format_date"
           item-value="id"
           :validation="validation.getItem('placement.event_date_id')"
         />
